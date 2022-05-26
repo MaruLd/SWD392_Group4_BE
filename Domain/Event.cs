@@ -11,7 +11,7 @@ public class Event
 {
 	[Key]
 	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-	public Guid Id { get; set; }
+	public int Id { get; set; }
 
 	public String? Title { get; set; }
 	public String? Description { get; set; }
@@ -22,8 +22,7 @@ public class Event
 	public float Mutliplier_Factor { get; set; }
 
 	public virtual EventCategory? Category { get; set; }
-	public String? EventCategoryId { get; set; }
-
+	public int? EventCategoryId { get; set; }
 	public virtual ICollection<Organizer> Organizers { get; set; }
 	public virtual ICollection<Participant> Participants { get; set; }
 	public virtual ICollection<Ticket> Tickets { get; set; }
