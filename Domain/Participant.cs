@@ -11,16 +11,14 @@ namespace Domain
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public Guid Id { get; set; }
+		public int Id { get; set; }
 		public String Status { get; set; }
 		public ParticipantType Type { get; set; }
 
-		[ForeignKey("Event")]
 		public virtual Event? Event { get; set; }
-		public String? EventId { get; set; }
+		public int? EventId { get; set; }
 
-		[ForeignKey("User")]
 		public virtual User? User { get; set; }
-		public String? UserId { get; set; }
+		public int? UserId { get; set; }
 	}
 }

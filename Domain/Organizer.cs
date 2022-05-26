@@ -11,11 +11,10 @@ namespace Domain
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public Guid Id { get; set; }
+		public int Id { get; set; }
 
 		public String? Name { get; set; }
 		public String? Description { get; set; }
-
 
 		public virtual ICollection<Event> Events { get; set; }
 	}

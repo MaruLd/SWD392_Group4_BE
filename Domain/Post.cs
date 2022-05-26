@@ -11,18 +11,16 @@ public class Post
 {
 	[Key]
 	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-	public Guid Id { get; set; }
+	public int Id { get; set; }
 
 	public string Title { get; set; }
 	public string Content { get; set; }
 
-	[ForeignKey("Event")]
 	public virtual Event? Event { get; set; }
-	public String? EventId { get; set; }
+	public int? EventId { get; set; }
 
-	[ForeignKey("User")]
 	public virtual User? User { get; set; }
-	public String? UserId { get; set; }
+	public int? UserId { get; set; }
 
 	public virtual ICollection<Comment> Comments { get; set; }
 

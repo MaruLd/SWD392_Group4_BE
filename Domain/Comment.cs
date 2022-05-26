@@ -11,17 +11,15 @@ namespace Domain
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public Guid Id { get; set; }
+		public int Id { get; set; }
 
 		public string Title { get; set; }
 		public string Content { get; set; }
 
-		[ForeignKey("User")]
 		public virtual User? User { get; set; }
-		public string? UserId { get; set; }
+		public int? UserId { get; set; }
 
-		[ForeignKey("Post")]
 		public virtual Post? Post { get; set; }
-		public Guid PostId { get; set; }
+		public int PostId { get; set; }
 	}
 }

@@ -19,8 +19,7 @@ namespace Domain
 		public DateTime StartTime { get; set; }
 		public DateTime EndTime { get; set; }
 
-		[ForeignKey("Event")]
 		public virtual Event? Event { get; set; }
-		public String? EventId { get; set; }
+		public int? EventId { get; set; }
 	}
 }
