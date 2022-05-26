@@ -21,9 +21,8 @@ public class Event
 
 	public float Mutliplier_Factor { get; set; }
 
-	public virtual Category? Category { get; set; }
-	public int? CategoryId { get; set; }
-
+	public virtual EventCategory? Category { get; set; }
+	public int? EventCategoryId { get; set; }
 	public virtual ICollection<Organizer> Organizers { get; set; }
 	public virtual ICollection<Participant> Participants { get; set; }
 	public virtual ICollection<Ticket> Tickets { get; set; }
