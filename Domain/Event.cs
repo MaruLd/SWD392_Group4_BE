@@ -21,9 +21,8 @@ public class Event
 
 	public float Mutliplier_Factor { get; set; }
 
-	[ForeignKey("Category")]
-	public virtual Category? Category { get; set; }
-	public String? CategoryId { get; set; }
+	public virtual EventCategory? Category { get; set; }
+	public String? EventCategoryId { get; set; }
 
 	public virtual ICollection<Organizer> Organizers { get; set; }
 	public virtual ICollection<Participant> Participants { get; set; }
