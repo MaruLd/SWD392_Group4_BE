@@ -22,6 +22,6 @@ namespace Domain
 
 		[ForeignKey("Post")]
 		public virtual Post? Post { get; set; }
-		public string? PostId { get; set; }
+		public Guid PostId { get; set; }
 	}
 }
