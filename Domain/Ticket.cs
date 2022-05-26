@@ -15,10 +15,11 @@ namespace Domain
 
 		public String Type { get; set; }
 		public int Cost { get; set; }
+		public int Quantity { get; set; }
 
 		public virtual Event? Event { get; set; }
-		public int? EventId { get; set; }
+		public int EventId { get; set; }
 
-		public virtual ICollection<User> Users { get; set; }
+		public virtual ICollection<User>? Users { get; set; }
 	}
 }

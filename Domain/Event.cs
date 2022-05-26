@@ -19,7 +19,7 @@ public class Event
 	public DateTime StartTime { get; set; }
 	public DateTime EndTime { get; set; }
 
-	public float Mutliplier_Factor { get; set; }
+	public float Multiplier_Factor { get; set; }
 
 	public virtual EventCategory? Category { get; set; }
 	public int? EventCategoryId { get; set; }

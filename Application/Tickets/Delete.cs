@@ -6,7 +6,7 @@ using Domain;
 using MediatR;
 using Persistence;
 
-namespace Application.Events
+namespace Application.Tickets
 {
     public class Delete
     {
@@ -28,9 +28,9 @@ namespace Application.Events
             {
                 
                
-                var Event = await _context.Event.FindAsync(request.Id);
+                var Ticket = await _context.Ticket.FindAsync(request.Id);
 
-                _context.Remove(Event);
+                _context.Remove(Ticket);
 
                 await _context.SaveChangesAsync();
 

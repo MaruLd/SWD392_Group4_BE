@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.Activities;
+using Application.Events;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +21,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Event>> GetEvent(Guid id)
+        public async Task<ActionResult<Event>> GetEvent(int id)
         {
             var activity = await Mediator.Send(new Details.Query{Id = id});
 
@@ -31,20 +31,20 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateEvent(Event activity)
+        public async Task<ActionResult> CreateEvent(Event Event)
         {
-            return Ok(await Mediator.Send(new Create.Command {Activity = activity}));
+            return Ok(await Mediator.Send(new Create.Command {Event = Event}));
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> EditEvent(Guid id, Event activity)
+        public async Task<ActionResult> EditEvent(int id, Event Event)
         {
-            activity.Id = id;
-            return Ok(await Mediator.Send(new Edit.Command {Activity = activity}));
+            Event.Id = id;
+            return Ok(await Mediator.Send(new Edit.Command {Event = Event}));
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteEvent(Guid id)
+        public async Task<ActionResult> DeleteEvent(int id)
         {
             return Ok(await Mediator.Send(new Delete.Command {Id = id}));
         }

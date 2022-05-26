@@ -12,6 +12,8 @@ namespace Application.Core
         public MappingProfiles()
         {
             CreateMap<Event, Event>();
+            CreateMap<Ticket, Ticket>();
         }
+        
     }
 }

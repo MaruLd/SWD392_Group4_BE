@@ -8,13 +8,13 @@ using FluentValidation;
 using MediatR;
 using Persistence;
 
-namespace Application.Activities
+namespace Application.Events
 {
     public class Edit
     {
         public class Command : IRequest
         {
-            public Activity Activity { get; set; }
+            public Event Event { get; set; }
             
         }
 
@@ -22,7 +22,7 @@ namespace Application.Activities
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Activity).SetValidator(new ActivityValidator());
+                RuleFor(x => x.Event).SetValidator(new EventValidator());
     
             }
 
@@ -41,9 +41,9 @@ namespace Application.Activities
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities.FindAsync(request.Activity.Id);
+                var Event = await _context.Event.FindAsync(request.Event.Id);
 
-                _mapper.Map(request.Activity, activity);
+                _mapper.Map(request.Event, Event);
 
                 await _context.SaveChangesAsync();
                 

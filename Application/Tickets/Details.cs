@@ -6,15 +6,15 @@ using Domain;
 using MediatR;
 using Persistence;
 
-namespace Application.Events
+namespace Application.Tickets
 {
     public class Details 
     {
-        public class Query : IRequest<Event>{
+        public class Query : IRequest<Ticket>{
             public int Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Event>
+        public class Handler : IRequestHandler<Query, Ticket>
         {
             private readonly DataContext _context;
 
@@ -23,13 +23,13 @@ namespace Application.Events
                 _context = context;
             }
 
-            public async Task<Event> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Ticket> Handle(Query request, CancellationToken cancellationToken)
             {
-                var Event = await _context.Event.FindAsync(request.Id);
+                var ticket = await _context.Ticket.FindAsync(request.Id);
 
-                if (Event == null) throw new Exception("Event not found");
+                if (ticket == null) throw new Exception("Ticket not found");
 
-                return Event;
+                return ticket;
             }
         }
     }

@@ -3,16 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
+using FluentValidation;
 using MediatR;
 using Persistence;
 
-namespace Application.Events
+namespace Application.Tickets
 {
-    public class Delete
+    public class Create
     {
-         public class Command : IRequest
+        public class Command : IRequest
         {
-            public int Id { get; set; }
+            public Ticket Ticket { get; set; }
+
+        }
+
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.Ticket).SetValidator(new TicketValidator());
+    
+            }
+
         }
 
         public class Handler : IRequestHandler<Command>
@@ -26,11 +38,7 @@ namespace Application.Events
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                
-               
-                var Event = await _context.Event.FindAsync(request.Id);
-
-                _context.Remove(Event);
+                _context.Ticket.Add(request.Ticket);
 
                 await _context.SaveChangesAsync();
 
