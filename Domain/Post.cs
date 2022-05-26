@@ -22,6 +22,9 @@ public class Post
 	public virtual User? User { get; set; }
 	public int? UserId { get; set; }
 
+	public String Status { get; set; }
+	public DateTime CreatedDate { get; set; } = DateTime.Now;
+
 	public virtual ICollection<Comment> Comments { get; set; }
 
 }

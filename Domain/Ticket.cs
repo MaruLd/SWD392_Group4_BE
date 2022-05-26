@@ -21,5 +21,7 @@ namespace Domain
 		public int EventId { get; set; }
 
 		public virtual ICollection<User>? Users { get; set; }
+
+		public DateTime CreatedDate { get; set; } = DateTime.Now;
 	}
 }

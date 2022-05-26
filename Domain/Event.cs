@@ -23,9 +23,13 @@ public class Event
 
 	public virtual EventCategory? Category { get; set; }
 	public int? EventCategoryId { get; set; }
+
 	public virtual ICollection<Organizer> Organizers { get; set; }
 	public virtual ICollection<Participant> Participants { get; set; }
 	public virtual ICollection<Ticket> Tickets { get; set; }
 	public virtual ICollection<Post> Posts { get; set; }
 	public virtual ICollection<EventAgenda> EventAgenda { get; set; }
+
+	public String Status { get; set; }
+	public DateTime CreatedDate { get; set; } = DateTime.Now;
 }

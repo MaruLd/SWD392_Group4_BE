@@ -21,5 +21,8 @@ namespace Domain
 
 		public virtual Post? Post { get; set; }
 		public int PostId { get; set; }
+
+		public String Status { get; set; }
+		public DateTime CreatedDate { get; set; } = DateTime.Now;
 	}
 }
