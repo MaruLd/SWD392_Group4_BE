@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Events.DTOs;
 using AutoMapper;
 using Domain;
 
@@ -11,7 +12,7 @@ namespace Application.Core
     {
         public MappingProfiles()
         {
-            CreateMap<Event, Event>();
+            CreateMap<CreateEventDTO, Event>();
             CreateMap<Ticket, Ticket>();
         }
         

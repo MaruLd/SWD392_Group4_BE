@@ -16,8 +16,9 @@ namespace Domain
 		public String? Name { get; set; }
 		public String? Description { get; set; }
 
+		public String Status { get; set; }
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-		public virtual ICollection<Event> Events { get; set; }	
+		public virtual ICollection<Event> Events { get; set; }
 	}
 }
