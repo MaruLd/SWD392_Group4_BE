@@ -13,6 +13,8 @@ namespace Application.Core
         public MappingProfiles()
         {
             CreateMap<CreateEventDTO, Event>();
+            CreateMap<Event, CreateEventDTO>();
+
             CreateMap<Ticket, Ticket>();
         }
         

@@ -24,7 +24,7 @@ namespace API
             try
             {
                 var context = services.GetRequiredService<DataContext>();
-                context.Database.Migrate();
+                // context.Database.Migrate();
                 await EventSeed.SeedData(context);
                 await TicketSeed.SeedData(context);
             }

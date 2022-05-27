@@ -4,11 +4,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Domain;
 
-public class User
+public class User : IdentityUser<int>
 {
-	[Key]
-	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-	public int Id { get; set; }
 	public DateTime Date { get; set; }
 
 	public virtual ICollection<Ticket> Tickets { get; set; }
