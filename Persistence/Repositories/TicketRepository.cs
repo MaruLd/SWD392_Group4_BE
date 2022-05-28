@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.EntityFrameworkCore;
+using Persistence.Params;
 
 namespace Persistence.Repositories
 {
@@ -16,10 +17,23 @@ namespace Persistence.Repositories
 			_context = context;
 		}
 
-		public async Task<IEnumerable<Ticket>> GetAll()
+		public async Task<List<Ticket>> Get(TicketParams param)
 		{
-			return await _context.Ticket.OrderBy(e => e.CreatedDate).ToListAsync();
+			var query = _context.Ticket.AsQueryable();
+
+			if (param.EventId != null)
+			{
+				query = query.Where(ticket => ticket.EventId == param.EventId);
+			}
+
+			if (param.OrderBy == "Date")
+			{
+				query = query.OrderBy(ticket => ticket.CreatedDate);
+			}
+
+			return await query.OrderBy(e => e.CreatedDate).ToListAsync();
 		}
+
 
 		public async Task<Ticket> GetByID(int id)
 		{
