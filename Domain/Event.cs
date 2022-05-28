@@ -24,12 +24,14 @@ public class Event
 	public virtual EventCategory? Category { get; set; }
 	public int? EventCategoryId { get; set; }
 
-	public virtual ICollection<Organizer> Organizers { get; set; }
-	public virtual ICollection<Participant> Participants { get; set; }
-	public virtual ICollection<Ticket> Tickets { get; set; }
-	public virtual ICollection<Post> Posts { get; set; }
-	public virtual ICollection<EventAgenda> EventAgenda { get; set; }
+	public virtual ICollection<Organizer> Organizers { get; set; } = new List<Organizer>();
+	public virtual ICollection<Participant> Participants { get; set; } = new List<Participant>();
+	public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+	public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
+	public virtual ICollection<EventAgenda> EventAgenda { get; set; } = new List<EventAgenda>();
 
 	public String Status { get; set; }
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+		// public ICollection<EventTicket>? EventTickets { get; set; }
 }

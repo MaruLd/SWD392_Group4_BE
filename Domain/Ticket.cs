@@ -17,10 +17,12 @@ namespace Domain
 		public int Cost { get; set; }
 		public int Quantity { get; set; }
 
-		public virtual Event? Event { get; set; }
+		public virtual Event Event { get; set; }
 		public int EventId { get; set; }
 
-		public virtual ICollection<User>? Users { get; set; }
+		public virtual ICollection<User> Users { get; set; }
+
+		// public ICollection<EventTicket> EventTickets { get; set; }
 
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 	}

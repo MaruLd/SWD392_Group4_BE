@@ -10,7 +10,7 @@ namespace Application.Events
 {
     public class Delete
     {
-         public class Command : IRequest
+        public class Command : IRequest
         {
             public int Id { get; set; }
         }
@@ -24,13 +24,12 @@ namespace Application.Events
                 _context = context;
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Unit>
+            Handle(Command request, CancellationToken cancellationToken)
             {
-                
-               
                 var Event = await _context.Event.FindAsync(request.Id);
 
-                _context.Remove(Event);
+                _context.Remove (Event);
 
                 await _context.SaveChangesAsync();
 

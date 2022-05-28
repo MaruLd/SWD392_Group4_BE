@@ -6,9 +6,7 @@ namespace Domain;
 
 public class User : IdentityUser<int>
 {
-	public DateTime Date { get; set; }
-
-	public virtual ICollection<Ticket> Tickets { get; set; }
+	public int InventoryId { get; set; }
 
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 }
