@@ -6,6 +6,9 @@ namespace Domain;
 
 public class User : IdentityUser<int>
 {
+	public string DisplayName { get; set; }
+	
+	
 	public int InventoryId { get; set; }
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 }
