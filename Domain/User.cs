@@ -7,6 +7,5 @@ namespace Domain;
 public class User : IdentityUser<int>
 {
 	public int InventoryId { get; set; }
-
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 }

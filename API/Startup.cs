@@ -18,6 +18,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Persistence;
+using Persistence.Repositories;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using API.Services;
 
 namespace API
 {
@@ -34,6 +40,14 @@ namespace API
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllers();
+
+			// Repositories
+			services.AddScoped<TicketRepository>();
+			services.AddScoped<EventRepository>();
+
+			services.AddScoped<TokenService>();
+
+			// Swagger
 			services
 				.AddSwaggerGen(c =>
 				{
@@ -41,6 +55,8 @@ namespace API
 						.SwaggerDoc("v1",
 						new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
 				});
+
+			// DataContext
 			services
 				.AddDbContext<DataContext>(opt =>
 				{
@@ -49,7 +65,23 @@ namespace API
 							.GetConnectionString("DefaultConnection"));
 				});
 
-			// services.AddIdentityCore<User>();
+			services.AddIdentity<User, IdentityRole<int>>()
+				.AddEntityFrameworkStores<DataContext>()
+				.AddDefaultTokenProviders();
+
+			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+				.AddJwtBearer(options =>
+				{
+					options.TokenValidationParameters = new TokenValidationParameters
+					{
+						ValidateIssuerSigningKey = true,
+						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetValue<string>("Authentication:JWTSecretKey"))),
+						ValidateIssuer = false,
+						ValidateAudience = false,
+					};
+				});
+
+
 			services.AddMediatR(typeof(List.Handler).Assembly);
 			services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 			services
@@ -86,6 +118,7 @@ namespace API
 
 			app.UseRouting();
 
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app
