@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.Events.DTOs;
 using AutoMapper;
 using Domain;
 using FluentValidation;
@@ -15,7 +14,7 @@ namespace Application.Events
 	{
 		public class Command : IRequest
 		{
-			public CreateEventDTO CreateEventDTO { get; set; }
+			public Event Event { get; set; }
 
 		}
 
@@ -23,8 +22,7 @@ namespace Application.Events
 		{
 			public CommandValidator()
 			{
-				RuleFor(x => x.CreateEventDTO).SetValidator(new CreateEventDTOValidator());
-
+				RuleFor(x => x.Event).SetValidator(new EventValidator());
 			}
 
 		}
@@ -42,7 +40,7 @@ namespace Application.Events
 
 			public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
 			{
-				Event e = _mapper.Map<Event>(request.CreateEventDTO);
+				Event e = _mapper.Map<Event>(request.Event);
 				_context.Event.Add(e);
 
 				await _context.SaveChangesAsync();

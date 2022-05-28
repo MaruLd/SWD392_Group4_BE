@@ -32,9 +32,9 @@ namespace API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> CreateEvent(CreateEventDTO createEventDTO)
+		public async Task<ActionResult> CreateEvent(Event Event)
 		{
-			return Ok(await Mediator.Send(new Create.Command { CreateEventDTO = createEventDTO }));
+			return Ok(await Mediator.Send(new Create.Command { Event = Event }));
 		}
 
 		[HttpPut("{id}")]
