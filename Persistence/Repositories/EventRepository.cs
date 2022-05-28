@@ -33,6 +33,11 @@ namespace Persistence.Repositories
 			return await query.ToListAsync();
 		}
 
+		public async Task<List<Event>> GetAll()
+		{
+			return await _context.Event.ToListAsync();
+		}
+
 		public async Task<Event> GetByID(int id)
 		{
 			return await _context.Event.FindAsync(id);

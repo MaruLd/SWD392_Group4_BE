@@ -32,6 +32,12 @@ namespace Persistence.Repositories
 			}
 
 			return await query.OrderBy(e => e.CreatedDate).ToListAsync();
+		}		
+		
+		public async Task<List<Ticket>> GetAllFromEvent(int eventId)
+		{
+		
+			return await _context.Ticket.Where(t => t.EventId == eventId).OrderBy(e => e.CreatedDate).ToListAsync();
 		}
 
 

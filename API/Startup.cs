@@ -65,7 +65,7 @@ namespace API
 							.GetConnectionString("DefaultConnection"));
 				});
 
-			services.AddIdentity<User, IdentityRole<int>>()
+			services.AddIdentityCore<User>()
 				.AddEntityFrameworkStores<DataContext>()
 				.AddDefaultTokenProviders();
 

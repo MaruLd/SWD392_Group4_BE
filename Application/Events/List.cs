@@ -6,27 +6,34 @@ using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Persistence.Params;
+using Persistence.Repositories;
 
 namespace Application.Events
 {
-    public class List
-    {
-        
-        public class Query : IRequest<List<Event>>{}
+	public class List
+	{
 
-        public class Handler : IRequestHandler<Query, List<Event>>
-        {
-            private readonly DataContext _context;
+		public class Query : IRequest<List<Event>>
+		{
+			public EventParams eventParams { get; set; }
+		}
 
-            public Handler(DataContext context)
-            {
-                _context = context;
-            }
+		public class Handler : IRequestHandler<Query, List<Event>>
+		{
+			private readonly DataContext _context;
+			private readonly EventRepository _eventRepo;
 
-            public async Task<List<Event>> Handle(Query request, CancellationToken cancellationToken)
-            { 
-                return await _context.Event.OrderBy(d=>d.StartTime).ToListAsync();
-            }
-        }
-    }
+			public Handler(DataContext context, EventRepository eventRepository)
+			{
+				_context = context;
+				_eventRepo = eventRepository;
+			}
+
+			public async Task<List<Event>> Handle(Query request, CancellationToken cancellationToken)
+			{
+				return await _eventRepo.Get(request.eventParams);
+			}
+		}
+	}
 }

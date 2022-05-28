@@ -9,7 +9,7 @@ namespace Persistence.Params
 	public class EventParams
 	{
 		public String? Title { get; set; }
-		public string OrderBy { get; set; } = "Date";
+		public string? OrderBy { get; set; } = "Date";
 
 		public DateTime? StartTime { get; set; }
 		public DateTime? EndTime { get; set; }

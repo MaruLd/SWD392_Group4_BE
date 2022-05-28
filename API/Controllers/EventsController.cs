@@ -4,20 +4,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Events;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Persistence.Params;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
 {
+	[Authorize]
 	public class EventsController : BaseApiController
 	{
-
-
 		[HttpGet]
-		public async Task<ActionResult<List<Event>>> GetEvents()
+		public async Task<ActionResult<List<Event>>> GetEvents([FromQuery] EventParams eventParams)
 		{
-			return await Mediator.Send(new List.Query());
+			var e = await Mediator.Send(new List.Query() { eventParams = eventParams });
+			return Ok(e);
 		}
 
 		[HttpGet("{id}")]
