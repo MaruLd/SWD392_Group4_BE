@@ -17,31 +17,17 @@ namespace Persistence.Repositories
 			_context = context;
 		}
 
-		public async Task<List<Ticket>> Get(TicketParams param)
+		public IQueryable<Ticket> GetQuery()
 		{
-			var query = _context.Ticket.AsQueryable();
-
-			if (param.EventId != null)
-			{
-				query = query.Where(ticket => ticket.EventId == param.EventId);
-			}
-
-			if (param.OrderBy == "Date")
-			{
-				query = query.OrderBy(ticket => ticket.CreatedDate);
-			}
-
-			return await query.OrderBy(e => e.CreatedDate).ToListAsync();
-		}		
-		
-		public async Task<List<Ticket>> GetAllFromEvent(int eventId)
-		{
-		
-			return await _context.Ticket.Where(t => t.EventId == eventId).OrderBy(e => e.CreatedDate).ToListAsync();
+			return _context.Ticket.AsQueryable();
 		}
 
+		public async Task<List<Ticket>> GetAll()
+		{
+			return await _context.Ticket.ToListAsync();
+		}
 
-		public async Task<Ticket> GetByID(int id)
+		public async Task<Ticket> GetByID(Guid id)
 		{
 			return await _context.Ticket.FindAsync(id);
 		}

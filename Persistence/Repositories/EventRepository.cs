@@ -17,20 +17,9 @@ namespace Persistence.Repositories
 			_context = context;
 		}
 
-		public async Task<List<Event>> Get(EventParams eventParams)
+		public IQueryable<Event> GetQuery()
 		{
-			var query = _context.Event.AsQueryable();
-
-			if (eventParams.Title != null) query = query.Where(e => e.Title.Contains(eventParams.Title));
-			if (eventParams.StartTime != null) query = query.Where(e => e.StartTime > eventParams.StartTime);
-			if (eventParams.EndTime != null) query = query.Where(e => e.EndTime > eventParams.EndTime);
-
-			if (eventParams.OrderBy == "Date")
-			{
-				query = query.OrderBy(e => e.CreatedDate);
-			}
-
-			return await query.ToListAsync();
+			return _context.Event.AsQueryable();
 		}
 
 		public async Task<List<Event>> GetAll()
@@ -38,7 +27,7 @@ namespace Persistence.Repositories
 			return await _context.Event.ToListAsync();
 		}
 
-		public async Task<Event> GetByID(int id)
+		public async Task<Event> GetByID(Guid id)
 		{
 			return await _context.Event.FindAsync(id);
 		}

@@ -5,14 +5,15 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace API.Services
+namespace Application.Services
 {
 	public class TokenService
 	{
 		private readonly SymmetricSecurityKey _key;
-		
+
 		public TokenService(IConfiguration config)
 		{
 			var secret = config.GetValue<string>("Authentication:JWTSecretKey");

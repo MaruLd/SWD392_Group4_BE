@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Services;
+using Application.Tickets.DTOs;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -16,23 +18,23 @@ namespace Application.Tickets
 
 		public class Query : IRequest<List<Ticket>>
 		{
-			public TicketParams ticketParams { get; set; }
+			public ListTicketDTO dto { get; set; }
 		}
 
 		public class Handler : IRequestHandler<Query, List<Ticket>>
 		{
 			private readonly DataContext _context;
-			private readonly TicketRepository _ticketRepo;
+			private readonly TicketService _ticketService;
 
-			public Handler(DataContext context, TicketRepository ticketRepository)
+			public Handler(DataContext context, TicketService tickerService)
 			{
 				_context = context;
-				_ticketRepo = ticketRepository;
+				_ticketService = tickerService;
 			}
 
 			public async Task<List<Ticket>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				var tickets = await _ticketRepo.Get(request.ticketParams);
+				var tickets = await _ticketService.Get(request.dto);
 				if (tickets == null) throw new Exception("Ticket not found");
 				return tickets;
 			}

@@ -11,16 +11,16 @@ namespace Domain
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public int Id { get; set; }
+		public Guid Id { get; set; }
 		public String Status { get; set; }
 		public ParticipantType Type { get; set; }
 
+		public DateTime CreatedDate { get; set; } = DateTime.Now;
+		
 		public virtual Event? Event { get; set; }
-		public int? EventId { get; set; }
+		public Guid? EventId { get; set; }
 
 		public virtual User? User { get; set; }
-		public int? UserId { get; set; }
-
-		public DateTime CreatedDate { get; set; } = DateTime.Now;
+		public Guid? UserId { get; set; }
 	}
 }

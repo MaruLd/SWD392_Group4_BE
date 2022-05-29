@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Events.DTOs;
+using Application.Services;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,25 +16,25 @@ namespace Application.Events
 	public class List
 	{
 
-		public class Query : IRequest<List<Event>>
+		public class Query : IRequest<List<EventDTO1>>
 		{
-			public EventParams eventParams { get; set; }
+			public ListEventDTO dto { get; set; }
 		}
 
-		public class Handler : IRequestHandler<Query, List<Event>>
+		public class Handler : IRequestHandler<Query, List<EventDTO1>>
 		{
 			private readonly DataContext _context;
-			private readonly EventRepository _eventRepo;
+			private readonly EventService _eventService;
 
-			public Handler(DataContext context, EventRepository eventRepository)
+			public Handler(DataContext context, EventService eventService)
 			{
 				_context = context;
-				_eventRepo = eventRepository;
+				_eventService = eventService;
 			}
 
-			public async Task<List<Event>> Handle(Query request, CancellationToken cancellationToken)
+			public async Task<List<EventDTO1>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				return await _eventRepo.Get(request.eventParams);
+				return await _eventService.Get(request.dto);
 			}
 		}
 	}

@@ -18,49 +18,42 @@ namespace Persistence
                 {
                     Type = "Casual",
                     Cost = 0,
-                    EventId = 2,
                     Quantity = 50
                 },
                 new Ticket
                 {
                     Type = "Hardcore",
                     Cost = 0,
-                    EventId = 2,
                     Quantity = 10
                 },
                 new Ticket
                 {
                     Type = "Casual",
                     Cost = 0,
-                    EventId = 3,
                     Quantity = 50
                 },
                 new Ticket
                 {
                     Type = "Hardcore",
                     Cost = 0,
-                    EventId = 3,
                     Quantity = 10
                 },
                 new Ticket
                 {
                     Type = "Casual",
                     Cost = 0,
-                    EventId = 4,
                     Quantity = 50
                 },
                 new Ticket
                 {
                     Type = "Vip",
                     Cost = 0,
-                    EventId = 4,
                     Quantity = 10
                 },
                 new Ticket
                 {
                     Type = "Casual",
                     Cost = 0,
-                    EventId = 5,
                     Quantity = 50
                 },
                 
@@ -68,7 +61,6 @@ namespace Persistence
                 {
                     Type = "Casual",
                     Cost = 0,
-                    EventId = 6,
                     Quantity = 50
                 },
                 
@@ -76,11 +68,10 @@ namespace Persistence
                 {
                     Type = "Casual",
                     Cost = 0,
-                    EventId = 7,
                     Quantity = 50
                 },
-                
             };
+			
             await context.Ticket.AddRangeAsync(tickets);
             await context.SaveChangesAsync();
         }

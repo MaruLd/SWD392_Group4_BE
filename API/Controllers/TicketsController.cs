@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Tickets;
+using Application.Tickets.DTOs;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +15,11 @@ namespace API.Controllers
 	public class TicketsController : BaseApiController
 	{
 		[HttpGet]
-		public async Task<IActionResult> GetTickets([FromQuery] TicketParams ticketParams)
+		public async Task<ActionResult<List<Ticket>>> GetTickets([FromQuery] ListTicketDTO dto)
 		{
-			var Tickets = await Mediator.Send(new List.Query() { ticketParams = ticketParams });
+			var Tickets = await Mediator.Send(new List.Query() { dto = dto });
 			if (Tickets == null) return NotFound();
-			return Ok(ticketParams);
-			// return Tickets;
+			return Tickets;
 		}
 
 		[HttpGet("{id}")]
@@ -39,7 +39,7 @@ namespace API.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public async Task<ActionResult> EditTicket(int id, Ticket Ticket)
+		public async Task<ActionResult> EditTicket(Guid id, Ticket Ticket)
 		{
 			Ticket.Id = id;
 			return Ok(await Mediator.Send(new Edit.Command { Ticket = Ticket }));

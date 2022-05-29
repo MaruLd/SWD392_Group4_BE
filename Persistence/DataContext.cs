@@ -5,11 +5,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
-	public class DataContext : IdentityDbContext<User, IdentityRole<int>, int>
+	public class DataContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 	{
 		public DataContext(DbContextOptions options) :
 			base(options)
 		{
+
+		}
+
+		protected override void OnModelCreating(ModelBuilder builder)
+		{
+			base.OnModelCreating(builder);
+
+			builder.Entity<EventTicket>()
+			.HasKey(e => new { e.EventId, e.TicketId });
 		}
 
 		public DbSet<User> User { get; set; }

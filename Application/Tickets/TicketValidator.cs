@@ -9,7 +9,6 @@ namespace Application.Tickets
         {
             RuleFor(x => x.Type).NotEmpty();
             RuleFor(x => x.Cost).NotEmpty();
-            RuleFor(x => x.EventId).NotEmpty();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Domain
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public int Id { get; set; }
+		public Guid Id { get; set; }
 
 		public String? Name { get; set; }
 		public String? Description { get; set; }

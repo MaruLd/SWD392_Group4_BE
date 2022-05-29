@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Events;
+using Application.Events.DTOs;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,13 +14,12 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
 {
-	[Authorize]
 	public class EventsController : BaseApiController
 	{
 		[HttpGet]
-		public async Task<ActionResult<List<Event>>> GetEvents([FromQuery] EventParams eventParams)
+		public async Task<ActionResult<List<EventDTO1>>> GetEvents([FromQuery] ListEventDTO dto)
 		{
-			var e = await Mediator.Send(new List.Query() { eventParams = eventParams });
+			var e = await Mediator.Send(new List.Query() { dto = dto });
 			return Ok(e);
 		}
 
@@ -40,7 +40,7 @@ namespace API.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public async Task<ActionResult> EditEvent(int id, Event Event)
+		public async Task<ActionResult> EditEvent(Guid id, Event Event)
 		{
 			Event.Id = id;
 			return Ok(await Mediator.Send(new Edit.Command { Event = Event }));

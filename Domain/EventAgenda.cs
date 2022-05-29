@@ -18,10 +18,9 @@ namespace Domain
 
 		public DateTime StartTime { get; set; }
 		public DateTime EndTime { get; set; }
+		public DateTime CreatedDate { get; set; } = DateTime.Now;
 
 		public virtual Event? Event { get; set; }
-		public int? EventId { get; set; }
-
-		public DateTime CreatedDate { get; set; } = DateTime.Now;
+		public Guid? EventId { get; set; }
 	}
 }

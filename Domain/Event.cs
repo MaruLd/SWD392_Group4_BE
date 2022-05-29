@@ -11,7 +11,7 @@ public class Event
 {
 	[Key]
 	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-	public int Id { get; set; }
+	public Guid Id { get; set; }
 
 	public String? Title { get; set; }
 	public String? Description { get; set; }
@@ -21,17 +21,16 @@ public class Event
 
 	public float Multiplier_Factor { get; set; }
 
-	public virtual EventCategory? Category { get; set; }
+	public virtual EventCategory? EventCategory { get; set; }
 	public int? EventCategoryId { get; set; }
 
-	public virtual ICollection<Organizer> Organizers { get; set; } = new List<Organizer>();
-	public virtual ICollection<Participant> Participants { get; set; } = new List<Participant>();
-	public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
-	public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
-	public virtual ICollection<EventAgenda> EventAgenda { get; set; } = new List<EventAgenda>();
+	public virtual ICollection<Organizer> Organizers { get; set; }
+	public virtual ICollection<Participant> Participants { get; set; }
+	public virtual ICollection<EventTicket> EventTicket { get; set; }
+	public virtual ICollection<Post> Posts { get; set; }
+	public virtual ICollection<EventAgenda> EventAgenda { get; set; }
 
 	public String Status { get; set; }
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-		// public ICollection<EventTicket>? EventTickets { get; set; }
 }

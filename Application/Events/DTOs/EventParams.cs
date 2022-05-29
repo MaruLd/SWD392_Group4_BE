@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Persistence.Params
+namespace Application.Events.DTOs
 {
-	public class EventParams
+	public class ListEventDTO
 	{
 		public String? Title { get; set; }
 		public string? OrderBy { get; set; } = "Date";

@@ -23,7 +23,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using API.Services;
+using Application.Services;
 
 namespace API
 {
@@ -45,6 +45,8 @@ namespace API
 			services.AddScoped<TicketRepository>();
 			services.AddScoped<EventRepository>();
 
+			services.AddScoped<TicketService>();
+			services.AddScoped<EventService>();
 			services.AddScoped<TokenService>();
 
 			// Swagger

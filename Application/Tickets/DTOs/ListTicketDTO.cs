@@ -4,13 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Persistence.Params
+namespace Application.Tickets.DTOs
 {
-	public class TicketParams
+	public class ListTicketDTO
 	{
 		[Required]
-		[Range(1, int.MaxValue)]
-		public int EventId { get; set; }
+		public Guid EventId { get; set; }
 		public string? OrderBy { get; set; } = "Date";
 	}
 }
