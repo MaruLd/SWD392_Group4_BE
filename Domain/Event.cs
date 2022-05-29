@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Domain;
@@ -24,10 +25,15 @@ public class Event
 	public virtual EventCategory? EventCategory { get; set; }
 	public int? EventCategoryId { get; set; }
 
+	[JsonIgnore]
 	public virtual ICollection<Organizer> Organizers { get; set; }
+	[JsonIgnore]
 	public virtual ICollection<Participant> Participants { get; set; }
+	[JsonIgnore]
 	public virtual ICollection<EventTicket> EventTicket { get; set; }
+	[JsonIgnore]
 	public virtual ICollection<Post> Posts { get; set; }
+	[JsonIgnore]
 	public virtual ICollection<EventAgenda> EventAgenda { get; set; }
 
 	public String Status { get; set; }

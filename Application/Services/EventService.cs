@@ -21,6 +21,7 @@ namespace Application.Services
 		{
 			_eventRepository = eventRepository;
 			_mapper = mapper;
+
 		}
 
 		public async Task<List<EventDTO1>> Get(ListEventDTO dto)
@@ -36,8 +37,20 @@ namespace Application.Services
 				query = query.OrderBy(e => e.CreatedDate);
 			}
 
-			var list = await query.Include(e => e.EventTicket.Any(et => et.EventId == e.Id)).ToListAsync();
-			return _mapper.Map<List<EventDTO1>>(list);
+			var list = await query
+				.Include(e => e.EventTicket)
+				.ThenInclude(et => et.Ticket)
+				.ToListAsync();
+
+			var eventDtos = _mapper.Map<List<EventDTO1>>(list);
+			// foreach (var e in eventDtos)
+			// {
+			// 	var tickets = await _ticketService.GetAllFromEvent(e.Id);
+			// 	e.Tickets = tickets;
+			// }
+
+			// return list;
+			return eventDtos;
 		}
 
 		public async Task<Event> GetByID(Guid id) => await _eventRepository.GetByID(id);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Domain;
@@ -25,6 +26,7 @@ public class Post
 	public String Status { get; set; }
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 
+	[JsonIgnore]
 	public virtual ICollection<Comment> Comments { get; set; }
 
 }

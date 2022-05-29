@@ -8,7 +8,6 @@ public class User : IdentityUser<Guid>
 {
 	public string DisplayName { get; set; }
 	
-	
 	public int InventoryId { get; set; }
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 }
