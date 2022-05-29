@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using AutoMapper;
 using Domain;
 using FluentValidation;
@@ -12,7 +13,7 @@ namespace Application.Tickets
 {
     public class Edit
     {
-        public class Command : IRequest
+        public class Command : IRequest<Result<Unit>>
         {
             public Ticket Ticket { get; set; }
             
@@ -28,7 +29,7 @@ namespace Application.Tickets
 
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
@@ -39,15 +40,15 @@ namespace Application.Tickets
                 _mapper = mapper;
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var Ticket = await _context.Ticket.FindAsync(request.Ticket.Id);
 
                 _mapper.Map(request.Ticket, Ticket);
 
-                await _context.SaveChangesAsync();
-                
-                return Unit.Value;
+                var result = await _context.SaveChangesAsync()>0;
+                if(!result) return Result<Unit>.Failure("Failed to update ticket");
+                return Result<Unit>.Success(Unit.Value);;
             }
         }
     }

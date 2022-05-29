@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Services;
 using Application.Tickets.DTOs;
 using Domain;
@@ -16,12 +17,12 @@ namespace Application.Tickets
 	public class List
 	{
 
-		public class Query : IRequest<List<Ticket>>
+		public class Query : IRequest<Result<List<Ticket>>>
 		{
 			public ListTicketDTO dto { get; set; }
 		}
 
-		public class Handler : IRequestHandler<Query, List<Ticket>>
+		public class Handler : IRequestHandler<Query, Result<List<Ticket>>>
 		{
 			private readonly DataContext _context;
 			private readonly TicketService _ticketService;
@@ -32,11 +33,9 @@ namespace Application.Tickets
 				_ticketService = tickerService;
 			}
 
-			public async Task<List<Ticket>> Handle(Query request, CancellationToken cancellationToken)
+			public async Task<Result<List<Ticket>>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				var tickets = await _ticketService.Get(request.dto);
-				if (tickets == null) throw new Exception("Ticket not found");
-				return tickets;
+				return Result<List<Ticket>>.Success(await _ticketService.Get(request.dto));
 			}
 		}
 	}

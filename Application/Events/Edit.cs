@@ -47,7 +47,7 @@ namespace Application.Events
                 _mapper.Map(request.Event, Event);
 
                 var result = await _context.SaveChangesAsync()>0;
-                if(!result) return Result<Unit>.Failure("Failed to edit event");
+                if(!result) return Result<Unit>.Failure("Failed to update event");
 
                 return Result<Unit>.Success(Unit.Value);
             }

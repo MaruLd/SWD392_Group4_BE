@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Domain;
 using MediatR;
 using Persistence;
@@ -10,11 +11,11 @@ namespace Application.Tickets
 {
     public class Details 
     {
-        public class Query : IRequest<Ticket>{
+        public class Query : IRequest<Result<Ticket>>{
             public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Ticket>
+        public class Handler : IRequestHandler<Query, Result<Ticket>>
         {
             private readonly DataContext _context;
 
@@ -23,13 +24,9 @@ namespace Application.Tickets
                 _context = context;
             }
 
-            public async Task<Ticket> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<Ticket>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var ticket = await _context.Ticket.FindAsync(request.Id);
-
-                if (ticket == null) throw new Exception("Ticket not found");
-
-                return ticket;
+                return Result<Ticket>.Success(await _context.Ticket.FindAsync(request.Id));
             }
         }
     }
