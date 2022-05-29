@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Events;
 using AutoMapper;
 using Domain;
@@ -13,7 +14,7 @@ namespace Application.Events
 {
     public class Edit
     {
-        public class Command : IRequest
+        public class Command : IRequest<Result<Unit>>
         {
             public Event Event { get; set; }
         }
@@ -26,7 +27,7 @@ namespace Application.Events
             }
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
 
@@ -38,16 +39,17 @@ namespace Application.Events
                 _mapper = mapper;
             }
 
-            public async Task<Unit>
+            public async Task<Result<Unit>>
             Handle(Command request, CancellationToken cancellationToken)
             {
                 var Event = await _context.Event.FindAsync(request.Event.Id);
 
                 _mapper.Map(request.Event, Event);
 
-                await _context.SaveChangesAsync();
+                var result = await _context.SaveChangesAsync()>0;
+                if(!result) return Result<Unit>.Failure("Failed to edit event");
 
-                return Unit.Value;
+                return Result<Unit>.Success(Unit.Value);
             }
         }
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Events.DTOs;
 using Application.Services;
 using Domain;
@@ -16,12 +17,12 @@ namespace Application.Events
 	public class List
 	{
 
-		public class Query : IRequest<List<EventDTO1>>
+		public class Query : IRequest<Result<List<EventDTO1>>>
 		{
 			public ListEventDTO dto { get; set; }
 		}
 
-		public class Handler : IRequestHandler<Query, List<EventDTO1>>
+		public class Handler : IRequestHandler<Query, Result<List<EventDTO1>>>
 		{
 			private readonly DataContext _context;
 			private readonly EventService _eventService;
@@ -32,9 +33,9 @@ namespace Application.Events
 				_eventService = eventService;
 			}
 
-			public async Task<List<EventDTO1>> Handle(Query request, CancellationToken cancellationToken)
+			public async Task<Result<List<EventDTO1>>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				return await _eventService.Get(request.dto);
+				return Result<List<EventDTO1>>.Success(await _eventService.Get(request.dto));
 			}
 		}
 	}

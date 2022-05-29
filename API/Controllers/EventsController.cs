@@ -19,35 +19,30 @@ namespace API.Controllers
 		[HttpGet]
 		public async Task<ActionResult<List<EventDTO1>>> GetEvents([FromQuery] ListEventDTO dto)
 		{
-			var e = await Mediator.Send(new List.Query() { dto = dto });
-			return Ok(e);
+			return HandleResult(await Mediator.Send(new List.Query() { dto = dto }));
 		}
 
 		[HttpGet("{id}")]
-		public async Task<ActionResult<Event>> GetEvent(int id)
+		public async Task<IActionResult> GetEvent(Guid id)
 		{
-			var activity = await Mediator.Send(new Details.Query { Id = id });
-
-			if (activity == null) return NotFound();
-
-			return activity;
+			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 
 		[HttpPost]
 		public async Task<ActionResult> CreateEvent(Event Event)
 		{
-			return Ok(await Mediator.Send(new Create.Command { Event = Event }));
+			return HandleResult(await Mediator.Send(new Create.Command { Event = Event }));
 		}
 
 		[HttpPut("{id}")]
 		public async Task<ActionResult> EditEvent(Guid id, Event Event)
 		{
 			Event.Id = id;
-			return Ok(await Mediator.Send(new Edit.Command { Event = Event }));
+			return HandleResult(await Mediator.Send(new Edit.Command { Event = Event }));
 		}
 
 		[HttpDelete("{id}")]
-		public async Task<ActionResult> DeleteEvent(int id)
+		public async Task<ActionResult> DeleteEvent(Guid id)
 		{
 			return Ok(await Mediator.Send(new Delete.Command { Id = id }));
 		}

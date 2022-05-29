@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Domain;
 using MediatR;
 using Persistence;
@@ -10,11 +11,11 @@ namespace Application.Events
 {
     public class Details 
     {
-        public class Query : IRequest<Event>{
-            public int Id { get; set; }
+        public class Query : IRequest<Result<Event>>{
+            public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Event>
+        public class Handler : IRequestHandler<Query, Result<Event>>
         {
             private readonly DataContext _context;
 
@@ -23,13 +24,11 @@ namespace Application.Events
                 _context = context;
             }
 
-            public async Task<Event> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<Event>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var Event = await _context.Event.FindAsync(request.Id);
 
-                if (Event == null) throw new Exception("Event not found");
-
-                return Event;
+                return Result<Event>.Success(Event);
             }
         }
     }

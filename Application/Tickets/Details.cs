@@ -11,7 +11,7 @@ namespace Application.Tickets
     public class Details 
     {
         public class Query : IRequest<Ticket>{
-            public int Id { get; set; }
+            public Guid Id { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Ticket>
