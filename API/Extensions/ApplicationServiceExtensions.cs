@@ -1,28 +1,42 @@
 using Application.Core;
 using Application.Events;
 using Application.Interfaces;
-using Application.Services;
 using Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Persistence;
 using Persistence.Repositories;
 using Application.Services;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Domain;
+using Persistence;
 
 namespace API.Extensions
 {
-    public static class ApplicationServiceExtensions
-    {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config){
-            services.AddScoped<TicketRepository>();
+	public static class ApplicationServiceExtensions
+	{
+		public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
+		{
 			services.AddScoped<EventRepository>();
+			services.AddScoped<EventTicket>();
+			services.AddScoped<EventAgenda>();
+			services.AddScoped<EventUserRepository>();
+			services.AddScoped<EventCategory>();
+			services.AddScoped<UserRepository>();
+			services.AddScoped<TicketRepository>();
+			services.AddScoped<PostRepository>();
+			services.AddScoped<CommentRepository>();
+			// services.AddScoped<EventRepository>();
 
 			services.AddScoped<TicketService>();
 			services.AddScoped<EventService>();
+			services.AddScoped<UserService>();
 			services.AddScoped<TokenService>();
 
 			services.AddScoped<FirebaseService>();
+
+			services.AddScoped<UserAccessor>();
+			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 			// Swagger
 			services
@@ -42,7 +56,7 @@ namespace API.Extensions
 							.GetConnectionString("DefaultConnection"));
 				});
 
-			
+
 
 
 			services.AddMediatR(typeof(List.Handler).Assembly);
@@ -61,7 +75,7 @@ namespace API.Extensions
 								.WithOrigins("http://localhost:3000");
 						});
 				});
-                return services;
-        }
-    }
+			return services;
+		}
+	}
 }

@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.Events.DTOs;
 using Application.Interfaces;
+using Application.Services;
 using AutoMapper;
 using Domain;
 using FluentValidation;
@@ -13,58 +16,64 @@ using Persistence;
 
 namespace Application.Events
 {
-  public class Create
-  {
-    public class Command : IRequest<Result<Unit>> //Command do not return anything, but can return success or failure, return Unit also meant for nothing
-    {
-      public Event Event { get; set; }
+	public class Create
+	{
+		public class Command : IRequest<Result<Unit>> //Command do not return anything, but can return success or failure, return Unit also meant for nothing
+		{
+			public CreateEventDTO Event { get; set; }
+			public ClaimsPrincipal user { get; set; }
 
-    }
+		}
 
-    public class CommandValidator : AbstractValidator<Command>
-    {
-      public CommandValidator()
-      {
-        RuleFor(x => x.Event).SetValidator(new EventValidator());
-      }
+		// public class CommandValidator : AbstractValidator<Command>
+		// {
+		// 	public CommandValidator()
+		// 	{
+		// 		RuleFor(x => x.Event).SetValidator(new EventValidator());
+		// 	}
 
-    }
+		// }
 
-    public class Handler : IRequestHandler<Command, Result<Unit>>
-    {
-      private readonly DataContext _context;
-      private readonly IMapper _mapper;
-      private readonly IUserAccessor _userAccessor;
+		public class Handler : IRequestHandler<Command, Result<Unit>>
+		{
+			private readonly IMapper _mapper;
+			private readonly EventService _eventService;
+			private readonly UserService _userService;
 
-      public Handler(DataContext context, IMapper mapper, IUserAccessor userAccessor)
-      {
-        _userAccessor = userAccessor;
-        _context = context;
-        _mapper = mapper;
-      }
+			private readonly IUserAccessor _userAccessor;
 
-      public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
-      {
-				var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
+			public Handler(EventService eventService, UserService userService, IMapper mapper, IUserAccessor userAccessor)
+			{
+				_eventService = eventService;
+				_userService = userService;
+				_userAccessor = userAccessor;
+				_mapper = mapper;
+			}
 
-				var eventUser = new EventUser{
-          Status = "Not Attended",
-					User = user,
-					Event = request.Event,
-					Type = EventUserType.Admin
-				};
+			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+			{
+				// var user = await _userService.Get(_userAccessor.GetEmail());
 
-        request.Event.EventUser.Add(eventUser);
+				// 		var eventUser = new EventUser{
+				//   Status = "Not Attended",
+				// 			User = user,
+				// 			Event = request.Event,
+				// 			Type = EventUserType.Admin
+				// 		};
 
-        Event e = _mapper.Map<Event>(request.Event);
-        _context.Event.Add(e);
+				// request.Event.EventUser.Add(eventUser);
 
-        var result = await _context.SaveChangesAsync() > 0; //if nothing written to the DB then this will return 0
+				// Event e = _mapper.Map<Event>(request.Event);
+				// _context.Event.Add(e);
 
-        if (!result) return Result<Unit>.Failure("Failed to create event");
+				// var result = await _context.SaveChangesAsync() > 0; //if nothing written to the DB then this will return 0
+				var user = await _userService.Get(request.user.FindFirstValue(ClaimTypes.Email));
+				var result = await _eventService.CreateEvent(request.Event, user.Id);
 
-        return Result<Unit>.Success(Unit.Value); //Unit.Value is nothing
-      }
-    }
-  }
+				if (!result) return Result<Unit>.Failure("Failed to create event");
+
+				return Result<Unit>.Success(Unit.Value); //Unit.Value is nothing
+			}
+		}
+	}
 }

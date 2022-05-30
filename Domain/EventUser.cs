@@ -12,15 +12,17 @@ namespace Domain
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public Guid Id { get; set; }
-		public String Status { get; set; }
+
+		public EventUserStatus Status { get; set; }
 		public EventUserType Type { get; set; }
 
-		public DateTime CreatedDate { get; set; } = DateTime.Now;
-		
 		public virtual Event? Event { get; set; }
 		public Guid? EventId { get; set; }
 
 		public virtual User? User { get; set; }
 		public Guid? UserId { get; set; }
+
+		
+		public DateTime CreatedDate { get; set; } = DateTime.Now;
 	}
 }
