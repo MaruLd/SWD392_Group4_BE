@@ -1,7 +1,7 @@
 using Application.Core;
 using Application.Events;
 using Application.Interfaces;
-using API.Services;
+using Application.Services;
 using Infrastructure;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

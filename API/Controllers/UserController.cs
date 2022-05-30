@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using API.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Domain;
-using API.Services;
+using Application.Services;
 
 namespace API.Controllers
 {
