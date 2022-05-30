@@ -17,6 +17,9 @@ namespace Application.Core
 				.ForMember(dst => dst.Tickets, opt => opt.MapFrom(et => et.EventTicket.Select(t => t.Ticket).ToList()));
 
 			CreateMap<CreateEventDTO, Event>();
+			CreateMap<EditEventDTO, Event>();
+
+
 			CreateMap<Ticket, Ticket>();
 		}
 

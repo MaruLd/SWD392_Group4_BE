@@ -21,7 +21,6 @@ namespace Application.Events
 		public class Command : IRequest<Result<Unit>> //Command do not return anything, but can return success or failure, return Unit also meant for nothing
 		{
 			public CreateEventDTO Event { get; set; }
-			public ClaimsPrincipal user { get; set; }
 
 		}
 
@@ -67,11 +66,10 @@ namespace Application.Events
 				// _context.Event.Add(e);
 
 				// var result = await _context.SaveChangesAsync() > 0; //if nothing written to the DB then this will return 0
-				var user = await _userService.Get(request.user.FindFirstValue(ClaimTypes.Email));
+				var user = await _userService.Get(_userAccessor.GetEmail());
 				var result = await _eventService.CreateEvent(request.Event, user.Id);
 
 				if (!result) return Result<Unit>.Failure("Failed to create event");
-
 				return Result<Unit>.Success(Unit.Value); //Unit.Value is nothing
 			}
 		}
