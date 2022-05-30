@@ -31,7 +31,8 @@ namespace API.Controllers
       _userManager = userManager;
       _signInManager = signInManager;
       _httpClient = new HttpClient{
-        BaseAddress = new System.Uri("")
+        BaseAddress = new System.Uri(""),
+      
       };
     }
 

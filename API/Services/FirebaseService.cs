@@ -7,7 +7,7 @@ using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Configuration;
 
-namespace Application.Services
+namespace API.Services
 {
 	public class FirebaseService
 	{
