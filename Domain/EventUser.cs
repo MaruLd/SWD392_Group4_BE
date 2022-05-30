@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-	public class Participant
+	public class EventUser
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public Guid Id { get; set; }
 		public String Status { get; set; }
-		public ParticipantType Type { get; set; }
+		public EventUserType Type { get; set; }
 
-		[ForeignKey("Event")]
+		public DateTime CreatedDate { get; set; } = DateTime.Now;
+		
 		public virtual Event? Event { get; set; }
-		public String? EventId { get; set; }
+		public Guid? EventId { get; set; }
 
-		[ForeignKey("User")]
 		public virtual User? User { get; set; }
-		public String? UserId { get; set; }
+		public Guid? UserId { get; set; }
 	}
 }

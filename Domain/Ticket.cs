@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Domain
@@ -13,13 +14,17 @@ namespace Domain
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public Guid Id { get; set; }
 
+		public String Name { get; set; }
+		public String Description { get; set; }
 		public String Type { get; set; }
 		public int Cost { get; set; }
+		public int Quantity { get; set; }
 
-		[ForeignKey("Event")]
-		public virtual Event? Event { get; set; }
-		public String? EventId { get; set; }
+		public DateTime CreatedDate { get; set; } = DateTime.Now;
 
+		[JsonIgnore]
 		public virtual ICollection<User> Users { get; set; }
+		[JsonIgnore]
+		public virtual ICollection<EventTicket> EventTicket { get; set; }
 	}
 }

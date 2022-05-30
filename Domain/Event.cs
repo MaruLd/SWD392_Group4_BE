@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Domain;
@@ -19,15 +20,23 @@ public class Event
 	public DateTime StartTime { get; set; }
 	public DateTime EndTime { get; set; }
 
-	public float Mutliplier_Factor { get; set; }
+	public float Multiplier_Factor { get; set; }
 
-	[ForeignKey("Category")]
-	public virtual Category? Category { get; set; }
-	public String? CategoryId { get; set; }
+	public virtual EventCategory? EventCategory { get; set; }
+	public int? EventCategoryId { get; set; }
 
+	[JsonIgnore]
 	public virtual ICollection<Organizer> Organizers { get; set; }
-	public virtual ICollection<Participant> Participants { get; set; }
-	public virtual ICollection<Ticket> Tickets { get; set; }
+	[JsonIgnore]
+	public virtual ICollection<EventUser> EventUser { get; set; }
+	[JsonIgnore]
+	public virtual ICollection<EventTicket> EventTicket { get; set; }
+	[JsonIgnore]
 	public virtual ICollection<Post> Posts { get; set; }
+	[JsonIgnore]
 	public virtual ICollection<EventAgenda> EventAgenda { get; set; }
+
+	public String Status { get; set; }
+	public DateTime CreatedDate { get; set; } = DateTime.Now;
+
 }

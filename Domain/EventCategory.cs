@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-	public class Category
+	public class EventCategory
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
