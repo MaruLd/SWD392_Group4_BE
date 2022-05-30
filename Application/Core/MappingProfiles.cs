@@ -13,7 +13,7 @@ namespace Application.Core
 		public MappingProfiles()
 		{
 			CreateMap<Event, Event>();
-			CreateMap<Event, EventDTO1>()
+			CreateMap<Event, EventDTO>()
 				.ForMember(dst => dst.Tickets, opt => opt.MapFrom(et => et.EventTicket.Select(t => t.Ticket).ToList()));
 
 			CreateMap<Ticket, Ticket>();

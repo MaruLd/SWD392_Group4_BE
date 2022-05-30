@@ -24,7 +24,7 @@ namespace Application.Services
 
 		}
 
-		public async Task<List<EventDTO1>> Get(ListEventDTO dto)
+		public async Task<List<EventDTO>> Get(ListEventDTO dto)
 		{
 			var query = _eventRepository.GetQuery();
 
@@ -42,7 +42,7 @@ namespace Application.Services
 				.ThenInclude(et => et.Ticket)
 				.ToListAsync();
 
-			var eventDtos = _mapper.Map<List<EventDTO1>>(list);
+			var eventDtos = _mapper.Map<List<EventDTO>>(list);
 			// foreach (var e in eventDtos)
 			// {
 			// 	var tickets = await _ticketService.GetAllFromEvent(e.Id);

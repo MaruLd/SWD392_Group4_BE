@@ -17,12 +17,12 @@ namespace Application.Events
 	public class List
 	{
 
-		public class Query : IRequest<Result<List<EventDTO1>>>
+		public class Query : IRequest<Result<List<EventDTO>>>
 		{
 			public ListEventDTO dto { get; set; }
 		}
 
-		public class Handler : IRequestHandler<Query, Result<List<EventDTO1>>>
+		public class Handler : IRequestHandler<Query, Result<List<EventDTO>>>
 		{
 			private readonly DataContext _context;
 			private readonly EventService _eventService;
@@ -33,9 +33,9 @@ namespace Application.Events
 				_eventService = eventService;
 			}
 
-			public async Task<Result<List<EventDTO1>>> Handle(Query request, CancellationToken cancellationToken)
+			public async Task<Result<List<EventDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				return Result<List<EventDTO1>>.Success(await _eventService.Get(request.dto));
+				return Result<List<EventDTO>>.Success(await _eventService.Get(request.dto));
 			}
 		}
 	}

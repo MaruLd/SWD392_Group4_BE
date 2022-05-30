@@ -17,7 +17,7 @@ namespace API.Controllers
 	public class EventsController : BaseApiController
 	{
 		[HttpGet]
-		public async Task<ActionResult<List<EventDTO1>>> GetEvents([FromQuery] ListEventDTO dto)
+		public async Task<ActionResult<List<EventDTO>>> GetEvents([FromQuery] ListEventDTO dto)
 		{
 			return HandleResult(await Mediator.Send(new List.Query() { dto = dto }));
 		}

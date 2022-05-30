@@ -6,7 +6,7 @@ using Domain;
 
 namespace Application.Events.DTOs
 {
-	public class EventDTO1
+	public class EventDTO
 	{
 		public Guid Id { get; set; }
 
