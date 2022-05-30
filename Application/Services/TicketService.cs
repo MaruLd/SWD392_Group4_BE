@@ -9,7 +9,7 @@ using Persistence;
 using Persistence.Params;
 using Persistence.Repositories;
 
-namespace API.Services
+namespace Application.Services
 {
 	public class TicketService
 	{

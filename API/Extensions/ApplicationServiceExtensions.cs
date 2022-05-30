@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.Repositories;
+using Application.Services;
 
 namespace API.Extensions
 {
@@ -20,6 +21,8 @@ namespace API.Extensions
 			services.AddScoped<TicketService>();
 			services.AddScoped<EventService>();
 			services.AddScoped<TokenService>();
+
+			services.AddScoped<FirebaseService>();
 
 			// Swagger
 			services
