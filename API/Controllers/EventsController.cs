@@ -2,51 +2,49 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.Activities;
+using Application.Events;
+using Application.Events.DTOs;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Persistence.Params;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
 {
-    public class EventsController : BaseApiController
-    {
+	public class EventsController : BaseApiController
+	{
+		[HttpGet]
+		public async Task<ActionResult<List<EventDTO>>> GetEvents([FromQuery] ListEventDTO dto)
+		{
+			return HandleResult(await Mediator.Send(new List.Query() { dto = dto }));
+		}
 
-        
-        [HttpGet]
-        public async Task<ActionResult<List<Event>>> GetEvents()
-        {
-            return await Mediator.Send(new List.Query());
-        }
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetEvent(Guid id)
+		{
+			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
+		}
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Event>> GetEvent(Guid id)
-        {
-            var activity = await Mediator.Send(new Details.Query{Id = id});
+		[HttpPost]
+		public async Task<ActionResult> CreateEvent(Event Event)
+		{
+			return HandleResult(await Mediator.Send(new Create.Command { Event = Event }));
+		}
 
-            if (activity==null) return NotFound();
+		[HttpPut("{id}")]
+		public async Task<ActionResult> EditEvent(Guid id, Event Event)
+		{
+			Event.Id = id;
+			return HandleResult(await Mediator.Send(new Edit.Command { Event = Event }));
+		}
 
-            return activity;
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> CreateEvent(Event activity)
-        {
-            return Ok(await Mediator.Send(new Create.Command {Activity = activity}));
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult> EditEvent(Guid id, Event activity)
-        {
-            activity.Id = id;
-            return Ok(await Mediator.Send(new Edit.Command {Activity = activity}));
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteEvent(Guid id)
-        {
-            return Ok(await Mediator.Send(new Delete.Command {Id = id}));
-        }
-    }
+		[HttpDelete("{id}")]
+		public async Task<ActionResult> DeleteEvent(Guid id)
+		{
+			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
+		}
+	}
 }

@@ -2,31 +2,41 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
+using Application.Events.DTOs;
+using Application.Services;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Persistence.Params;
+using Persistence.Repositories;
 
-namespace Application.Activities
+namespace Application.Events
 {
-    public class List
-    {
-        
-        public class Query : IRequest<List<Activity>>{}
+	public class List
+	{
 
-        public class Handler : IRequestHandler<Query, List<Activity>>
-        {
-            private readonly DataContext _context;
+		public class Query : IRequest<Result<List<EventDTO>>>
+		{
+			public ListEventDTO dto { get; set; }
+		}
 
-            public Handler(DataContext context)
-            {
-                _context = context;
-            }
+		public class Handler : IRequestHandler<Query, Result<List<EventDTO>>>
+		{
+			private readonly DataContext _context;
+			private readonly EventService _eventService;
 
-            public async Task<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
-            { 
-                return await _context.Activities.OrderBy(d=>d.Date).ToListAsync();
-            }
-        }
-    }
+			public Handler(DataContext context, EventService eventService)
+			{
+				_context = context;
+				_eventService = eventService;
+			}
+
+			public async Task<Result<List<EventDTO>>> Handle(Query request, CancellationToken cancellationToken)
+			{
+				return Result<List<EventDTO>>.Success(await _eventService.Get(request.dto));
+			}
+		}
+	}
 }

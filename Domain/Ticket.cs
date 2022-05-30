@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Domain
@@ -11,14 +12,19 @@ namespace Domain
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-		public int Id { get; set; }
+		public Guid Id { get; set; }
 
+		public String Name { get; set; }
+		public String Description { get; set; }
 		public String Type { get; set; }
 		public int Cost { get; set; }
+		public int Quantity { get; set; }
 
-		public virtual Event? Event { get; set; }
-		public int? EventId { get; set; }
+		public DateTime CreatedDate { get; set; } = DateTime.Now;
 
+		[JsonIgnore]
 		public virtual ICollection<User> Users { get; set; }
+		[JsonIgnore]
+		public virtual ICollection<EventTicket> EventTicket { get; set; }
 	}
 }
