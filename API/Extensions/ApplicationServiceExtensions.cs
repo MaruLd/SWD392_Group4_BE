@@ -1,14 +1,10 @@
-using System.Collections.Generic;
-using System.Text;
 using Application.Core;
 using Application.Events;
-using Application.Services;
-using Domain;
+using Application.Interfaces;
+using API.Services;
+using Infrastructure;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.Repositories;
@@ -43,25 +39,12 @@ namespace API.Extensions
 							.GetConnectionString("DefaultConnection"));
 				});
 
-			services.AddIdentityCore<User>()
-				.AddEntityFrameworkStores<DataContext>()
-				.AddDefaultTokenProviders();
-
-			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-				.AddJwtBearer(options =>
-				{
-					options.TokenValidationParameters = new TokenValidationParameters
-					{
-						ValidateIssuerSigningKey = true,
-						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetValue<string>("Authentication:JWTSecretKey"))),
-						ValidateIssuer = false,
-						ValidateAudience = false,
-					};
-				});
+			
 
 
 			services.AddMediatR(typeof(List.Handler).Assembly);
 			services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+			services.AddScoped<IUserAccessor, UserAccessor>();
 			services
 				.AddCors(opt =>
 				{

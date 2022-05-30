@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-	public class Participant
+	public class EventUser
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public Guid Id { get; set; }
 		public String Status { get; set; }
-		public ParticipantType Type { get; set; }
+		public EventUserType Type { get; set; }
 
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 		

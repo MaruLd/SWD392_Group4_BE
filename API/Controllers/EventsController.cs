@@ -22,6 +22,7 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new List.Query() { dto = dto }));
 		}
 
+		[Authorize]
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetEvent(Guid id)
 		{

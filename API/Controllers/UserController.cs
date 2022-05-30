@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using API.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Domain;
-using Application.Services;
+using API.Services;
 
 namespace API.Controllers
 {
@@ -20,36 +20,44 @@ namespace API.Controllers
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly TokenService _tokenService;
-    public UserController(UserManager<User> userManager, SignInManager<User> signInManager, TokenService tokenService)
+    private readonly IConfiguration _config;
+    private readonly HttpClient _httpClient;
+    public UserController(UserManager<User> userManager,
+      SignInManager<User> signInManager, TokenService tokenService,
+    IConfiguration config)
     {
+      _config = config;
       _tokenService = tokenService;
       _userManager = userManager;
       _signInManager = signInManager;
+      _httpClient = new HttpClient{
+        BaseAddress = new System.Uri("")
+      };
     }
 
-    [HttpPost("login")]
-    public async Task<ActionResult<UserDTO>> Login(LoginDTO LoginDTO)
+  [HttpPost("login")]
+  public async Task<ActionResult<UserDTO>> Login(LoginDTO LoginDTO)
+  {
+
+    var user = await _userManager.FindByEmailAsync(LoginDTO.Email);
+
+    if (user == null) return Unauthorized();
+
+    var result = await _signInManager.CheckPasswordSignInAsync(user, LoginDTO.Password, false);
+
+    if (result.Succeeded)
     {
-
-      var user = await _userManager.FindByEmailAsync(LoginDTO.Email);
-
-      if (user == null) return Unauthorized();
-
-      var result = await _signInManager.CheckPasswordSignInAsync(user, LoginDTO.Password, false);
-
-      if (result.Succeeded)
+      return new UserDTO
       {
-        return new UserDTO
-        {
-          DisplayName = user.DisplayName,
+        DisplayName = user.DisplayName,
         //   Token = _tokenService.CreateToken(LoginDTO.Email),
-          Token = "Replace this with CreateToken",
-          Username = user.UserName
-        };
-      }
-      return Unauthorized();
-
+        Token = "Replace this with CreateToken",
+        Username = user.UserName
+      };
     }
+    return Unauthorized();
 
   }
+
+}
 }

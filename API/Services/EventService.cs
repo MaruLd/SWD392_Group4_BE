@@ -10,7 +10,7 @@ using Persistence;
 using Persistence.Params;
 using Persistence.Repositories;
 
-namespace Application.Services
+namespace API.Services
 {
 	public class EventService
 	{
