@@ -66,7 +66,7 @@ namespace Application.Events
 				// _context.Event.Add(e);
 
 				// var result = await _context.SaveChangesAsync() > 0; //if nothing written to the DB then this will return 0
-				var user = await _userService.Get(_userAccessor.GetEmail());
+				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
 				var result = await _eventService.CreateEvent(request.Event, user.Id);
 
 				if (!result) return Result<Unit>.Failure("Failed to create event");

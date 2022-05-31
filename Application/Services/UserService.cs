@@ -26,7 +26,7 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<User> Get(string email)
+		public async Task<User> GetByEmail(string email)
 		{
 			return await _userRepository.GetQuery().FirstOrDefaultAsync(u => u.Email.ToLower() == email);
 		}

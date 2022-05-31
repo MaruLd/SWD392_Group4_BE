@@ -54,13 +54,12 @@ namespace Application.Events
 				var eventInDb = await _eventService.GetByID(request.eventId);
 				if (eventInDb == null) return Result<Unit>.Failure("Event not found!");
 
-				var user = await _userService.Get(_userAccessor.GetEmail());
+				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
 				var eventUser = await _eventUserService.GetByID(eventInDb.Id, user.Id);
 
-				if (eventUser == null) return Result<Unit>.Failure("Failed to update event");
+				if (eventUser == null) return Result<Unit>.Failure("You aren't in the event!");
 
 				var allowedRole = new List<EventUserType> { EventUserType.Admin, EventUserType.Manager };
-
 				if (!allowedRole.Contains(eventUser.Type))
 				{
 					return Result<Unit>.Failure("You have no permission!");
