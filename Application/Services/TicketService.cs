@@ -9,7 +9,7 @@ using Persistence;
 using Persistence.Params;
 using Persistence.Repositories;
 
-namespace API.Services
+namespace Application.Services
 {
 	public class TicketService
 	{
@@ -44,7 +44,7 @@ namespace API.Services
 		}
 
 		public async Task<Ticket> GetByID(Guid id) => await _ticketRepository.GetByID(id);
-		public async Task<bool> Insert(Ticket e) => await _ticketRepository.Insert(e);
-		public async Task<bool> Update(Ticket e) => await _ticketRepository.Update(e);
+		public async Task<bool> Insert(Ticket e) { _ticketRepository.Insert(e); return await _ticketRepository.Save(); }
+		public async Task<bool> Update(Ticket e) { _ticketRepository.Update(e); return await _ticketRepository.Save(); }
 	}
 }

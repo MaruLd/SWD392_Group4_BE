@@ -10,18 +10,24 @@ using Persistence;
 using Persistence.Params;
 using Persistence.Repositories;
 
-namespace API.Services
+namespace Application.Services
 {
 	public class EventService
 	{
+		// private EventRepository _eventRepository;
 		private EventRepository _eventRepository;
+		private EventUserRepository _eventUserRepository;
+
 		private IMapper _mapper;
 
-		public EventService(EventRepository eventRepository, DataContext context, IMapper mapper)
+		public EventService(
+			EventRepository eventRepository,
+			EventUserRepository eventUserRepository,
+			IMapper mapper)
 		{
 			_eventRepository = eventRepository;
+			_eventUserRepository = eventUserRepository;
 			_mapper = mapper;
-
 		}
 
 		public async Task<List<EventDTO>> Get(ListEventDTO dto)
@@ -54,7 +60,31 @@ namespace API.Services
 		}
 
 		public async Task<Event> GetByID(Guid id) => await _eventRepository.GetByID(id);
-		public async Task<bool> Insert(Event e) => await _eventRepository.Insert(e);
-		public async Task<bool> Update(Event e) => await _eventRepository.Update(e);
+
+		public async Task<bool> CreateEvent(CreateEventDTO e, Guid userId)
+		{
+			var eventEntity = _mapper.Map<Event>(e);
+			_eventRepository.Insert(eventEntity);
+
+			if (!await _eventRepository.Save()) return false;
+
+			_eventUserRepository.Insert(new EventUser()
+			{
+				EventId = eventEntity.Id,
+				UserId = userId,
+				Type = EventUserType.Manager,
+				Status = EventUserStatus.ATTENDED,
+			});
+
+
+			if (!await _eventUserRepository.Save()) return false;
+			return true;
+		}
+
+		public async Task<bool> Update(Event e)
+		{
+			_eventRepository.Update(e);
+			return await _eventRepository.Save();
+		}
 	}
 }

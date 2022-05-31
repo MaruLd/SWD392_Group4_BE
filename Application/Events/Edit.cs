@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.Events;
+using Application.Events.DTOs;
+using Application.Interfaces;
+using Application.Services;
 using AutoMapper;
 using Domain;
 using FluentValidation;
@@ -12,45 +15,63 @@ using Persistence;
 
 namespace Application.Events
 {
-    public class Edit
-    {
-        public class Command : IRequest<Result<Unit>>
-        {
-            public Event Event { get; set; }
-        }
+	public class Edit
+	{
+		public class Command : IRequest<Result<Unit>>
+		{
+			public Guid eventId { get; set; }
+			public EditEventDTO Event { get; set; }
+		}
 
-        public class CommandValidator : AbstractValidator<Command>
-        {
-            public CommandValidator()
-            {
-                RuleFor(x => x.Event).SetValidator(new EventValidator());
-            }
-        }
+		// public class CommandValidator : AbstractValidator<Command>
+		// {
+		//     public CommandValidator()
+		//     {
+		//         RuleFor(x => x.Event).SetValidator(new EventValidator());
+		//     }
+		// }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
-        {
-            private readonly DataContext _context;
+		public class Handler : IRequestHandler<Command, Result<Unit>>
+		{
+			private readonly UserService _userService;
+			private readonly EventService _eventService;
+			private readonly EventUserService _eventUserService;
+			private readonly IUserAccessor _userAccessor;
+			private readonly IMapper _mapper;
 
-            private readonly IMapper _mapper;
+			public Handler(EventService eventService, EventUserService eventUserService, UserService userService, IMapper mapper, IUserAccessor userAccessor)
+			{
+				_userService = userService;
+				_eventService = eventService;
+				_eventUserService = eventUserService;
+				_userAccessor = userAccessor;
+				_mapper = mapper;
+			}
 
-            public Handler(DataContext context, IMapper mapper)
-            {
-                _context = context;
-                _mapper = mapper;
-            }
+			public async Task<Result<Unit>>
+			Handle(Command request, CancellationToken cancellationToken)
+			{
+				var eventInDb = await _eventService.GetByID(request.eventId);
+				if (eventInDb == null) return Result<Unit>.Failure("Event not found!");
 
-            public async Task<Result<Unit>>
-            Handle(Command request, CancellationToken cancellationToken)
-            {
-                var Event = await _context.Event.FindAsync(request.Event.Id);
+				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
+				var eventUser = await _eventUserService.GetByID(eventInDb.Id, user.Id);
 
-                _mapper.Map(request.Event, Event);
+				if (eventUser == null) return Result<Unit>.Failure("You aren't in the event!");
 
-                var result = await _context.SaveChangesAsync()>0;
-                if(!result) return Result<Unit>.Failure("Failed to update event");
+				var allowedRole = new List<EventUserType> { EventUserType.Admin, EventUserType.Manager };
+				if (!allowedRole.Contains(eventUser.Type))
+				{
+					return Result<Unit>.Failure("You have no permission!");
+				}
 
-                return Result<Unit>.Success(Unit.Value);
-            }
-        }
-    }
+				_mapper.Map(request.Event, eventInDb);
+				var result = await _eventService.Update(eventInDb);
+
+				if (!result) return Result<Unit>.Failure("Failed to update event");
+
+				return Result<Unit>.Success(Unit.Value);
+			}
+		}
+	}
 }
