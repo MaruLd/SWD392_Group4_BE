@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Application.Core;
 using Application.Events.DTOs;
 using Application.Services;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -16,24 +18,30 @@ namespace Application.Events
 {
 	public class List
 	{
-		public class Query : IRequest<Result<List<Event>>>
+		public class Query : IRequest<Result<List<EventDTO>>>
 		{
-			public ListEventParams dto { get; set; }
+			public Event dto { get; set; }
 		}
 
-		public class Handler : IRequestHandler<Query, Result<List<Event>>>
+		public class Handler : IRequestHandler<Query, Result<List<EventDTO>>>
 		{
 			private readonly EventService _eventService;
+			private readonly DataContext _context;
+    private readonly IMapper _mapper;
 
-			public Handler(EventService eventService)
+			public Handler(IMapper mapper, EventService eventService, DataContext context)
 			{
+      _mapper = mapper;
 				_eventService = eventService;
+				_context = context;
 			}
 
-			public async Task<Result<List<Event>>> Handle(Query request, CancellationToken cancellationToken)
+			public async Task<Result<List<EventDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				var res = await _eventService.Get(request.dto);
-				return Result<List<Event>>.Success(res);
+				// var res = await _eventService.Get(request.dto);
+				// return Result<List<Event>>.Success(res);
+				var Events = await _context.Event.ProjectTo<EventDTO>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+        return Result<List<EventDTO>>.Success(Events);
 			}
 		}
 	}
