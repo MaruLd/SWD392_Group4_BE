@@ -16,26 +16,24 @@ namespace Application.Events
 {
 	public class List
 	{
-
-		public class Query : IRequest<Result<List<EventDTO>>>
+		public class Query : IRequest<Result<List<Event>>>
 		{
-			public ListEventDTO dto { get; set; }
+			public ListEventParams dto { get; set; }
 		}
 
-		public class Handler : IRequestHandler<Query, Result<List<EventDTO>>>
+		public class Handler : IRequestHandler<Query, Result<List<Event>>>
 		{
-			private readonly DataContext _context;
 			private readonly EventService _eventService;
 
-			public Handler(DataContext context, EventService eventService)
+			public Handler(EventService eventService)
 			{
-				_context = context;
 				_eventService = eventService;
 			}
 
-			public async Task<Result<List<EventDTO>>> Handle(Query request, CancellationToken cancellationToken)
+			public async Task<Result<List<Event>>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				return Result<List<EventDTO>>.Success(await _eventService.Get(request.dto));
+				var res = await _eventService.Get(request.dto);
+				return Result<List<Event>>.Success(res);
 			}
 		}
 	}
