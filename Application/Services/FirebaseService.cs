@@ -24,7 +24,7 @@ namespace Application.Services
 
 		public async Task<FirebaseToken> VerifyIdToken(string token) {
 			FirebaseAuth auth = FirebaseAuth.GetAuth(GetDefaultApp());
-;			var result = await auth.VerifyIdTokenAsync(token);
+			var result = await auth.VerifyIdTokenAsync(token);
 			return result;
 		}
 	}

@@ -56,7 +56,7 @@ namespace API.Controllers
 				return BadRequest(Results.BadRequest("Token not valid!"));
 			}
 
-			var ec = claims.Claims.FirstOrDefault(c => c.Key == "email").Key;
+			var ec = claims.Claims.FirstOrDefault(c => c.Key == "email").Value.ToString();
 			var user = await _userService.GetByEmail(ec);
 
 			if (user == null)
@@ -64,7 +64,7 @@ namespace API.Controllers
 				_userManager.CreateAsync(new User() { Email = user.Email, UserName = user.UserName, DisplayName = user.DisplayName });
 			}
 
-			return Ok();
+			return Ok(_tokenService.CreateToken(ec));
 		}
 
 		[HttpGet("Error")]
