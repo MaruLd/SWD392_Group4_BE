@@ -22,6 +22,7 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new List.Query() { dto = dto }));
 		}
 
+		[Authorize]
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetEvent(Guid id)
 		{
@@ -29,16 +30,15 @@ namespace API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> CreateEvent(Event Event)
+		public async Task<ActionResult> CreateEvent(CreateEventDTO Event)
 		{
 			return HandleResult(await Mediator.Send(new Create.Command { Event = Event }));
 		}
 
 		[HttpPut("{id}")]
-		public async Task<ActionResult> EditEvent(Guid id, Event Event)
+		public async Task<ActionResult> EditEvent(Guid id, EditEventDTO Event)
 		{
-			Event.Id = id;
-			return HandleResult(await Mediator.Send(new Edit.Command { Event = Event }));
+			return HandleResult(await Mediator.Send(new Edit.Command { eventId = id, Event = Event }));
 		}
 
 		[HttpDelete("{id}")]

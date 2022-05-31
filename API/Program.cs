@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,16 +26,24 @@ namespace API
 			try
 			{
 				var context = services.GetRequiredService<DataContext>();
+				var config = services.GetRequiredService<IConfiguration>();
 				// context.Database.Migrate();
 				// await EventCategorySeed.SeedData(context);
 				await EventSeed.SeedData(context);
 				await TicketSeed.SeedData(context);
+
+				FirebaseApp.Create(new AppOptions()
+				{
+					Credential = GoogleCredential.FromJson(config.GetValue<String>("FirebaseConfig"))
+				}, "DEFAULT");
 			}
 			catch (Exception ex)
 			{
 				var logger = services.GetRequiredService<ILogger<Program>>();
 				logger.LogError(ex, "An error occured during migration;");
 			}
+
+
 			host.Run();
 		}
 

@@ -1,29 +1,42 @@
-using System.Collections.Generic;
-using System.Text;
 using Application.Core;
 using Application.Events;
-using Application.Services;
-using Domain;
+using Application.Interfaces;
+using Infrastructure;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Persistence;
 using Persistence.Repositories;
+using Application.Services;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Domain;
+using Persistence;
 
 namespace API.Extensions
 {
-    public static class ApplicationServiceExtensions
-    {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config){
-            services.AddScoped<TicketRepository>();
+	public static class ApplicationServiceExtensions
+	{
+		public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
+		{
 			services.AddScoped<EventRepository>();
+			services.AddScoped<EventTicket>();
+			services.AddScoped<EventAgenda>();
+			services.AddScoped<EventUserRepository>();
+			services.AddScoped<EventCategory>();
+			services.AddScoped<UserRepository>();
+			services.AddScoped<TicketRepository>();
+			services.AddScoped<PostRepository>();
+			services.AddScoped<CommentRepository>();
 
 			services.AddScoped<TicketService>();
 			services.AddScoped<EventService>();
+			services.AddScoped<UserService>();
+			services.AddScoped<EventUserService>();
+
 			services.AddScoped<TokenService>();
+			services.AddScoped<FirebaseService>();
+
+			services.AddScoped<UserAccessor>();
+			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 			// Swagger
 			services
@@ -43,25 +56,12 @@ namespace API.Extensions
 							.GetConnectionString("DefaultConnection"));
 				});
 
-			services.AddIdentityCore<User>()
-				.AddEntityFrameworkStores<DataContext>()
-				.AddDefaultTokenProviders();
 
-			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-				.AddJwtBearer(options =>
-				{
-					options.TokenValidationParameters = new TokenValidationParameters
-					{
-						ValidateIssuerSigningKey = true,
-						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetValue<string>("Authentication:JWTSecretKey"))),
-						ValidateIssuer = false,
-						ValidateAudience = false,
-					};
-				});
 
 
 			services.AddMediatR(typeof(List.Handler).Assembly);
 			services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+			services.AddScoped<IUserAccessor, UserAccessor>();
 			services
 				.AddCors(opt =>
 				{
@@ -75,7 +75,7 @@ namespace API.Extensions
 								.WithOrigins("http://localhost:3000");
 						});
 				});
-                return services;
-        }
-    }
+			return services;
+		}
+	}
 }

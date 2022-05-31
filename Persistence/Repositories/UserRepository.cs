@@ -8,9 +8,9 @@ using Persistence.Params;
 
 namespace Persistence.Repositories
 {
-	public class TicketRepository : BaseRepository<Ticket, Guid>
+	public class UserRepository : BaseRepository<User, Guid>
 	{
-		public TicketRepository(DataContext context) : base(context)
+		public UserRepository(DataContext context) : base(context)
 		{
 		}
 	}

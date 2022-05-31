@@ -1,6 +1,6 @@
 namespace Domain
 {
-	public enum ParticipantType
+	public enum EventUserType
 	{
 		Student,
 		Lecture,

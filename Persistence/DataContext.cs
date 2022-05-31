@@ -33,7 +33,7 @@ namespace Persistence
 
 		public DbSet<Ticket> Ticket { get; set; }
 
-		public DbSet<Participant> Participant { get; set; }
+		public DbSet<EventUser> EventUser { get; set; }
 
 		public DbSet<EventCategory> EventCategory { get; set; }
 

@@ -28,7 +28,7 @@ public class Event
 	[JsonIgnore]
 	public virtual ICollection<Organizer> Organizers { get; set; }
 	[JsonIgnore]
-	public virtual ICollection<Participant> Participants { get; set; }
+	public virtual ICollection<EventUser> EventUser { get; set; }
 	[JsonIgnore]
 	public virtual ICollection<EventTicket> EventTicket { get; set; }
 	[JsonIgnore]
