@@ -10,6 +10,7 @@ using API.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Domain;
 using Application.Services;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -21,43 +22,54 @@ namespace API.Controllers
     private readonly SignInManager<User> _signInManager;
     private readonly TokenService _tokenService;
     private readonly IConfiguration _config;
-    private readonly HttpClient _httpClient;
+    private readonly FirebaseService _firebaseService;
     public UserController(UserManager<User> userManager,
       SignInManager<User> signInManager, TokenService tokenService,
-    IConfiguration config)
+      IConfiguration config, FirebaseService firebaseService)
     {
+      _firebaseService = firebaseService;
       _config = config;
       _tokenService = tokenService;
       _userManager = userManager;
       _signInManager = signInManager;
-      _httpClient = new HttpClient{
-        BaseAddress = new System.Uri("")
-      };
     }
 
-  [HttpPost("login")]
-  public async Task<ActionResult<UserDTO>> Login(LoginDTO LoginDTO)
-  {
+    [HttpGet]
+    public async Task<ActionResult<UserDTO>> GetCurrentUser()
+    {
+      var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
 
-    var user = await _userManager.FindByEmailAsync(LoginDTO.Email);
+      return CreateUserObject(user);
+    }
 
-    if (user == null) return Unauthorized();
+    [HttpPost("google-login")]
+    public async Task<ActionResult<UserDTO>> GoogleLogin([FromQuery] string token)
+    {
+      var result = await _firebaseService.VerifyIdToken(token);
+      if (result == null)
+      {
+        return Unauthorized();
+      }
 
-    var result = await _signInManager.CheckPasswordSignInAsync(user, LoginDTO.Password, false);
+      var ec = result.Claims.FirstOrDefault(c => c.Key == "email").Value.ToString();
+      var user = await _userManager.FindByEmailAsync(ec);
 
-    if (result.Succeeded)
+      if (result != null)
+      {
+        return CreateUserObject(user);
+      }
+      return Unauthorized();
+
+    }
+
+    private UserDTO CreateUserObject(User user)
     {
       return new UserDTO
       {
         DisplayName = user.DisplayName,
-        //   Token = _tokenService.CreateToken(LoginDTO.Email),
-        Token = "Replace this with CreateToken",
-        Username = user.UserName
+        Token = _tokenService.CreateToken(user.Email),
+        Email = user.Email
       };
     }
-    return Unauthorized();
-
   }
-
-}
 }
