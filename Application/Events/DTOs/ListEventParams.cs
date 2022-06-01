@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Events.DTOs
 {
-	public class ListEventDTO
+	public class ListEventParams
 	{
 		public String? Title { get; set; }
 		public string? OrderBy { get; set; } = "Date";

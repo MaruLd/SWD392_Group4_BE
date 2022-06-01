@@ -30,10 +30,12 @@ namespace Application.Events
             {
                 var Event = await _context.Event.FindAsync(request.Id);
 
+                if(Event == null) return null;
+
                 _context.Remove (Event);
 
                 var result = await _context.SaveChangesAsync()>0;
-                if (!result) return Result<Unit>.Failure("Failed to delete event");
+                if (!result) return Result<Unit>.Failure("Failed to delete the event");
 
                 return Result<Unit>.Success(Unit.Value);
             }

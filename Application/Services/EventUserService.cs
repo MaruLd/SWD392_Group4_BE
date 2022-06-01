@@ -34,7 +34,6 @@ namespace Application.Services
 
 		public async Task<EventUser> GetByID(Guid eventId, Guid userId) => await _eventUserRepository.GetByID(eventId, userId);
 
-
 		public async Task<bool> Insert(EventUser e)
 		{
 			_eventUserRepository.Insert(e);
