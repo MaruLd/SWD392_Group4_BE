@@ -61,7 +61,7 @@ namespace API.Controllers
 
 			if (user == null)
 			{
-				_userManager.CreateAsync(new User() { Email = user.Email, UserName = user.UserName, DisplayName = user.DisplayName });
+				await _userManager.CreateAsync(new User() { Email = user.Email, UserName = user.UserName, DisplayName = user.DisplayName });
 			}
 
 			return Ok(_tokenService.CreateToken(ec));

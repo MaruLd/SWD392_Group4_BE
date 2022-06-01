@@ -26,14 +26,12 @@ namespace Application.Events
 		public class Handler : IRequestHandler<Query, Result<List<EventDTO>>>
 		{
 			private readonly EventService _eventService;
-			private readonly DataContext _context;
 			private readonly IMapper _mapper;
 
-			public Handler(IMapper mapper, EventService eventService, DataContext context)
+			public Handler(IMapper mapper, EventService eventService)
 			{
 				_mapper = mapper;
 				_eventService = eventService;
-				_context = context;
 			}
 
 			public async Task<Result<List<EventDTO>>> Handle(Query request, CancellationToken cancellationToken)

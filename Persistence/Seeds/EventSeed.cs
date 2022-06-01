@@ -21,7 +21,7 @@ namespace Persistence
 					EndTime = DateTime.Now.AddMonths(1).AddHours(2),
 					Description = "Description about the event",
 					EventCategoryId = 1,
-					Multiplier_Factor = 1,
+					MultiplierFactor = 1,
 					Status = "AVAILABLE"
 				},
 				 new Event
@@ -31,7 +31,7 @@ namespace Persistence
 					EndTime = DateTime.Now.AddMonths(1).AddHours(2),
 					Description = "Description about the event",
 					EventCategoryId = 1,
-					Multiplier_Factor = 1,
+					MultiplierFactor = 1,
 					Status = "AVAILABLE"
 				},
 				 new Event
@@ -41,7 +41,7 @@ namespace Persistence
 					EndTime = DateTime.Now.AddMonths(1).AddHours(2),
 					Description = "Description about the event",
 					EventCategoryId = 1,
-					Multiplier_Factor = 1,
+					MultiplierFactor = 1,
 					Status = "AVAILABLE"
 				},
 				 new Event
@@ -51,7 +51,7 @@ namespace Persistence
 					EndTime = DateTime.Now.AddMonths(1).AddHours(2),
 					Description = "Description about the event",
 					EventCategoryId = 1,
-					Multiplier_Factor = 1,
+					MultiplierFactor = 1,
 					Status = "AVAILABLE"
 				},
 				 new Event
@@ -61,7 +61,7 @@ namespace Persistence
 					EndTime = DateTime.Now.AddMonths(1).AddHours(2),
 					Description = "Description about the event",
 					EventCategoryId = 1,
-					Multiplier_Factor = 1,
+					MultiplierFactor = 1,
 					Status = "AVAILABLE"
 				},
 				 new Event
@@ -71,7 +71,7 @@ namespace Persistence
 					EndTime = DateTime.Now.AddMonths(1).AddHours(2),
 					Description = "Description about the event",
 					EventCategoryId = 1,
-					Multiplier_Factor = 1,
+					MultiplierFactor = 1,
 					Status = "AVAILABLE"
 				}
 			};

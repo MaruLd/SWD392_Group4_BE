@@ -16,15 +16,14 @@ namespace API.Controllers
 {
 	public class EventsController : BaseApiController
 	{
-		[HttpGet]	
+		[HttpGet]
 		public async Task<ActionResult<List<EventDTO>>> GetEvents([FromQuery] EventQueryParams queryParams)
 		{
 			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
 
-		[Authorize]
 		[HttpGet("{id}")]
-		public async Task<IActionResult> GetEvent(Guid id)
+		public async Task<ActionResult<EventDTO>> GetEvent(Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}

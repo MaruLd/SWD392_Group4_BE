@@ -25,15 +25,13 @@ namespace Application.Tickets
 
 		public class Handler : IRequestHandler<Query, Result<List<TicketDTO>>>
 		{
-			private readonly DataContext _context;
 			private readonly TicketService _ticketService;
 			private readonly IMapper _mapper;
 
-			public Handler(DataContext context, TicketService tickerService, IMapper mapper)
+			public Handler(TicketService tickerService, IMapper mapper)
 			{
-				_context = context;
 				_ticketService = tickerService;
-				this._mapper = mapper;
+				_mapper = mapper;
 			}
 
 			public async Task<Result<List<TicketDTO>>> Handle(Query request, CancellationToken cancellationToken)

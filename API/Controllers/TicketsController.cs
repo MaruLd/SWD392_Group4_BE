@@ -36,10 +36,9 @@ namespace API.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public async Task<ActionResult> EditTicket(Guid id, EditTicketDTO Ticket)
+		public async Task<ActionResult> EditTicket(Guid id, EditTicketDTO dto)
 		{
-			Ticket.Id = id;
-			return HandleResult(await Mediator.Send(new Edit.Command { dto = Ticket }));
+			return HandleResult(await Mediator.Send(new Edit.Command { ticketId = id, dto = dto }));
 		}
 
 		[HttpDelete("{id}")]
