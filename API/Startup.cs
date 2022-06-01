@@ -2,6 +2,8 @@
 
 using API.Extensions;
 using API.Middleware;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Newtonsoft.Json.Converters;
 
 namespace API
 {
@@ -17,11 +19,18 @@ namespace API
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddControllers();
+			services.AddControllers().AddNewtonsoftJson(o =>
+				{
+					o.SerializerSettings.Converters.Add(new StringEnumConverter
+					{
+						CamelCaseText = true
+					});
+					o.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+				});
 			services.AddApplicationServices(_config);
 			services.AddIdentityServices(_config);
 			// Repositories
-			
+
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -32,7 +41,8 @@ namespace API
 				app.UseDeveloperExceptionPage();
 				app.UseSwagger();
 				app
-					.UseSwaggerUI(c =>	c.SwaggerEndpoint("/swagger/v1/swagger.json","WebAPIv5 v1"));
+					.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1"));
+
 				app.UseMiddleware<ExceptionMiddleware>();
 			}
 
