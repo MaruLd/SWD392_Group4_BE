@@ -20,7 +20,7 @@ namespace Application.Events.DTOs
 		public DateTime EndTime { get; set; }
 
 		[Required]
-		public float Multiplier_Factor { get; set; }
+		public float MultiplierFactor { get; set; }
 		[Required]
 		public int? EventCategoryId { get; set; }
 		[Required]

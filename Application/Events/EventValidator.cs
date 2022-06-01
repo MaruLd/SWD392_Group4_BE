@@ -13,7 +13,7 @@ namespace Application.Events
 			// RuleFor(x => x.EventCategoryId).NotEmpty();
 			RuleFor(x => x.StartTime).NotEmpty();
 			RuleFor(x => x.EndTime).NotEmpty();
-			RuleFor(x => x.Multiplier_Factor).NotEmpty().GreaterThan(0).LessThan(6);
+			RuleFor(x => x.MultiplierFactor).NotEmpty().GreaterThan(0).LessThan(6);
 		}
 	}
 }

@@ -17,9 +17,9 @@ namespace API.Controllers
 	public class TicketsController : BaseApiController
 	{
 		[HttpGet]
-		public async Task<ActionResult<List<Ticket>>> GetTickets([FromQuery] ListTicketDTO dto)
+		public async Task<ActionResult<List<Ticket>>> GetTickets([FromQuery] TicketQueryParams queryParams)
 		{
-			return HandleResult(await Mediator.Send(new List.Query() { dto = dto }));
+			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
 
 		[HttpGet("{id}")]
@@ -36,10 +36,9 @@ namespace API.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public async Task<ActionResult> EditTicket(Guid id, EditTicketDTO Ticket)
+		public async Task<ActionResult> EditTicket(Guid id, EditTicketDTO dto)
 		{
-			Ticket.Id = id;
-			return HandleResult(await Mediator.Send(new Edit.Command { dto = Ticket }));
+			return HandleResult(await Mediator.Send(new Edit.Command { ticketId = id, dto = dto }));
 		}
 
 		[HttpDelete("{id}")]
