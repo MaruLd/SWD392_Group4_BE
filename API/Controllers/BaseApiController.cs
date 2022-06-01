@@ -10,8 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace API.Controllers
 {
 	[ApiController]
-	[ApiVersion("1.0")]
   [Route("api/v{version:apiVersion}/[controller]")]
+	[ApiVersion("1.0")]
 	
 	public class BaseApiController : ControllerBase
 	{
