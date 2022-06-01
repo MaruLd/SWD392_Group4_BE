@@ -38,7 +38,7 @@ namespace Application.Services
 			if (dto.StartTime != null) query = query.Where(e => e.StartTime > dto.StartTime);
 			if (dto.EndTime != null) query = query.Where(e => e.EndTime > dto.EndTime);
 
-			if (dto.OrderBy == "Date")
+			if (dto.OrderBy == OrderByEnum.DateDescending)
 			{
 				query = query.OrderBy(e => e.CreatedDate);
 			}
@@ -46,7 +46,7 @@ namespace Application.Services
 			var list = await query
 				.ToListAsync();
 
-			
+
 			return list;
 		}
 
@@ -64,7 +64,7 @@ namespace Application.Services
 				EventId = eventEntity.Id,
 				UserId = userId,
 				Type = EventUserType.Manager,
-				Status = EventUserStatus.ATTENDED,
+				Status = EventUserStatus.Attended,
 			});
 
 

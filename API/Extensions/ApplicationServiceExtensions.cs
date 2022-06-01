@@ -47,8 +47,6 @@ namespace API.Extensions
         });
 
 
-      services.AddSwaggerGenNewtonsoftSupport();
-
       // DataContext
       services
         .AddDbContext<DataContext>(opt =>
