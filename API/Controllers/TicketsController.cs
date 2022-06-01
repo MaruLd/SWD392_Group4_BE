@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Tickets;
 using Application.Tickets.DTOs;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -12,6 +13,7 @@ using Persistence.Params;
 
 namespace API.Controllers
 {
+	[Authorize]
 	public class TicketsController : BaseApiController
 	{
 		[HttpGet]
@@ -28,16 +30,16 @@ namespace API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> CreateTicket(Ticket Ticket)
+		public async Task<ActionResult> CreateTicket(CreateTicketDTO Ticket)
 		{
-			return HandleResult(await Mediator.Send(new Create.Command { Ticket = Ticket }));
+			return HandleResult(await Mediator.Send(new Create.Command { dto = Ticket }));
 		}
 
 		[HttpPut("{id}")]
-		public async Task<ActionResult> EditTicket(Guid id, Ticket Ticket)
+		public async Task<ActionResult> EditTicket(Guid id, EditTicketDTO Ticket)
 		{
 			Ticket.Id = id;
-			return HandleResult(await Mediator.Send(new Edit.Command { Ticket = Ticket }));
+			return HandleResult(await Mediator.Send(new Edit.Command { dto = Ticket }));
 		}
 
 		[HttpDelete("{id}")]

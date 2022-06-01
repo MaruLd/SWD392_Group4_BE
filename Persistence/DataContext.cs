@@ -17,8 +17,6 @@ namespace Persistence
 		{
 			base.OnModelCreating(builder);
 
-			builder.Entity<EventTicket>()
-			.HasKey(e => new { e.EventId, e.TicketId });
 		}
 
 		public DbSet<User> User { get; set; }

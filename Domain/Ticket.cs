@@ -23,8 +23,15 @@ namespace Domain
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 
 		[JsonIgnore]
-		public virtual ICollection<User> Users { get; set; }
+		public virtual Event? Event { get; set; }
+		public Guid? EventId { get; set; }
+
 		[JsonIgnore]
-		public virtual ICollection<EventTicket> EventTicket { get; set; }
+		public virtual ICollection<User> Users { get; set; }
+		// [JsonIgnore]
+		// public virtual ICollection<EventTicket> EventTicket { get; set; }
+
+
+
 	}
 }

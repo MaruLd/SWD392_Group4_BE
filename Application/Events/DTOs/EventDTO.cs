@@ -20,8 +20,6 @@ namespace Application.Events.DTOs
 
 		public int? EventCategoryId { get; set; }
 
-		public List<Ticket> Tickets { get; set; }
-
 		public String Status { get; set; }
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 	}

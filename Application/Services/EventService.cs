@@ -30,7 +30,7 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<List<EventDTO>> Get(ListEventDTO dto)
+		public async Task<List<Event>> Get(ListEventParams dto)
 		{
 			var query = _eventRepository.GetQuery();
 
@@ -44,19 +44,10 @@ namespace Application.Services
 			}
 
 			var list = await query
-				.Include(e => e.EventTicket)
-				.ThenInclude(et => et.Ticket)
 				.ToListAsync();
 
-			var eventDtos = _mapper.Map<List<EventDTO>>(list);
-			// foreach (var e in eventDtos)
-			// {
-			// 	var tickets = await _ticketService.GetAllFromEvent(e.Id);
-			// 	e.Tickets = tickets;
-			// }
-
-			// return list;
-			return eventDtos;
+			
+			return list;
 		}
 
 		public async Task<Event> GetByID(Guid id) => await _eventRepository.GetByID(id);
@@ -84,6 +75,11 @@ namespace Application.Services
 		public async Task<bool> Update(Event e)
 		{
 			_eventRepository.Update(e);
+			return await _eventRepository.Save();
+		}
+
+		public async Task<bool> Save()
+		{
 			return await _eventRepository.Save();
 		}
 	}

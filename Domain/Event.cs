@@ -30,7 +30,7 @@ public class Event
 	[JsonIgnore]
 	public virtual ICollection<EventUser> EventUser { get; set; }
 	[JsonIgnore]
-	public virtual ICollection<EventTicket> EventTicket { get; set; }
+	public virtual ICollection<Ticket> Tickets { get; set; }
 	[JsonIgnore]
 	public virtual ICollection<Post> Posts { get; set; }
 	[JsonIgnore]
