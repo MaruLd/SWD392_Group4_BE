@@ -47,7 +47,6 @@ namespace Application.Services
 				.ToListAsync();
 
 			
-			// var eventDtos = _mapper.Map<List<EventDTO>>(list);
 			return list;
 		}
 

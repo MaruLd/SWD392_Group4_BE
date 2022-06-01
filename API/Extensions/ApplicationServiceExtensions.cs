@@ -60,7 +60,7 @@ namespace API.Extensions
 
 
 
-			services.AddMediatR(typeof(Startup).Assembly);
+			services.AddMediatR(typeof(List.Handler).Assembly);
 			services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 			services.AddScoped<IUserAccessor, UserAccessor>();
 			services

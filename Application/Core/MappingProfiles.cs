@@ -11,7 +11,7 @@ namespace Application.Core
 {
 	public class MappingProfiles : Profile
 	{
-		public MappingProfiles(IMapper mapper)
+		public MappingProfiles()
 		{
 			CreateMap<Event, EventDTO>();
 			CreateMap<Event, Event>();
