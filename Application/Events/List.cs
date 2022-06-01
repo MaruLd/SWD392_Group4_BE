@@ -20,7 +20,7 @@ namespace Application.Events
 	{
 		public class Query : IRequest<Result<List<EventDTO>>>
 		{
-			public ListEventParams dto { get; set; }
+			public EventQueryParams queryParams { get; set; }
 		}
 
 		public class Handler : IRequestHandler<Query, Result<List<EventDTO>>>
@@ -38,7 +38,7 @@ namespace Application.Events
 
 			public async Task<Result<List<EventDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				var res = await _eventService.Get(request.dto);
+				var res = await _eventService.Get(request.queryParams);
 				var eventDtos = _mapper.Map<List<EventDTO>>(res);
 				return Result<List<EventDTO>>.Success(eventDtos);
 			}

@@ -24,13 +24,20 @@ namespace API
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddRouting(options => options.LowercaseUrls = true);
+			services.AddRouting(options =>
+			{
+				options.LowercaseUrls = true;
+				options.LowercaseQueryStrings = true;
+			});
 
-			services.AddControllers().AddJsonOptions(opts =>
+			services.AddControllers()
+			.AddJsonOptions(opts =>
 			{
 				opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 				opts.JsonSerializerOptions.IgnoreNullValues = true;
 				opts.JsonSerializerOptions.PropertyNamingPolicy = new JsonKebabCaseNamingPolicy();
+				opts.JsonSerializerOptions.DictionaryKeyPolicy = new JsonKebabCaseNamingPolicy();
+				opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
 			});
 
 			services.AddApiVersioning(o =>
@@ -51,6 +58,7 @@ namespace API
 					options.GroupNameFormat = "'v'VVV";
 					options.SubstituteApiVersionInUrl = true;
 				});
+
 			services.AddApplicationServices(_config);
 			services.AddIdentityServices(_config);
 			// Repositories

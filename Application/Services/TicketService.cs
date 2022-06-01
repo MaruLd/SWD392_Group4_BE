@@ -20,7 +20,7 @@ namespace Application.Services
 			_ticketRepository = ticketRepository;
 		}
 
-		public async Task<List<Ticket>> Get(ListTicketDTO dto)
+		public async Task<List<Ticket>> Get(TicketQueryParams dto)
 		{
 			var query = _ticketRepository.GetQuery();
 
@@ -29,9 +29,16 @@ namespace Application.Services
 				query = query.Where(t => t.EventId == dto.EventId);
 			}
 
-			if (dto.OrderBy == "Date")
+			switch (dto.OrderBy)
 			{
-				query = query.OrderBy(ticket => ticket.CreatedDate);
+				case OrderByEnum.DateAscending:
+					query = query.OrderBy(t => t.CreatedDate);
+					break;
+				case OrderByEnum.DateDescending:
+					query = query.OrderByDescending(t => t.CreatedDate);
+					break;
+				default:
+					break;
 			}
 
 			return await query.OrderBy(e => e.CreatedDate).ToListAsync();

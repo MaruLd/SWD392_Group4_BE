@@ -9,6 +9,8 @@ namespace Domain
 {
 	public enum OrderByEnum
 	{
-		DateAscending, DateDescending
+		DateAscending,
+		DateDescending,
+		Popular
 	}
 }

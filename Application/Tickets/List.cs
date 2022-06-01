@@ -20,7 +20,7 @@ namespace Application.Tickets
 
 		public class Query : IRequest<Result<List<TicketDTO>>>
 		{
-			public ListTicketDTO dto { get; set; }
+			public TicketQueryParams queryParams { get; set; }
 		}
 
 		public class Handler : IRequestHandler<Query, Result<List<TicketDTO>>>
@@ -38,7 +38,7 @@ namespace Application.Tickets
 
 			public async Task<Result<List<TicketDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				var res = await _ticketService.Get(request.dto);
+				var res = await _ticketService.Get(request.queryParams);
 				var ticketDtos = _mapper.Map<List<TicketDTO>>(res);
 				return Result<List<TicketDTO>>.Success(ticketDtos);
 			}
