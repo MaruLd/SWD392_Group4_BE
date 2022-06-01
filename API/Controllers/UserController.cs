@@ -15,7 +15,8 @@ using System.Security.Claims;
 namespace API.Controllers
 {
   [ApiController]
-  [Route("api/[controller]")]
+  [ApiVersion("1.0")]
+  [Route("api/v{version:apiVersion}/[controller]")]
   public class UserController : ControllerBase
   {
     private readonly UserManager<User> _userManager;
@@ -35,6 +36,7 @@ namespace API.Controllers
     }
 
     [HttpGet]
+
     public async Task<ActionResult<UserDTO>> GetCurrentUser()
     {
       var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
@@ -43,6 +45,7 @@ namespace API.Controllers
     }
 
     [HttpPost("google-login")]
+   
     public async Task<ActionResult<UserDTO>> GoogleLogin([FromQuery] string token)
     {
       var result = await _firebaseService.VerifyIdToken(token);
