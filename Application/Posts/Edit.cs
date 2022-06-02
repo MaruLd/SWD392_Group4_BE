@@ -5,21 +5,21 @@ using System.Threading.Tasks;
 using Application.Core;
 using Application.Interfaces;
 using Application.Services;
-using Application.Tickets.DTOs;
+using Application.Posts.DTOs;
 using AutoMapper;
 using Domain;
 using FluentValidation;
 using MediatR;
 using Persistence;
 
-namespace Application.Tickets
+namespace Application.Posts
 {
 	public class Edit
 	{
 		public class Command : IRequest<Result<Unit>>
 		{
-			public Guid ticketId { get; set; }
-			public EditTicketDTO dto { get; set; }
+			public Guid postId { get; set; }
+			public EditPostDTO dto { get; set; }
 
 		}
 
@@ -34,7 +34,7 @@ namespace Application.Tickets
 
 			public Handler(EventService eventService, TicketService ticketService, UserService userService, EventUserService eventUserService, IUserAccessor userAccessor, IMapper mapper)
 			{
-                this._eventService = eventService;
+				this._eventService = eventService;
 				this._ticketService = ticketService;
 				this._userService = userService;
 				this._eventUserService = eventUserService;
@@ -44,7 +44,7 @@ namespace Application.Tickets
 			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
 			{
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
-				var ticket = await _ticketService.GetByID(request.ticketId);
+				var ticket = await _ticketService.GetByID(request.postId);
 
 				if (ticket == null) return Result<Unit>.Failure("Ticket not found!");
 
@@ -60,7 +60,7 @@ namespace Application.Tickets
 					return Result<Unit>.Failure("You have no permission!");
 				}
 
-				var newTicket = _mapper.Map<EditTicketDTO, Ticket>(request.dto, ticket);
+				var newTicket = _mapper.Map<EditPostDTO, Ticket>(request.dto, ticket);
 
 				var result = await _ticketService.Save();
 				if (!result) return Result<Unit>.Failure("Failed to update ticket or no changes was made!");

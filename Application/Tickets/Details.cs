@@ -24,9 +24,9 @@ namespace Application.Tickets
 			private readonly TicketService _ticketService;
 			private readonly IMapper _mapper;
 
-			public Handler(TicketService tickerService, IMapper mapper)
+			public Handler(TicketService ticketService, IMapper mapper)
 			{
-				_ticketService = tickerService;
+				_ticketService = ticketService;
 				_mapper = mapper;
 			}
 
