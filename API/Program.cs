@@ -27,15 +27,18 @@ namespace API
 			{
 				var context = services.GetRequiredService<DataContext>();
 				var config = services.GetRequiredService<IConfiguration>();
-				// context.Database.Migrate();
-				// await EventCategorySeed.SeedData(context);
-				await EventSeed.SeedData(context);
-				await TicketSeed.SeedData(context);
 
 				FirebaseApp.Create(new AppOptions()
 				{
 					Credential = GoogleCredential.FromJson(config.GetValue<String>("FirebaseConfig"))
-				}, "DEFAULT");
+				});
+
+
+				// context.Database.Migrate();
+				// await EventCategorySeed.SeedData(context);
+				// await EventSeed.SeedData(context);
+				// await TicketSeed.SeedData(context);
+
 			}
 			catch (Exception ex)
 			{
