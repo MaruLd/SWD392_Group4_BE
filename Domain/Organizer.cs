@@ -16,6 +16,7 @@ namespace Domain
 
 		public String? Name { get; set; }
 		public String? Description { get; set; }
+		public String? ImageURL { get; set; }
 
 		public String Status { get; set; }
 		public DateTime CreatedDate { get; set; } = DateTime.Now;

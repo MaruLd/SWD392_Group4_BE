@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220530095654_Test")]
-    partial class Test
+    [Migration("20220602081902_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,46 +26,34 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Comment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Content")
+                    b.Property<string>("Body")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("PostId1")
+                    b.Property<Guid>("PostId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("UserId1")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PostId1");
+                    b.HasIndex("PostId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Domain.Event", b =>
@@ -86,7 +74,11 @@ namespace Persistence.Migrations
                     b.Property<int?>("EventCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<float>("Multiplier_Factor")
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("MultiplierFactor")
                         .HasColumnType("real");
 
                     b.Property<DateTime>("StartTime")
@@ -103,7 +95,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("EventCategoryId");
 
-                    b.ToTable("Event");
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("Domain.EventAgenda", b =>
@@ -134,7 +126,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("EventAgenda");
+                    b.ToTable("EventAgendas");
                 });
 
             modelBuilder.Entity("Domain.EventCategory", b =>
@@ -151,25 +143,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EventCategory");
-                });
-
-            modelBuilder.Entity("Domain.EventTicket", b =>
-                {
-                    b.Property<Guid>("EventId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TicketId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsValid")
-                        .HasColumnType("bit");
-
-                    b.HasKey("EventId", "TicketId");
-
-                    b.HasIndex("TicketId");
-
-                    b.ToTable("EventTicket");
+                    b.ToTable("EventCategories");
                 });
 
             modelBuilder.Entity("Domain.EventUser", b =>
@@ -199,7 +173,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("EventUser");
+                    b.ToTable("EventUsers");
                 });
 
             modelBuilder.Entity("Domain.Organizer", b =>
@@ -214,6 +188,10 @@ namespace Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -223,7 +201,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizer");
+                    b.ToTable("Organizers");
                 });
 
             modelBuilder.Entity("Domain.Post", b =>
@@ -242,6 +220,10 @@ namespace Persistence.Migrations
                     b.Property<Guid?>("EventId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -259,7 +241,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Post");
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("Domain.Ticket", b =>
@@ -278,6 +260,9 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -291,7 +276,9 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ticket");
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("Domain.User", b =>
@@ -320,6 +307,10 @@ namespace Persistence.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -532,11 +523,15 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.Post", "Post")
                         .WithMany("Comments")
-                        .HasForeignKey("PostId1");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Post");
 
@@ -559,25 +554,6 @@ namespace Persistence.Migrations
                         .HasForeignKey("EventId");
 
                     b.Navigation("Event");
-                });
-
-            modelBuilder.Entity("Domain.EventTicket", b =>
-                {
-                    b.HasOne("Domain.Event", "Event")
-                        .WithMany("EventTicket")
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Ticket", "Ticket")
-                        .WithMany("EventTicket")
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Event");
-
-                    b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("Domain.EventUser", b =>
@@ -608,6 +584,15 @@ namespace Persistence.Migrations
                     b.Navigation("Event");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Ticket", b =>
+                {
+                    b.HasOne("Domain.Event", "Event")
+                        .WithMany("Tickets")
+                        .HasForeignKey("EventId");
+
+                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("EventOrganizer", b =>
@@ -695,21 +680,16 @@ namespace Persistence.Migrations
                 {
                     b.Navigation("EventAgenda");
 
-                    b.Navigation("EventTicket");
-
                     b.Navigation("EventUser");
 
                     b.Navigation("Posts");
+
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("Domain.Post", b =>
                 {
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("Domain.Ticket", b =>
-                {
-                    b.Navigation("EventTicket");
                 });
 #pragma warning restore 612, 618
         }

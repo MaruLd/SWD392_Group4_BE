@@ -7,7 +7,7 @@ using Domain;
 using MediatR;
 using Persistence;
 
-namespace Application.Tickets
+namespace Application.Posts
 {
     public class Delete
     {
@@ -29,13 +29,13 @@ namespace Application.Tickets
             {
                 
                
-                var Ticket = await _context.Tickets.FindAsync(request.Id);
+                var Post = await _context.Posts.FindAsync(request.Id);
 
-                _context.Remove(Ticket);
+                _context.Remove(Post);
 
                 var result = await _context.SaveChangesAsync()>0;
                 
-                if (!result) return Result<Unit>.Failure("Failed to delete ticket");
+                if (!result) return Result<Unit>.Failure("Failed to delete Post");
 
 				return Result<Unit>.Success(Unit.Value);
             }

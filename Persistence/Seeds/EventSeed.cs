@@ -10,7 +10,7 @@ namespace Persistence
 	{
 		public static async Task SeedData(DataContext context)
 		{
-			if (context.Event.Any()) return;
+			if (context.Events.Any()) return;
 
 			var events = new List<Event>
 			{
@@ -75,7 +75,7 @@ namespace Persistence
 					Status = "AVAILABLE"
 				}
 			};
-			await context.Event.AddRangeAsync(events);
+			await context.Events.AddRangeAsync(events);
 			await context.SaveChangesAsync();
 		}
 	}

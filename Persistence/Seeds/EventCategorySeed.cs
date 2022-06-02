@@ -10,10 +10,10 @@ namespace Persistence
 	{
 		public static async Task SeedData(DataContext context)
 		{
-			if (context.EventCategory.Any()) return;
+			if (context.EventCategories.Any()) return;
 
 
-			context.EventCategory.Add(new EventCategory() { Name = "General" });
+			context.EventCategories.Add(new EventCategory() { Name = "General" });
 			await context.SaveChangesAsync();
 		}
 	}

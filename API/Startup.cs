@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using API.Extensions;
 using API.Middleware;
+using API.SignalR;
 using JorgeSerrano.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -89,6 +90,7 @@ namespace API
 			  .UseEndpoints(endpoints =>
 			  {
 				  endpoints.MapControllers();
+					endpoints.MapHub<ChatHub>("/chat");
 			  });
 		}
 	}

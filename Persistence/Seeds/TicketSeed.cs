@@ -10,7 +10,7 @@ namespace Persistence
 	{
 		public static async Task SeedData(DataContext context)
 		{
-			if (context.Ticket.Any()) return;
+			if (context.Tickets.Any()) return;
 
 			var tickets = new List<Ticket>
 			{
@@ -90,7 +90,7 @@ namespace Persistence
 				},
 			};
 
-			await context.Ticket.AddRangeAsync(tickets);
+			await context.Tickets.AddRangeAsync(tickets);
 			await context.SaveChangesAsync();
 		}
 	}
