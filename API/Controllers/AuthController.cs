@@ -43,7 +43,7 @@ namespace API.Controllers
 				await _userManager.CreateAsync(new User() { Email = email, UserName = "AUserName", DisplayName = "ADisplayName" });
 			}
 
-			return Ok(_tokenService.CreateToken(email));
+			return Ok(_tokenService.CreateTestToken(email));
 		}
 
 		[HttpPost("auth-google")]
@@ -56,19 +56,29 @@ namespace API.Controllers
 				return BadRequest(Results.BadRequest("Token not valid!"));
 			}
 
-			var ec = claims.Claims.FirstOrDefault(c => c.Key == "email").Value.ToString();
-			var user = await _userService.GetByEmail(ec);
+			var email = claims.Claims.FirstOrDefault(c => c.Key == "email").Value.ToString();
+			var name = claims.Claims.FirstOrDefault(c => c.Key == "name").Value.ToString();
+
+			var user = await _userService.GetByEmail(email);
 
 			if (user == null)
 			{
-				await _userManager.CreateAsync(new User() { Email = user.Email, UserName = user.UserName, DisplayName = user.DisplayName });
+				user = new User()
+				{
+					Email = email,
+					UserName = email,
+					DisplayName = name
+				};
+
+				await _userManager.CreateAsync(user);
 			}
 
-			return Ok(_tokenService.CreateToken(ec));
+			return Ok(_tokenService.CreateToken(user));
 		}
 
 		[HttpGet("Error")]
-		public IActionResult ErrorAuth() {
+		public IActionResult ErrorAuth()
+		{
 			return BadRequest();
 		}
 	}
