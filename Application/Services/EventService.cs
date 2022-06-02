@@ -30,7 +30,7 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<List<Event>> Get(ListEventParams dto)
+		public async Task<List<Event>> Get(EventQueryParams dto)
 		{
 			var query = _eventRepository.GetQuery();
 
@@ -38,15 +38,22 @@ namespace Application.Services
 			if (dto.StartTime != null) query = query.Where(e => e.StartTime > dto.StartTime);
 			if (dto.EndTime != null) query = query.Where(e => e.EndTime > dto.EndTime);
 
-			if (dto.OrderBy == "Date")
+			switch (dto.OrderBy)
 			{
-				query = query.OrderBy(e => e.CreatedDate);
+				case OrderByEnum.DateAscending:
+					query = query.OrderBy(e => e.CreatedDate);
+					break;
+				case OrderByEnum.DateDescending:
+					query = query.OrderByDescending(e => e.CreatedDate);
+					break;
+				default:
+					break;
 			}
 
 			var list = await query
 				.ToListAsync();
 
-			
+
 			return list;
 		}
 
@@ -64,7 +71,7 @@ namespace Application.Services
 				EventId = eventEntity.Id,
 				UserId = userId,
 				Type = EventUserType.Manager,
-				Status = EventUserStatus.ATTENDED,
+				Status = EventUserStatus.Attended,
 			});
 
 

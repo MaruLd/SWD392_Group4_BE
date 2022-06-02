@@ -7,7 +7,6 @@ namespace Application.Tickets.DTOs
 {
 	public class TicketDTO
 	{
-
 		public Guid Id { get; set; }
 		public Guid EventID { get; set; }
 		

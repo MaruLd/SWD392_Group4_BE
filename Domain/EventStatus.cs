@@ -7,6 +7,6 @@ namespace Domain
 {
 	public enum EventStatus
 	{
-		AVAILABLE, UNAVAILABLE
+		Available, Unavailable
 	}
 }

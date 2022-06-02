@@ -1,7 +1,12 @@
 
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using API.Extensions;
 using API.Middleware;
+using JorgeSerrano.Json;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Newtonsoft.Json.Converters;
 
@@ -19,14 +24,40 @@ namespace API
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddControllers().AddNewtonsoftJson(o =>
+			services.AddRouting(options =>
+			{
+				options.LowercaseUrls = true;
+				options.LowercaseQueryStrings = true;
+			});
+
+			services.AddControllers()
+			.AddJsonOptions(opts =>
+			{
+				opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+				opts.JsonSerializerOptions.IgnoreNullValues = true;
+				opts.JsonSerializerOptions.PropertyNamingPolicy = new JsonKebabCaseNamingPolicy();
+				opts.JsonSerializerOptions.DictionaryKeyPolicy = new JsonKebabCaseNamingPolicy();
+				opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+			});
+
+			services.AddApiVersioning(o =>
+			{
+				o.AssumeDefaultVersionWhenUnspecified = true;
+				o.DefaultApiVersion = ApiVersion.Default;
+				o.ReportApiVersions = true;
+				// o.ApiVersionReader = ApiVersionReader.Combine(
+				// new QueryStringApiVersionReader("api-version"),
+				// new HeaderApiVersionReader("X-Version"),
+				// new MediaTypeApiVersionReader("ver"));
+			});
+
+			services.AddVersionedApiExplorer(
+				options =>
 				{
-					o.SerializerSettings.Converters.Add(new StringEnumConverter
-					{
-						CamelCaseText = true
-					});
-					o.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+					options.GroupNameFormat = "'v'VVV";
+					options.SubstituteApiVersionInUrl = true;
 				});
+
 			services.AddApplicationServices(_config);
 			services.AddIdentityServices(_config);
 			// Repositories
@@ -41,7 +72,7 @@ namespace API
 				app.UseDeveloperExceptionPage();
 				app.UseSwagger();
 				app
-					.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1"));
+				  .UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1"));
 
 				app.UseMiddleware<ExceptionMiddleware>();
 			}
@@ -55,10 +86,10 @@ namespace API
 			app.UseAuthorization();
 
 			app
-				.UseEndpoints(endpoints =>
-				{
-					endpoints.MapControllers();
-				});
+			  .UseEndpoints(endpoints =>
+			  {
+				  endpoints.MapControllers();
+			  });
 		}
 	}
 }
