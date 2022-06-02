@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Comments.DTOs;
 using Application.Events.DTOs;
 using Application.Posts.DTOs;
 using Application.Tickets.DTOs;
@@ -29,6 +30,8 @@ namespace Application.Core
 			CreateMap<CreatePostDTO, Post>();
 			CreateMap<EditPostDTO, Post>();
 			CreateMap<Ticket, PostDTO>();
+
+			CreateMap<Comment, CommentDTO>();
 		}
 
 	}

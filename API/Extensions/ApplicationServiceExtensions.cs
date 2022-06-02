@@ -74,6 +74,8 @@ namespace API.Extensions
         .WithOrigins("http://localhost:3000");
         });
         });
+
+      services.AddSignalR();
       return services;
     }
   }

@@ -28,7 +28,7 @@ namespace Application.Events
             public async Task<Result<Unit>>
             Handle(Command request, CancellationToken cancellationToken)
             {
-                var Event = await _context.Event.FindAsync(request.Id);
+                var Event = await _context.Events.FindAsync(request.Id);
 
                 if(Event == null) return null;
 

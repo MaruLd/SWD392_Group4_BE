@@ -29,7 +29,7 @@ namespace Application.Tickets
             {
                 
                
-                var Ticket = await _context.Ticket.FindAsync(request.Id);
+                var Ticket = await _context.Tickets.FindAsync(request.Id);
 
                 _context.Remove(Ticket);
 

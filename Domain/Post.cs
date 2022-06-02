@@ -16,7 +16,7 @@ public class Post
 
 	public string Title { get; set; }
 	public string Content { get; set; }
-	public string ImageURL { get; set; }
+	public string? ImageURL { get; set; }
 
 	public virtual Event? Event { get; set; }
 	public Guid? EventId { get; set; }

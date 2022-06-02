@@ -8,7 +8,7 @@ namespace Domain;
 public class User : IdentityUser<Guid>
 {
 	public string DisplayName { get; set; }
-	public string ImageURL { get; set; }
+	public string? ImageURL { get; set; }
 
 	// public int InventoryId { get; set; }
 	[JsonIgnore]

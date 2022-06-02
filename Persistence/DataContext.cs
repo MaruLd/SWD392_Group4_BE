@@ -13,29 +13,24 @@ namespace Persistence
 
 		}
 
-		protected override void OnModelCreating(ModelBuilder builder)
-		{
-			base.OnModelCreating(builder);
 
-		}
+		public DbSet<User> Users { get; set; }
 
-		public DbSet<User> User { get; set; }
+		public DbSet<Event> Events { get; set; }
 
-		public DbSet<Event> Event { get; set; }
+		public DbSet<EventAgenda> EventAgendas { get; set; }
 
-		public DbSet<EventAgenda> EventAgenda { get; set; }
+		public DbSet<Organizer> Organizers { get; set; }
 
-		public DbSet<Organizer> Organizer { get; set; }
+		public DbSet<Post> Posts { get; set; }
 
-		public DbSet<Post> Post { get; set; }
+		public DbSet<Ticket> Tickets { get; set; }
 
-		public DbSet<Ticket> Ticket { get; set; }
+		public DbSet<EventUser> EventUsers { get; set; }
 
-		public DbSet<EventUser> EventUser { get; set; }
+		public DbSet<EventCategory> EventCategories { get; set; }
 
-		public DbSet<EventCategory> EventCategory { get; set; }
-
-		public DbSet<Comment> Comment { get; set; }
+		public DbSet<Comment> Comments { get; set; }
 
 		// public DbSet<EventTicket> EventTickets { get; set; }
 

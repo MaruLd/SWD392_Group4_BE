@@ -29,7 +29,7 @@ namespace Application.Posts
             {
                 
                
-                var Post = await _context.Post.FindAsync(request.Id);
+                var Post = await _context.Posts.FindAsync(request.Id);
 
                 _context.Remove(Post);
 
