@@ -70,7 +70,7 @@ namespace Application.Events
 
 				if (!result) return Result<Unit>.Failure("Failed to update event");
 
-				return Result<Unit>.Success(Unit.Value);
+				return Result<Unit>.NoContentSuccess(Unit.Value);
 			}
 		}
 	}

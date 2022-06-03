@@ -52,7 +52,7 @@ namespace Application.Posts
 				if (eventInDb == null) return Result<Unit>.Failure("Event not found!");
 
 				var eventUser = await _eventUserService.GetByID(ticket.EventId.Value, user.Id);
-				if (eventUser == null) return Result<Unit>.Failure("You aren't in the event!");
+				if (eventUser == null) return Result<Unit>.Unauthorized("You aren't in the event!");
 
 				var allowedRole = new List<EventUserType> { EventUserType.Admin, EventUserType.Manager };
 				if (!allowedRole.Contains(eventUser.Type))

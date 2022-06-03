@@ -37,7 +37,7 @@ namespace Application.Events
                 var result = await _context.SaveChangesAsync()>0;
                 if (!result) return Result<Unit>.Failure("Failed to delete the event");
 
-                return Result<Unit>.Success(Unit.Value);
+                return Result<Unit>.NoContentSuccess(Unit.Value);
             }
         }
     }

@@ -27,7 +27,7 @@ namespace API.Controllers
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
-
+		
 		[HttpPost]
 		public async Task<ActionResult> CreateEvent(CreateEventDTO Event)
 		{

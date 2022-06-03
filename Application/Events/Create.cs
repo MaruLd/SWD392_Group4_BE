@@ -35,18 +35,18 @@ namespace Application.Events
 
 		public class Handler : IRequestHandler<Command, Result<Unit>>
 		{
-			private readonly IMapper _mapper;
 			private readonly EventService _eventService;
 			private readonly UserService _userService;
 
 			private readonly IUserAccessor _userAccessor;
+    private readonly IMapper _mapper;
 
 			public Handler(EventService eventService, UserService userService, IMapper mapper, IUserAccessor userAccessor)
 			{
+      _mapper = mapper;
 				_eventService = eventService;
 				_userService = userService;
 				_userAccessor = userAccessor;
-				_mapper = mapper;
 			}
 
 			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
@@ -70,7 +70,7 @@ namespace Application.Events
 				var result = await _eventService.CreateEvent(request.Event, user.Id);
 
 				if (!result) return Result<Unit>.Failure("Failed to create event");
-				return Result<Unit>.Success(Unit.Value); //Unit.Value is nothing
+				return Result<Unit>.CreatedSuccess(Unit.Value); //Unit.Value is nothing
 			}
 		}
 	}

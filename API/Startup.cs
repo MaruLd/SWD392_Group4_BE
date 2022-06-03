@@ -35,7 +35,7 @@ namespace API
 			.AddJsonOptions(opts =>
 			{
 				opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-				opts.JsonSerializerOptions.IgnoreNullValues = true;
+				opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 				opts.JsonSerializerOptions.PropertyNamingPolicy = new JsonKebabCaseNamingPolicy();
 				opts.JsonSerializerOptions.DictionaryKeyPolicy = new JsonKebabCaseNamingPolicy();
 				opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
