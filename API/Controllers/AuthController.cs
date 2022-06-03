@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using API.DTOs;
 using Application.Services;
 using Domain;
 using Microsoft.AspNetCore.Identity;
@@ -73,13 +74,18 @@ namespace API.Controllers
 				await _userManager.CreateAsync(user);
 			}
 
-			return Ok(_tokenService.CreateToken(user));
+			return Ok(CreateUserObject(user));
 		}
 
-		[HttpGet("Error")]
-		public IActionResult ErrorAuth()
+		private LoginResultDTO CreateUserObject(User user)
 		{
-			return BadRequest();
+			return new LoginResultDTO
+			{
+				DisplayName = user.DisplayName,
+				Token = _tokenService.CreateToken(user),
+				Email = user.Email,
+				Image = user.ImageURL
+			};
 		}
 	}
 }

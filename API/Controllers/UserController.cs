@@ -34,7 +34,7 @@ namespace API.Controllers
 
 		[HttpGet]
 
-		public async Task<ActionResult<UserDTO>> GetCurrentUser()
+		public async Task<ActionResult<LoginResultDTO>> GetCurrentUser()
 		{
 			var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
 
@@ -43,7 +43,7 @@ namespace API.Controllers
 
 		[HttpPost("google-login")]
 
-		public async Task<ActionResult<UserDTO>> GoogleLogin([FromQuery] string token)
+		public async Task<ActionResult<LoginResultDTO>> GoogleLogin([FromQuery] string token)
 		{
 			var result = await _firebaseService.VerifyIdToken(token);
 			if (result == null)
@@ -62,10 +62,11 @@ namespace API.Controllers
 
 		}
 
-		private UserDTO CreateUserObject(User user)
+		private LoginResultDTO CreateUserObject(User user)
 		{
-			return new UserDTO
+			return new LoginResultDTO
 			{
+				Id = user.Id,
 				DisplayName = user.DisplayName,
 				Token = _tokenService.CreateTestToken(user.Email),
 				Email = user.Email,
