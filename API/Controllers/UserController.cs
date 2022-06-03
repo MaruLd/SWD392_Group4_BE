@@ -38,7 +38,7 @@ namespace API.Controllers
 		{
 			var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
 
-			return CreateUserObject(user);
+			return await CreateUserObject(user);
 		}
 
 		[HttpPost("google-login")]
@@ -56,20 +56,21 @@ namespace API.Controllers
 
 			if (result != null)
 			{
-				return CreateUserObject(user);
+				return await CreateUserObject(user);
 			}
 			return Unauthorized();
 
 		}
 
-		private LoginResultDTO CreateUserObject(User user)
+		private async Task<LoginResultDTO> CreateUserObject(User user)
 		{
 			return new LoginResultDTO
 			{
 				Id = user.Id,
 				DisplayName = user.DisplayName,
-				Token = _tokenService.CreateTestToken(user.Email),
+				Token = await _tokenService.CreateToken(user),
 				Email = user.Email,
+				Role = ">>>",
 				Image = user.ImageURL
 			};
 		}

@@ -33,7 +33,7 @@ namespace API.Extensions
       services.AddScoped<UserService>();
       services.AddScoped<EventUserService>();
 
-      services.AddSingleton<TokenService>();
+      services.AddScoped<TokenService>();
       services.AddScoped<FirebaseService>();
 
       services.AddScoped<UserAccessor>();

@@ -20,18 +20,21 @@ namespace API.Controllers
 		private readonly UserService _userService;
 		private readonly IConfiguration _config;
 		private readonly UserManager<User> _userManager;
+		private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
 		public AuthController(TokenService tokenService,
 						UserService userService,
 						IConfiguration config,
 						FirebaseService firebaseService,
-						UserManager<User> userManager)
+						UserManager<User> userManager,
+						RoleManager<IdentityRole<Guid>> roleManager)
 		{
 			_firebaseService = firebaseService;
 			_tokenService = tokenService;
 			this._userService = userService;
 			_config = config;
 			_userManager = userManager;
+			this._roleManager = roleManager;
 		}
 
 		[HttpPost]
@@ -72,19 +75,27 @@ namespace API.Controllers
 				};
 
 				await _userManager.CreateAsync(user);
-			}
 
-			return Ok(CreateUserObject(user));
+				var role = await _roleManager.FindByNameAsync("User");
+				await _userManager.AddToRoleAsync(user, role.Name);
+			}
+			else
+			{
+				var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+				return Ok(await CreateUserObject(user, role));
+			}
+			return null;
 		}
 
-		private LoginResultDTO CreateUserObject(User user)
+		private async Task<LoginResultDTO> CreateUserObject(User user, string role)
 		{
 			return new LoginResultDTO
 			{
 				Id = user.Id,
 				DisplayName = user.DisplayName,
-				Token = _tokenService.CreateToken(user),
+				Token = await _tokenService.CreateToken(user, role),
 				Email = user.Email,
+				Role = role,
 				Image = user.ImageURL
 			};
 		}
