@@ -81,6 +81,7 @@ namespace API.Controllers
 		{
 			return new LoginResultDTO
 			{
+				Id = user.Id,
 				DisplayName = user.DisplayName,
 				Token = _tokenService.CreateToken(user),
 				Email = user.Email,
