@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Events.DTOs;
 using Application.Interfaces;
 using AutoMapper;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
-using Persistence.Params;
 using Persistence.Repositories;
 
 namespace Application.Services
@@ -31,15 +31,14 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<List<Event>> Get(EventQueryParams dto)
+		public async Task<List<Event>> Get(EventQueryParams eventParams)
 		{
 			var query = _eventRepository.GetQuery();
 
-			if (dto.Title != null) query = query.Where(e => e.Title.Contains(dto.Title));
-			if (dto.StartTime != null) query = query.Where(e => e.StartTime > dto.StartTime);
-			if (dto.EndTime != null) query = query.Where(e => e.EndTime > dto.EndTime);
-
-			switch (dto.OrderBy)
+			if (eventParams.Title != null) query = query.Where(e => e.Title.Contains(eventParams.Title));
+			if (eventParams.StartTime != null) query = query.Where(e => e.StartTime > eventParams.StartTime);
+			if (eventParams.EndTime != null) query = query.Where(e => e.EndTime > eventParams.EndTime);
+			switch (eventParams.OrderBy)
 			{
 				case OrderByEnum.DateAscending:
 					query = query.OrderBy(e => e.CreatedDate);
@@ -51,9 +50,11 @@ namespace Application.Services
 					break;
 			}
 
-			var list = await query
-				.ToListAsync();
+			query = query.Include(e => e.Tickets).Include(e => e.Organizers);
+			if (eventParams.OrganizerId != Guid.Empty) query = query.Where(e => e.Organizers.Any(o => o.Id == eventParams.OrganizerId));
 
+
+			var list = await PagedList<Event>.CreateAsync(query, eventParams.PageNumber, eventParams.PageSize);
 
 			return list;
 		}

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Tickets.DTOs
 {
-	public class TicketQueryParams
+	public class TicketQueryParams : PaginationParams
 	{
 		[Required]
 		[FromQuery(Name = "event-id")]

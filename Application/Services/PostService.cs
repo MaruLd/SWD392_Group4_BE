@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Application.Posts.DTOs;
 using Domain;
 using Persistence;
-using Persistence.Params;
 using Persistence.Repositories;
 
 namespace Application.Services

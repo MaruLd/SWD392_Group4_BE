@@ -7,7 +7,6 @@ using AutoMapper;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
-using Persistence.Params;
 using Persistence.Repositories;
 
 namespace Application.Services

@@ -46,8 +46,8 @@ namespace API
 
 				// context.Database.Migrate();
 				// await EventCategorySeed.SeedData(context);
-				// await EventSeed.SeedData(context);
-				// await TicketSeed.SeedData(context);
+				await EventSeed.SeedData(context);
+				await TicketSeed.SeedData(context);
 			}
 			catch (Exception ex)
 			{

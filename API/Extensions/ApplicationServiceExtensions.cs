@@ -26,12 +26,16 @@ namespace API.Extensions
       services.AddScoped<TicketRepository>();
       services.AddScoped<PostRepository>();
       services.AddScoped<CommentRepository>();
+      services.AddScoped<OrganizerRepository>();
+
 
       services.AddScoped<EventService>();
       services.AddScoped<TicketService>();
       services.AddScoped<PostService>();
       services.AddScoped<UserService>();
       services.AddScoped<EventUserService>();
+      services.AddScoped<OrganizerService>();
+
 
       services.AddScoped<TokenService>();
       services.AddScoped<FirebaseService>();

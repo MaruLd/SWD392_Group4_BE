@@ -15,8 +15,8 @@ namespace Application.Core
 	{
 		public MappingProfiles()
 		{
-			CreateMap<Event, EventDTO>();
-			CreateMap<Event, Event>();
+			CreateMap<Event, EventDTO>()
+				.ForMember(dst => dst.Tickets, src => src.MapFrom(t => t.Tickets));
 			CreateMap<EventDTO, Event>();
 
 			CreateMap<CreateEventDTO, Event>();

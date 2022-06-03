@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using API.DTOs;
 using Application.Services;
+using AutoMapper;
 using Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,9 @@ namespace API.Controllers
 						IConfiguration config,
 						FirebaseService firebaseService,
 						UserManager<User> userManager,
-						RoleManager<IdentityRole<Guid>> roleManager)
+						RoleManager<IdentityRole<Guid>> roleManager,
+						IMapper mapper
+						)
 		{
 			_firebaseService = firebaseService;
 			_tokenService = tokenService;

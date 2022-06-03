@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Application.Tickets.DTOs;
 using Domain;
 using Persistence;
-using Persistence.Params;
 using Persistence.Repositories;
+using Application.Core;
 
 namespace Application.Services
 {
@@ -20,16 +20,16 @@ namespace Application.Services
 			_ticketRepository = ticketRepository;
 		}
 
-		public async Task<List<Ticket>> Get(TicketQueryParams dto)
+		public async Task<List<Ticket>> Get(TicketQueryParams ticketParams)
 		{
 			var query = _ticketRepository.GetQuery();
 
-			if (dto.EventId != null)
+			if (ticketParams.EventId != null)
 			{
-				query = query.Where(t => t.EventId == dto.EventId);
+				query = query.Where(t => t.EventId == ticketParams.EventId);
 			}
 
-			switch (dto.OrderBy)
+			switch (ticketParams.OrderBy)
 			{
 				case OrderByEnum.DateAscending:
 					query = query.OrderBy(t => t.CreatedDate);
@@ -41,7 +41,8 @@ namespace Application.Services
 					break;
 			}
 
-			return await query.OrderBy(e => e.CreatedDate).ToListAsync();
+			var list = await PagedList<Ticket>.CreateAsync(query, ticketParams.PageNumber, ticketParams.PageSize);
+			return list;
 		}
 
 		public async Task<List<Ticket>> GetAllFromEvent(Guid eventId)

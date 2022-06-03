@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
-using Persistence.Params;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
