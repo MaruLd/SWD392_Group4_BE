@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class initial : Migration
+    public partial class initialAWS : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,7 +29,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -71,8 +71,8 @@ namespace Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -193,12 +193,12 @@ namespace Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MultiplierFactor = table.Column<float>(type: "real", nullable: false),
                     EventCategoryId = table.Column<int>(type: "int", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -262,8 +262,8 @@ namespace Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -290,10 +290,10 @@ namespace Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -322,6 +322,7 @@ namespace Persistence.Migrations
                     Cost = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
@@ -340,7 +341,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -386,6 +387,33 @@ namespace Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "CommentLikes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommentLikes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CommentLikes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CommentLikes_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -424,6 +452,16 @@ namespace Persistence.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentLikes_CommentId",
+                table: "CommentLikes",
+                column: "CommentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentLikes_UserId",
+                table: "CommentLikes",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_PostId",
@@ -499,7 +537,7 @@ namespace Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Comments");
+                name: "CommentLikes");
 
             migrationBuilder.DropTable(
                 name: "EventAgendas");
@@ -517,13 +555,16 @@ namespace Persistence.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Organizers");
 
             migrationBuilder.DropTable(
                 name: "Tickets");
+
+            migrationBuilder.DropTable(
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

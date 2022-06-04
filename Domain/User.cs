@@ -13,5 +13,7 @@ public class User : IdentityUser<Guid>
 	// public int InventoryId { get; set; }
 	[JsonIgnore]
 	public virtual ICollection<Ticket> Tickets { get; set; }
+	[JsonIgnore]
+	public virtual ICollection<CommentLike> CommentLikes { get; set; }
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 }

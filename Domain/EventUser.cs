@@ -16,6 +16,7 @@ namespace Domain
 
 		[Column(TypeName = "nvarchar(100)")]
 		public EventUserStatusEnum Status { get; set; }
+		[Column(TypeName = "nvarchar(100)")]
 		public EventUserTypeEnum Type { get; set; }
 
 		public virtual Event? Event { get; set; }

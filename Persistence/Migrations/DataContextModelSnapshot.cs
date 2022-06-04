@@ -53,6 +53,34 @@ namespace Persistence.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("Domain.CommentLike", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CommentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CommentLikes");
+                });
+
             modelBuilder.Entity("Domain.Event", b =>
                 {
                     b.Property<Guid>("Id")
@@ -158,8 +186,9 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -536,6 +565,25 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.CommentLike", b =>
+                {
+                    b.HasOne("Domain.Comment", "Comment")
+                        .WithMany("CommentLikes")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.User", "User")
+                        .WithMany("CommentLikes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Event", b =>
                 {
                     b.HasOne("Domain.EventCategory", "EventCategory")
@@ -674,6 +722,11 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Comment", b =>
+                {
+                    b.Navigation("CommentLikes");
+                });
+
             modelBuilder.Entity("Domain.Event", b =>
                 {
                     b.Navigation("EventAgenda");
@@ -688,6 +741,11 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Post", b =>
                 {
                     b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("Domain.User", b =>
+                {
+                    b.Navigation("CommentLikes");
                 });
 #pragma warning restore 612, 618
         }
