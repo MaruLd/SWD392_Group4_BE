@@ -28,18 +28,21 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 
+		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		public async Task<ActionResult> CreatePost(CreatePostDTO Post)
 		{
 			return HandleResult(await Mediator.Send(new Create.Command { dto = Post }));
 		}
 
+		[Authorize(Roles = "Admin")]
 		[HttpPut("{id}")]
 		public async Task<ActionResult> EditPost(Guid id, EditPostDTO dto)
 		{
 			return HandleResult(await Mediator.Send(new Edit.Command { postId = id, dto = dto }));
 		}
 
+		[Authorize(Roles = "Admin")]
 		[HttpDelete("{id}")]
 		public async Task<ActionResult> DeletePost(Guid id)
 		{
