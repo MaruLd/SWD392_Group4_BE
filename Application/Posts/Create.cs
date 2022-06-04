@@ -16,12 +16,12 @@ namespace Application.Posts
 {
   public class Create
   {
-    public class Command : IRequest<Result<Unit>>
+    public class Command : IRequest<Result<PostDTO>>
     {
       public CreatePostDTO dto { get; set; }
     }
 
-    public class Handler : IRequestHandler<Command, Result<Unit>>
+    public class Handler : IRequestHandler<Command, Result<PostDTO>>
     {
       private readonly EventService _eventService;
       private readonly PostService _postService;
@@ -40,26 +40,26 @@ namespace Application.Posts
         this._mapper = mapper;
       }
 
-      public async Task<Result<Unit>>
+      public async Task<Result<PostDTO>>
       Handle(Command request, CancellationToken cancellationToken)
       {
         var user = await _userService.GetByEmail(_userAccessor.GetEmail());
         var eventUser = await _eventUserService.GetByID(request.dto.EventID, user.Id);
 
-        if (eventUser == null) return Result<Unit>.Failure("You aren't in the event!");
+        if (eventUser == null) return Result<PostDTO>.Failure("You aren't in the event!");
 
         var allowedRole = new List<EventUserType> { EventUserType.Admin, EventUserType.Manager };
         if (!allowedRole.Contains(eventUser.Type))
         {
-          return Result<Unit>.Failure("You have no permission!");
+          return Result<PostDTO>.Failure("You have no permission!");
         }
 
         var Post = _mapper.Map<Post>(request.dto);
-
         var result = await _postService.Insert(Post);
-        if (!result) return Result<Unit>.Failure("Failed to create Post");
 
-        return Result<Unit>.Success(Unit.Value);
+        if (!result) return Result<PostDTO>.Failure("Failed to create Post");
+
+        return Result<PostDTO>.Success(_mapper.Map<PostDTO>(result));
       }
     }
   }

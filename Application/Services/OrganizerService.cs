@@ -8,6 +8,7 @@ using Domain;
 using Persistence;
 using Persistence.Repositories;
 using Application.Organizers.DTOs;
+using Application.Core;
 
 namespace Application.Services
 {
@@ -20,7 +21,7 @@ namespace Application.Services
 			_organizerRepository = organizerRepository;
 		}
 
-		public async Task<List<Organizer>> Get(OrganizerQueryParams dto)
+		public async Task<PagedList<Organizer>> Get(OrganizerQueryParams dto)
 		{
 			var query = _organizerRepository.GetQuery();
 
@@ -41,7 +42,8 @@ namespace Application.Services
 					break;
 			}
 
-			return await query.OrderBy(e => e.CreatedDate).ToListAsync();
+			return await PagedList<Organizer>.CreateAsync(query, dto.PageNumber, dto.PageSize);
+
 		}
 
 		public async Task<List<Organizer>> GetAll()

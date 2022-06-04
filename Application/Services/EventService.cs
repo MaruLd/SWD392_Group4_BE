@@ -61,12 +61,12 @@ namespace Application.Services
 
 		public async Task<Event> GetByID(Guid id) => await _eventRepository.GetByID(id);
 
-		public async Task<bool> CreateEvent(CreateEventDTO e, Guid userId)
+		public async Task<Event> CreateEvent(CreateEventDTO e, Guid userId)
 		{
 			var eventEntity = _mapper.Map<Event>(e);
 			_eventRepository.Insert(eventEntity);
 
-			if (!await _eventRepository.Save()) return false;
+			if (!await _eventRepository.Save()) return null;
 
 			_eventUserRepository.Insert(new EventUser()
 			{
@@ -77,8 +77,8 @@ namespace Application.Services
 			});
 
 
-			if (!await _eventUserRepository.Save()) return false;
-			return true;
+			if (!await _eventUserRepository.Save()) return null;
+			return eventEntity;
 		}
 
 		public async Task<bool> Update(Event e)

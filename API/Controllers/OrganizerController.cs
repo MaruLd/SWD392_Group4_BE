@@ -28,11 +28,12 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 		
-		// [HttpPost]
-		// public async Task<ActionResult> CreateEvent(CreateEventDTO Event)
-		// {
-		// 	return HandleResult(await Mediator.Send(new Create.Command { Event = Event }));
-		// }
+		[Authorize(Roles = "Admin")]
+		[HttpPost]
+		public async Task<ActionResult> CreateEvent(CreateOrganizerDTO dto)
+		{
+			return HandleResult(await Mediator.Send(new Create.Command { dto = dto }));
+		}
 
 		// [HttpPut("{id}")]
 		// public async Task<ActionResult> EditEvent(Guid id, EditEventDTO Event)
