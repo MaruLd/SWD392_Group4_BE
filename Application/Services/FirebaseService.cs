@@ -29,5 +29,6 @@ namespace Application.Services
 			var result = await auth.VerifyIdTokenAsync(token);
 			return result;
 		}
+
 	}
 }
