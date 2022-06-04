@@ -8,6 +8,7 @@ using Application.Services;
 using Application.Tickets.DTOs;
 using AutoMapper;
 using Domain;
+using Domain.Enums;
 using FluentValidation;
 using MediatR;
 using Persistence;
@@ -54,7 +55,7 @@ namespace Application.Tickets
 				var eventUser = await _eventUserService.GetByID(ticket.EventId.Value, user.Id);
 				if (eventUser == null) return Result<Unit>.Failure("You aren't in the event!");
 
-				var allowedRole = new List<EventUserType> { EventUserType.Admin, EventUserType.Manager };
+				var allowedRole = new List<EventUserTypeEnum> { EventUserTypeEnum.Admin, EventUserTypeEnum.Manager };
 				if (!allowedRole.Contains(eventUser.Type))
 				{
 					return Result<Unit>.Failure("You have no permission!");

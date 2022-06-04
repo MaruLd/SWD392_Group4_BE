@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Domain.Enums;
 
 namespace Domain;
 
@@ -36,8 +37,9 @@ public class Event
 	public virtual ICollection<Post> Posts { get; set; }
 	[JsonIgnore]
 	public virtual ICollection<EventAgenda> EventAgenda { get; set; }
-
-	public String Status { get; set; }
+	
+	[Column(TypeName = "nvarchar(100)")]
+	public StatusEnum Status { get; set; }
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 
 }

@@ -7,6 +7,7 @@ using Application.Posts.DTOs;
 using Domain;
 using Persistence;
 using Persistence.Repositories;
+using Domain.Enums;
 
 namespace Application.Services
 {

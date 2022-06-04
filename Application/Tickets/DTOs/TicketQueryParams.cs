@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Core;
 using Domain;
+using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Tickets.DTOs

@@ -9,6 +9,7 @@ using Application.Interfaces;
 using Application.Services;
 using AutoMapper;
 using Domain;
+using Domain.Enums;
 using FluentValidation;
 using MediatR;
 using Persistence;
@@ -59,7 +60,7 @@ namespace Application.Events
 
 				if (eventUser == null) return Result<Unit>.Failure("You aren't in the event!");
 
-				var allowedRole = new List<EventUserType> { EventUserType.Admin, EventUserType.Manager };
+				var allowedRole = new List<EventUserTypeEnum> { EventUserTypeEnum.Admin, EventUserTypeEnum.Manager };
 				if (!allowedRole.Contains(eventUser.Type))
 				{
 					return Result<Unit>.Failure("You have no permission!");

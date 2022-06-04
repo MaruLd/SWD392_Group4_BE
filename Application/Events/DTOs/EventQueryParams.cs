@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using Application.Core;
 using Domain;
+using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Events.DTOs
@@ -12,7 +13,9 @@ namespace Application.Events.DTOs
 		public String? Title { get; set; }
 		[FromQuery(Name = "organizer-id")]
 		public Guid OrganizerId { get; set; }
-		
+		[FromQuery(Name = "category-id")]
+		public int CategoryId { get; set; }
+
 		[FromQuery(Name = "order-by")]
 		public OrderByEnum OrderBy { get; set; } = OrderByEnum.DateDescending;
 

@@ -1,11 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain
+namespace Domain.Enums
 {
-	public enum EventStatus
+	public enum StatusEnum
 	{
 		Available, Unavailable
 	}

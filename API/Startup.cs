@@ -34,7 +34,7 @@ namespace API
 			services.AddControllers()
 			.AddJsonOptions(opts =>
 			{
-				opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(new JsonKebabCaseNamingPolicy()));
+				opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 				opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 
 				opts.JsonSerializerOptions.PropertyNamingPolicy = new JsonKebabCaseNamingPolicy();
@@ -91,7 +91,7 @@ namespace API
 			  .UseEndpoints(endpoints =>
 			  {
 				  endpoints.MapControllers();
-					endpoints.MapHub<ChatHub>("/chat");
+				  endpoints.MapHub<ChatHub>("/chat");
 			  });
 		}
 	}

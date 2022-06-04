@@ -9,6 +9,7 @@ using Persistence;
 using Persistence.Repositories;
 using Application.Organizers.DTOs;
 using Application.Core;
+using Domain.Enums;
 
 namespace Application.Services
 {

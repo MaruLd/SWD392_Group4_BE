@@ -8,6 +8,7 @@ using Domain;
 using Persistence;
 using Persistence.Repositories;
 using Application.Core;
+using Domain.Enums;
 
 namespace Application.Services
 {
@@ -49,6 +50,14 @@ namespace Application.Services
 		{
 			var query = _ticketRepository.GetQuery();
 			return await query.Where(t => t.EventId == eventId).OrderBy(e => e.CreatedDate).ToListAsync();
+		}
+
+		public async Task<List<User>> GetAllUserByTicketId(Guid id)
+		{
+			var query = _ticketRepository.GetQuery();
+			var t = await query.Where(t => t.Id == id).Include(t => t.Users).FirstOrDefaultAsync();
+
+			return (List<User>) t.Users;
 		}
 
 		public async Task<Ticket> GetByID(Guid id) => await _ticketRepository.GetByID(id);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
+using Domain.Enums;
 
 namespace Persistence
 {
@@ -22,7 +23,7 @@ namespace Persistence
 					Description = "Description about the event",
 					EventCategoryId = 1,
 					MultiplierFactor = 1,
-					Status = "AVAILABLE"
+					Status = StatusEnum.Available
 				},
 				 new Event
 				{
@@ -32,7 +33,7 @@ namespace Persistence
 					Description = "Description about the event",
 					EventCategoryId = 1,
 					MultiplierFactor = 1,
-					Status = "AVAILABLE"
+					Status = StatusEnum.Available
 				},
 				 new Event
 				{
@@ -42,7 +43,7 @@ namespace Persistence
 					Description = "Description about the event",
 					EventCategoryId = 1,
 					MultiplierFactor = 1,
-					Status = "AVAILABLE"
+					Status = StatusEnum.Available
 				},
 				 new Event
 				{
@@ -52,7 +53,7 @@ namespace Persistence
 					Description = "Description about the event",
 					EventCategoryId = 1,
 					MultiplierFactor = 1,
-					Status = "AVAILABLE"
+					Status = StatusEnum.Available
 				},
 				 new Event
 				{
@@ -62,7 +63,7 @@ namespace Persistence
 					Description = "Description about the event",
 					EventCategoryId = 1,
 					MultiplierFactor = 1,
-					Status = "AVAILABLE"
+					Status = StatusEnum.Available
 				},
 				 new Event
 				{
@@ -72,7 +73,7 @@ namespace Persistence
 					Description = "Description about the event",
 					EventCategoryId = 1,
 					MultiplierFactor = 1,
-					Status = "AVAILABLE"
+					Status = StatusEnum.Available
 				}
 			};
 			await context.Events.AddRangeAsync(events);

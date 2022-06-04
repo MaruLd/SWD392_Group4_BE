@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Domain.Enums;
 
 namespace Domain
 {
@@ -22,6 +23,8 @@ namespace Domain
 
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 
+		[Column(TypeName = "nvarchar(100)")]
+		public StatusEnum Status { get; set; }
 		[JsonIgnore]
 		public virtual Event? Event { get; set; }
 		public Guid? EventId { get; set; }

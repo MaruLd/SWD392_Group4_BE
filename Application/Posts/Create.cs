@@ -11,6 +11,7 @@ using Domain;
 using FluentValidation;
 using MediatR;
 using Persistence;
+using Domain.Enums;
 
 namespace Application.Posts
 {
@@ -48,7 +49,7 @@ namespace Application.Posts
 
         if (eventUser == null) return Result<PostDTO>.Failure("You aren't in the event!");
 
-        var allowedRole = new List<EventUserType> { EventUserType.Admin, EventUserType.Manager };
+        var allowedRole = new List<EventUserTypeEnum> { EventUserTypeEnum.Admin, EventUserTypeEnum.Manager };
         if (!allowedRole.Contains(eventUser.Type))
         {
           return Result<PostDTO>.Failure("You have no permission!");
