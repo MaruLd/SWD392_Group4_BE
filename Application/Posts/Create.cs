@@ -60,7 +60,7 @@ namespace Application.Posts
 
         if (!result) return Result<PostDTO>.Failure("Failed to create Post");
 
-        return Result<PostDTO>.Success(_mapper.Map<PostDTO>(result));
+        return Result<PostDTO>.CreatedSuccess(_mapper.Map<PostDTO>(result));
       }
     }
   }

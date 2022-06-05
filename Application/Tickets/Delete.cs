@@ -40,20 +40,20 @@ namespace Application.Tickets
 		public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
 		{
 			var ticket = await _ticketService.GetByID(request.Id);
-			if (ticket == null) return Result<Unit>.Failure("Ticket not found!");
+			if (ticket == null) return Result<Unit>.AcceptedSuccess(Unit.Value); //If you DELETE something that doesn't exist, you should just return a 204 (even if the resource never existed). The client wanted the resource gone and it is gone. Returning a 404 is exposing internal processing that is unimportant to the client and will result in an unnecessary error condition.
 
 			var eventInDb = await _eventService.GetByID((Guid)ticket.EventId);
-			if (eventInDb == null) return Result<Unit>.Failure("Event not found!"); // Actually not needed but check anyways
+			if (eventInDb == null) return Result<Unit>.AcceptedSuccess(Unit.Value); // Actually not needed but check anyways
 
 			var user = await _userService.GetByEmail(_userAccessor.GetEmail());
 			var eventUser = await _eventUserService.GetByID(eventInDb.Id, user.Id);
 
-			if (eventUser == null) return Result<Unit>.Failure("You aren't in the event!");
+			if (eventUser == null) return Result<Unit>.Forbidden("You have no permission!");
 
 			var allowedRole = new List<EventUserTypeEnum> { EventUserTypeEnum.Admin, EventUserTypeEnum.Manager };
 			if (!allowedRole.Contains(eventUser.Type))
 			{
-				return Result<Unit>.Failure("You have no permission!");
+				return Result<Unit>.Forbidden("You have no permission!");
 			}
 
 
@@ -63,7 +63,7 @@ namespace Application.Tickets
 			ticket.Status = StatusEnum.Unavailable;
 			var result = await _eventService.Update(eventInDb);
 
-			if (!result) return Result<Unit>.Failure("Failed to delete event");
+			if (!result) return Result<Unit>.Failure("Failed to delete the ticket");
 			return Result<Unit>.NoContentSuccess(Unit.Value);
 		}
 	}

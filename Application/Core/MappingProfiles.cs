@@ -33,6 +33,7 @@ namespace Application.Core
 			CreateMap<EditPostDTO, Post>();
 			CreateMap<Post, PostDTO>();
 
+			CreateMap<CreateCommentDTO, Comment>();
 			CreateMap<Comment, CommentDTO>();
 
 			CreateMap<CreateOrganizerDTO, Organizer>();

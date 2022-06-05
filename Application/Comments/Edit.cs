@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using AutoMapper;
 using Domain;
 using FluentValidation;
@@ -12,13 +13,13 @@ namespace Application.Comments
 {
     public class Edit
     {
-        public class Command : IRequest
+        public class Command : IRequest<Result<Unit>>
         {
             public Comment Comment { get; set; }
             
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
@@ -29,15 +30,19 @@ namespace Application.Comments
                 _mapper = mapper;
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var Comment = await _context.Comments.FindAsync(request.Comment.Id);
 
+                if (Comment == null) return Result<Unit>.Failure("Comment not found");
+
                 _mapper.Map(request.Comment, Comment);
 
-                await _context.SaveChangesAsync();
-                
-                return Unit.Value;
+                var result = await _context.SaveChangesAsync() > 0;
+
+                if (!result) return Result<Unit>.Failure("Failed to update the comment");
+
+                return Result<Unit>.NoContentSuccess(Unit.Value);
             }
         }
     }

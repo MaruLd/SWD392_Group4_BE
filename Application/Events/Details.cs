@@ -34,6 +34,7 @@ namespace Application.Events
 			public async Task<Result<EventDTO>> Handle(Query request, CancellationToken cancellationToken)
 			{
 				var e = await _eventService.GetByID(request.Id);
+				if (e == null) return Result<EventDTO>.Failure("Event not found!");
 				var dto = _mapper.Map<EventDTO>(e);
 				return Result<EventDTO>.Success(dto);
 			}

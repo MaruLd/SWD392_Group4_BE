@@ -35,6 +35,7 @@ namespace Application.Organizers
 			public async Task<Result<OrganizerDTO>> Handle(Query request, CancellationToken cancellationToken)
 			{
 				var o = _organizerService.GetByID(request.Id);
+				if (o == null) return Result<OrganizerDTO>.Failure("Organizer not found!");
 				var dto = _mapper.Map<OrganizerDTO>(o);
 				return Result<OrganizerDTO>.Success(dto);
 			}

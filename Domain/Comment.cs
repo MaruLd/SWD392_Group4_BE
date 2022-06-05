@@ -1,3 +1,4 @@
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -25,7 +26,8 @@ namespace Domain
 		[JsonIgnore]
 		public virtual ICollection<CommentLike> CommentLikes { get; set; }
 
-		public String Status { get; set; }
+		[Column(TypeName = "nvarchar(100)")]
+		public StatusEnum Status { get; set; }
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 	}
 }

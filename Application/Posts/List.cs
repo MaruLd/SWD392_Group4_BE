@@ -36,6 +36,7 @@ namespace Application.Posts
 			public async Task<Result<List<PostDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
 				var res = await _postService.Get(request.queryParams);
+				if (res == null) return Result<List<PostDTO>>.Failure("Posts not found!");
 				var PostDtos = _mapper.Map<List<PostDTO>>(res);
 				return Result<List<PostDTO>>.Success(PostDtos);
 			}

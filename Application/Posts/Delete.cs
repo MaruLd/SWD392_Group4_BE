@@ -31,13 +31,15 @@ namespace Application.Posts
                
                 var Post = await _context.Posts.FindAsync(request.Id);
 
+                if (Post == null) return Result<Unit>.AcceptedSuccess(Unit.Value);
+
                 _context.Remove(Post);
 
                 var result = await _context.SaveChangesAsync()>0;
                 
                 if (!result) return Result<Unit>.Failure("Failed to delete Post");
 
-				return Result<Unit>.Success(Unit.Value);
+				return Result<Unit>.NoContentSuccess(Unit.Value);
             }
         }
     }

@@ -66,7 +66,7 @@ namespace Application.Tickets
 				var result = await _ticketService.Save();
 				if (!result) return Result<Unit>.Failure("Failed to update ticket or no changes was made!");
 
-				return Result<Unit>.Success(Unit.Value);
+				return Result<Unit>.NoContentSuccess(Unit.Value);
 			}
 		}
 	}

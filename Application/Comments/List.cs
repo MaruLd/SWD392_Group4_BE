@@ -7,6 +7,7 @@ using Application.Core;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
+using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -19,8 +20,6 @@ namespace Application.Comments
     public class Query : IRequest<Result<List<CommentDTO>>>
     {
       public Guid PostId { get; set; }
-
-
     }
 
     public class Handler : IRequestHandler<Query, Result<List<CommentDTO>>>
@@ -36,7 +35,7 @@ namespace Application.Comments
 
       public async Task<Result<List<CommentDTO>>> Handle(Query request, CancellationToken cancellationToken)
       {
-        var comments = await _context.Comments.Where(x => x.Post.Id == request.PostId).OrderBy(x => x.CreatedDate).ProjectTo<CommentDTO>(_mapper.ConfigurationProvider).ToListAsync();
+        var comments = await _context.Comments.Where(x => x.Post.Id == request.PostId && x.Status == StatusEnum.Available).OrderBy(x => x.CreatedDate).ProjectTo<CommentDTO>(_mapper.ConfigurationProvider).ToListAsync();
         return Result<List<CommentDTO>>.Success(comments);
       }
     }

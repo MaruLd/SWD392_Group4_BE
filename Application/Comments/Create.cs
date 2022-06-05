@@ -5,6 +5,7 @@ using Application.Core;
 using Application.Interfaces;
 using AutoMapper;
 using Domain;
+using Domain.Enums;
 using MediatR;
 using Persistence;
 
@@ -14,10 +15,8 @@ namespace Application.Comments
   {
     public class Command : IRequest<Result<CommentDTO>>
     {
-      public Guid PostId { get; set; }
-      public string Body { get; set; }
-
-    }
+            public CreateCommentDTO Comment { get; set; }
+        }
 
     public class Handler : IRequestHandler<Command, Result<CommentDTO>>
     {
@@ -34,7 +33,7 @@ namespace Application.Comments
 
       public async Task<Result<CommentDTO>> Handle(Command request, CancellationToken cancellationToken)
       {
-        var Post = await _context.Posts.FindAsync(request.PostId);
+        var Post = await _context.Posts.FindAsync(request.Comment.PostId);
 
         if (Post == null) return null;
 
@@ -44,16 +43,16 @@ namespace Application.Comments
         var comment = new Comment
         {
           UserId = user.Id,
-          PostId = request.PostId,
-          Body = request.Body,
-          Status = "Available"
+          PostId = request.Comment.PostId,
+          Body = request.Comment.Body,
+          Status = StatusEnum.Available
         };
 
         Post.Comments.Add(comment);
 
         var success = await _context.SaveChangesAsync() > 0;
 
-        if (success) return Result<CommentDTO>.Success(_mapper.Map<CommentDTO>(comment));
+        if (success) return Result<CommentDTO>.CreatedSuccess(_mapper.Map<CommentDTO>(comment));
 
         return Result<CommentDTO>.Failure("Failure to add comment");
       }

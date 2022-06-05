@@ -58,12 +58,12 @@ namespace Application.Tickets
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
 				var eventUser = await _eventUserService.GetByID(eventInDb.Id, user.Id);
 
-				if (eventUser == null) return Result<TicketDTO>.Failure("You aren't in the event!");
+				if (eventUser == null) return Result<TicketDTO>.Forbidden("You aren't in the event!");
 
 				var allowedRole = new List<EventUserTypeEnum> { EventUserTypeEnum.Admin, EventUserTypeEnum.Manager };
 				if (!allowedRole.Contains(eventUser.Type))
 				{
-					return Result<TicketDTO>.Failure("You have no permission!");
+					return Result<TicketDTO>.Forbidden("You have no permission!");
 				}
 
 				var ticket = _mapper.Map<Ticket>(request.dto);
@@ -71,7 +71,7 @@ namespace Application.Tickets
 				var result = await _ticketService.Insert(ticket);
 				if (!result) return Result<TicketDTO>.Failure("Failed to create ticket");
 
-				return Result<TicketDTO>.Success(_mapper.Map<TicketDTO>(ticket));
+				return Result<TicketDTO>.CreatedSuccess(_mapper.Map<TicketDTO>(ticket));
 			}
 		}
 	}
