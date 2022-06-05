@@ -40,7 +40,7 @@ namespace API.Controllers
 		/// [Authorize]
 		/// </summary>
 		[Authorize]
-		[HttpPut()]
+		[HttpPut]
 		public async Task<ActionResult> EditComment(Guid postid, EditCommentDTO dto)
 		{
 			dto.PostId = postid;

@@ -42,7 +42,8 @@ namespace API.Extensions
 			services.AddScoped<CommentService>();
 
 			services.AddScoped<TokenService>();
-			services.AddScoped<FirebaseService>();
+			services.AddSingleton<FirebaseService>();
+			services.AddSingleton<AWSService>();
 
 			services.AddScoped<UserAccessor>();
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
