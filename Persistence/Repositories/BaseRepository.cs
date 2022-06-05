@@ -43,6 +43,11 @@ namespace Persistence.Repositories
 			table.Update(e);
 		}
 
+		public void Delete(T e)
+		{
+			table.Remove(e);
+		}
+
 		public async Task<bool> Save()
 		{
 			return await _context.SaveChangesAsync() > 0;

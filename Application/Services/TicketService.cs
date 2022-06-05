@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Application.Tickets.DTOs;
 using Domain;
 using Persistence;
-using Persistence.Params;
 using Persistence.Repositories;
+using Application.Core;
+using Domain.Enums;
 
 namespace Application.Services
 {
@@ -20,16 +21,16 @@ namespace Application.Services
 			_ticketRepository = ticketRepository;
 		}
 
-		public async Task<List<Ticket>> Get(TicketQueryParams dto)
+		public async Task<List<Ticket>> Get(TicketQueryParams ticketParams)
 		{
 			var query = _ticketRepository.GetQuery();
 
-			if (dto.EventId != null)
+			if (ticketParams.EventId != null)
 			{
-				query = query.Where(t => t.EventId == dto.EventId);
+				query = query.Where(t => t.EventId == ticketParams.EventId);
 			}
 
-			switch (dto.OrderBy)
+			switch (ticketParams.OrderBy)
 			{
 				case OrderByEnum.DateAscending:
 					query = query.OrderBy(t => t.CreatedDate);
@@ -41,13 +42,21 @@ namespace Application.Services
 					break;
 			}
 
-			return await query.OrderBy(e => e.CreatedDate).ToListAsync();
+			return await PagedList<Ticket>.CreateAsync(query, ticketParams.PageNumber, ticketParams.PageSize);
 		}
 
 		public async Task<List<Ticket>> GetAllFromEvent(Guid eventId)
 		{
 			var query = _ticketRepository.GetQuery();
 			return await query.Where(t => t.EventId == eventId).OrderBy(e => e.CreatedDate).ToListAsync();
+		}
+
+		public async Task<List<User>> GetAllUserByTicketId(Guid id)
+		{
+			var query = _ticketRepository.GetQuery();
+			var t = await query.Where(t => t.Id == id).Include(t => t.Users).FirstOrDefaultAsync();
+
+			return (List<User>) t.Users;
 		}
 
 		public async Task<Ticket> GetByID(Guid id) => await _ticketRepository.GetByID(id);

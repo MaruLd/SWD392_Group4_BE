@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
-using Persistence.Params;
 
 namespace API.Controllers
 {
@@ -25,23 +24,41 @@ namespace API.Controllers
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Ticket>> GetTicket(Guid id)
 		{
-
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 
+		// [HttpGet("{id}/buy")]
+		// public async Task<ActionResult<Ticket>> BuyTicket(Guid id)
+		// {
+		// 	return HandleResult(await Mediator.Send(new Create.Command { dto = Ticket }));
+		// }
+
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
+		[Authorize]
 		[HttpPost]
 		public async Task<ActionResult> CreateTicket(CreateTicketDTO Ticket)
 		{
 			return HandleResult(await Mediator.Send(new Create.Command { dto = Ticket }));
 		}
 
-		[HttpPut("{id}")]
-		public async Task<ActionResult> EditTicket(Guid id, EditTicketDTO dto)
+
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
+		[Authorize]
+		[HttpPut]
+		public async Task<ActionResult> EditTicket(EditTicketDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Edit.Command { ticketId = id, dto = dto }));
+			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
 		}
 
-		[HttpDelete("{id}")]
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
+		[Authorize(Roles = "Admin")]
+		[HttpDelete]
 		public async Task<ActionResult> DeleteTicket(Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));

@@ -1,3 +1,4 @@
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,6 @@ namespace Application.Events.DTOs
 
 		public int? EventCategoryId { get; set; }
 
-		public String Status { get; set; }
+		public StatusEnum Status { get; set; }
 	}
 }

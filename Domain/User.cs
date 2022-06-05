@@ -8,10 +8,13 @@ namespace Domain;
 public class User : IdentityUser<Guid>
 {
 	public string DisplayName { get; set; }
+
 	public string? ImageURL { get; set; }
 
 	// public int InventoryId { get; set; }
 	[JsonIgnore]
 	public virtual ICollection<Ticket> Tickets { get; set; }
+	[JsonIgnore]
+	public virtual ICollection<CommentLike> CommentLikes { get; set; }
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 }

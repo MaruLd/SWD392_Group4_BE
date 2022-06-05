@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Application.Posts.DTOs;
 using Domain;
 using Persistence;
-using Persistence.Params;
 using Persistence.Repositories;
+using Domain.Enums;
+using Application.Core;
 
 namespace Application.Services
 {
@@ -20,16 +21,21 @@ namespace Application.Services
 			_PostRepository = PostRepository;
 		}
 
-		public async Task<List<Post>> Get(PostQueryParams dto)
+		public async Task<List<Post>> Get(PostQueryParams queryParams)
 		{
 			var query = _PostRepository.GetQuery();
 
-			if (dto.EventId != null)
+			if (queryParams.EventId != Guid.Empty)
 			{
-				query = query.Where(t => t.EventId == dto.EventId);
+				query = query.Where(t => t.EventId == queryParams.EventId);
 			}
 
-			switch (dto.OrderBy)
+			if (queryParams.Title != null)
+			{
+				query = query.Where(t => t.Title.ToLower().Contains(queryParams.Title.ToLower()));
+			}
+
+			switch (queryParams.OrderBy)
 			{
 				case OrderByEnum.DateAscending:
 					query = query.OrderBy(t => t.CreatedDate);
@@ -41,7 +47,7 @@ namespace Application.Services
 					break;
 			}
 
-			return await query.OrderBy(e => e.CreatedDate).ToListAsync();
+			return await PagedList<Post>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);
 		}
 
 		public async Task<List<Post>> GetAllFromEvent(Guid eventId)

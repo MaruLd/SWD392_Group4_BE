@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Domain
+namespace Application.Tickets
 {
-	public enum EventStatus
-	{
-		Available, Unavailable
-	}
+    public class Buy
+    {
+        
+    }
 }

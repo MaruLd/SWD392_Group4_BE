@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using JorgeSerrano.Json;
 
-namespace Domain
+namespace Domain.Enums
 {
 	public enum OrderByEnum
 	{

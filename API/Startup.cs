@@ -35,7 +35,8 @@ namespace API
 			.AddJsonOptions(opts =>
 			{
 				opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-				opts.JsonSerializerOptions.IgnoreNullValues = true;
+				opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+
 				opts.JsonSerializerOptions.PropertyNamingPolicy = new JsonKebabCaseNamingPolicy();
 				opts.JsonSerializerOptions.DictionaryKeyPolicy = new JsonKebabCaseNamingPolicy();
 				opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
@@ -73,7 +74,11 @@ namespace API
 				app.UseDeveloperExceptionPage();
 				app.UseSwagger();
 				app
-				  .UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1"));
+				  .UseSwaggerUI(c =>
+				  {
+					  c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1");
+					  c.RoutePrefix = string.Empty;
+				  });
 
 				app.UseMiddleware<ExceptionMiddleware>();
 			}
@@ -90,7 +95,7 @@ namespace API
 			  .UseEndpoints(endpoints =>
 			  {
 				  endpoints.MapControllers();
-					endpoints.MapHub<ChatHub>("/chat");
+				  endpoints.MapHub<ChatHub>("/chat");
 			  });
 		}
 	}

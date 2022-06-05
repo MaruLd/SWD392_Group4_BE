@@ -1,14 +1,21 @@
 
 using System.Text.Json.Serialization;
+using Application.Core;
 using Domain;
+using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Events.DTOs
 {
-	public class EventQueryParams
+	public class EventQueryParams : PaginationParams
 	{
 		[FromQuery(Name = "title")]
 		public String? Title { get; set; }
+		[FromQuery(Name = "organizer-id")]
+		public Guid OrganizerId { get; set; }
+		[FromQuery(Name = "category-id")]
+		public int CategoryId { get; set; }
+
 		[FromQuery(Name = "order-by")]
 		public OrderByEnum OrderBy { get; set; } = OrderByEnum.DateDescending;
 

@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Enums;
 
 namespace Application.Posts.DTOs
 {
 	public class EditPostDTO
 	{
 		[Required]
-		public String Title { get; set; }
+		public Guid Id { get; set; }
 		[Required]
-		public String Description { get; set; }
+		public string Title { get; set; }
 		[Required]
-		public String Type { get; set; }
+		public string Content { get; set; }
 		[Required]
-		public int Cost { get; set; }
-		[Required]
-		public int Quantity { get; set; }
+		public string? ImageURL { get; set; }
 	}
 }

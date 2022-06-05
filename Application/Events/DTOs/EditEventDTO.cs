@@ -4,11 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
+using Domain.Enums;
 
 namespace Application.Events.DTOs
 {
 	public class EditEventDTO
 	{
+		[Required]
+		public Guid Id { get; set; }
 		[Required]
 		public String? Title { get; set; }
 		[Required]
@@ -24,6 +27,6 @@ namespace Application.Events.DTOs
 		[Required]
 		public int? EventCategoryId { get; set; }
 		[Required]
-		public EventStatus Status { get; set; }
+		public StatusEnum Status { get; set; }
 	}
 }

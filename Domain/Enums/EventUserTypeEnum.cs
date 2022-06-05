@@ -1,6 +1,6 @@
-namespace Domain
+namespace Domain.Enums
 {
-	public enum EventUserType
+	public enum EventUserTypeEnum
 	{
 		Student,
 		Lecture,
