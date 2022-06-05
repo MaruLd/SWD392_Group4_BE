@@ -56,8 +56,8 @@ namespace API.Controllers
 		/// [Authorize]
 		/// </summary>
 		[Authorize(Roles = "Admin")]
-		[HttpPut()]
-		public async Task<ActionResult> EditCategory(int id, string categoryName)
+		[HttpPut]
+		public async Task<ActionResult> EditCategory([FromBody] int id, string categoryName)
 		{
 			var cat = await _eventCategoryService.GetByID(id);
 			if (cat == null) return NotFound("Category not found!");
@@ -70,7 +70,7 @@ namespace API.Controllers
 		/// [Authorize]
 		/// </summary>
 		[Authorize(Roles = "Admin")]
-		[HttpDelete("{id}")]
+		[HttpDelete]
 		public async Task<ActionResult> DeleteCategory([FromBody] int id)
 		{
 			var cat = await _eventCategoryService.GetByID(id);

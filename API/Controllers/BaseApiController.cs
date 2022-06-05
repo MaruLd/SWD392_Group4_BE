@@ -6,12 +6,14 @@ using Application.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
 {
 	[ApiController]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	[ApiVersion("1.0")]
+
 	public class BaseApiController : ControllerBase
 	{
 		private IMediator _mediator;

@@ -54,6 +54,8 @@ namespace API.Controllers
 			}
 
 			var email = claims.Claims.FirstOrDefault(c => c.Key == "email").Value.ToString();
+
+			if (email.Split("@").Last() != "fpt.edu.vn") return StatusCode(418, "The system currently only accepted [fpt.edu.vn] email!");
 			var name = claims.Claims.FirstOrDefault(c => c.Key == "name").Value.ToString();
 
 			var user = await _userService.GetByEmail(email);
