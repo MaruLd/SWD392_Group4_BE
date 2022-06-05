@@ -64,7 +64,7 @@ namespace Application.EventAgendas
 				var result = await _eventAgendaService.Insert(ea);
 				if (result == null) return Result<EventAgendaDTO>.Failure("Failed to create event agenda!");
 
-				return Result<EventAgendaDTO>.CreatedSuccess(_mapper.Map<EventAgendaDTO>(result)); //Unit.Value is nothing
+				return Result<EventAgendaDTO>.CreatedSuccess(_mapper.Map<EventAgendaDTO>(ea)); //Unit.Value is nothing
 			}
 		}
 	}

@@ -55,12 +55,12 @@ namespace Application.Posts
 					return Result<PostDTO>.Failure("You have no permission!");
 				}
 
-				var Post = _mapper.Map<Post>(request.dto);
-				var result = await _postService.Insert(Post);
+				var post = _mapper.Map<Post>(request.dto);
+				var result = await _postService.Insert(post);
 
 				if (!result) return Result<PostDTO>.Failure("Failed to create Post");
 
-				return Result<PostDTO>.CreatedSuccess(_mapper.Map<PostDTO>(Post));
+				return Result<PostDTO>.CreatedSuccess(_mapper.Map<PostDTO>(post));
 			}
 		}
 	}

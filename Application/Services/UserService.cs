@@ -31,6 +31,7 @@ namespace Application.Services
 		public async Task<List<User>> Get(UserQueryParams queryParams)
 		{
 			var query = _userRepository.GetQuery();
+
 			if (queryParams.Email != null) query = query.Where(u => u.Email.ToLower().Contains(queryParams.Email.ToLower()));
 			if (queryParams.DisplayName != null) query = query.Where(u => u.DisplayName.ToLower().Contains(queryParams.DisplayName.ToLower()));
 
