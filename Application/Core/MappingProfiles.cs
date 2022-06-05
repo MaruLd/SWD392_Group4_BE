@@ -37,6 +37,7 @@ namespace Application.Core
 
 			CreateMap<CreateCommentDTO, Comment>();
 			CreateMap<Comment, CommentDTO>();
+			CreateMap<CommentDTO, Comment>();
 
 			CreateMap<CreateOrganizerDTO, Organizer>();
 			CreateMap<Organizer, OrganizerDTO>();

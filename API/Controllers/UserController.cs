@@ -41,6 +41,8 @@ namespace API.Controllers
 			return await CreateUserObject(user);
 		}
 
+		
+
 		[HttpPost("google-login")]
 
 		public async Task<ActionResult<LoginResultDTO>> GoogleLogin([FromQuery] string token)

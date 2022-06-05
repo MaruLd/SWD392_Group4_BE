@@ -37,18 +37,18 @@ namespace Application.Comments
 
         if (Post == null) return null;
 
-        var user = await _context.Users
-        .SingleOrDefaultAsync(x => x.Email == _userAccessor.GetEmail());
+        var user = await _context.Users.FindAsync(request.Comment.UserId);
 
-        var comment = new Comment
-        {
-          UserId = user.Id,
-          PostId = request.Comment.PostId,
-          Body = request.Comment.Body,
-          Status = StatusEnum.Available
-        };
+                var comment = new Comment
+                {
+                    UserId = user.Id,
+                    PostId = request.Comment.PostId,
+                    Body = request.Comment.Body,
+                    Status = StatusEnum.Available
+                };
 
-        Post.Comments.Add(comment);
+               _context.Comments.Add(comment);
+
 
         var success = await _context.SaveChangesAsync() > 0;
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Comments.DTOs;
 using Application.Core;
 using AutoMapper;
 using Domain;
@@ -15,7 +16,7 @@ namespace Application.Comments
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Comment Comment { get; set; }
+            public CommentDTO Comment { get; set; }
             
         }
 

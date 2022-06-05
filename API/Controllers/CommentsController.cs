@@ -9,8 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers 
 {
-	[Route("api/v{version:apiVersion}/events/{eventid}/posts/{postid}/comments")]
-	[ApiVersion("1.0")]
+	[Route("api/v{version:apiVersion}/posts/{postid}/[controller]")]
 	[ApiController]
     public class CommentsController : BaseApiController
 	{
@@ -27,23 +26,20 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 
-		[Authorize(Roles = "Admin")]
 		[HttpPost]
-		public async Task<ActionResult> CreateComment(CreateCommentDTO Comment)
+		public async Task<ActionResult> CreateComment([FromBody]CreateCommentDTO Comment)
 		{
 			return HandleResult(await Mediator.Send(new Create.Command { Comment = Comment }));
 		}
 
-		//[Authorize(Roles = "Admin")]
-		//[HttpPut()]
-		//public async Task<ActionResult> EditComment(EditCommentDTO Comment)
-		//{
-		//	return HandleResult(await Mediator.Send(new Edit.Command { CommentId = id, Comment = Comment }));
-		//}
+        [HttpPut()]
+        public async Task<ActionResult> EditComment(CommentDTO Comment)
+        {
+            return HandleResult(await Mediator.Send(new Edit.Command { Comment = Comment }));
+        }
 
-		[Authorize(Roles = "Admin")]
 		[HttpDelete]
-		public async Task<ActionResult> DeleteComment(Guid id)
+		public async Task<ActionResult> DeleteComment([FromBody]Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
 		}
