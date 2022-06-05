@@ -35,6 +35,7 @@ namespace Application.Services
 		public async Task<List<Event>> Get(EventQueryParams eventParams)
 		{
 			var query = _eventRepository.GetQuery();
+			query.Where(e => e.Status == StatusEnum.Available);
 
 			if (eventParams.Title != null) query = query.Where(e => e.Title.Contains(eventParams.Title));
 			if (eventParams.StartTime != null) query = query.Where(e => e.StartTime > eventParams.StartTime);

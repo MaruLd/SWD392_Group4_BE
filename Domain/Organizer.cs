@@ -20,7 +20,7 @@ namespace Domain
 		public String? ImageURL { get; set; }
 
 		[Column(TypeName = "nvarchar(100)")]
-		public EventUserStatusEnum Status { get; set; }
+		public StatusEnum Status { get; set; }
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 
 		[JsonIgnore]

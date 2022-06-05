@@ -1,44 +1,61 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Linq;
-// using System.Threading.Tasks;
-// using Application.Core;
-// using Domain;
-// using MediatR;
-// using Persistence;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Application.Core;
+using Application.Events;
+using Application.Events.DTOs;
+using Application.Interfaces;
+using Application.Services;
+using AutoMapper;
+using Domain;
+using Domain.Enums;
+using FluentValidation;
+using MediatR;
+using Persistence;
 
-// namespace Application.Events
-// {
-//     public class Delete
-//     {
-//         public class Command : IRequest<Result<Unit>>
-//         {
-//             public Guid Id { get; set; }
-//         }
+namespace Application.Organizers
+{
+	public class Delete
+	{
+		public class Command : IRequest<Result<Unit>>
+		{
+			public Guid Id { get; set; }
+		}
 
-//         public class Handler : IRequestHandler<Command, Result<Unit>>
-//         {
-//             private readonly DataContext _context;
+		// public class CommandValidator : AbstractValidator<Command>
+		// {
+		//     public CommandValidator()
+		//     {
+		//         RuleFor(x => x.Event).SetValidator(new EventValidator());
+		//     }
+		// }
 
-//             public Handler(DataContext context)
-//             {
-//                 _context = context;
-//             }
+		public class Handler : IRequestHandler<Command, Result<Unit>>
+		{
+			private readonly IMapper _mapper;
+			private readonly OrganizerService _organizerService;
+			private readonly EventService _eventService;
 
-//             public async Task<Result<Unit>>
-//             Handle(Command request, CancellationToken cancellationToken)
-//             {
-//                 var Event = await _context.Events.FindAsync(request.Id);
+			public Handler(IMapper mapper, OrganizerService organizerService, EventService eventService)
+			{
+				this._eventService = eventService;
+				this._mapper = mapper;
+				this._organizerService = organizerService;
+			}
 
-//                 if(Event == null) return null;
+			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+			{
+				var organizerinDb = await _organizerService.GetByID(request.Id);
+				if (organizerinDb == null) return Result<Unit>.NotFound("Oraganizer not found!");
 
-//                 _context.Remove (Event);
+				var events = await _eventService.Get(new EventQueryParams() { OrganizerId = request.Id });
 
-//                 var result = await _context.SaveChangesAsync()>0;
-//                 if (!result) return Result<Unit>.Failure("Failed to delete the event");
-
-//                 return Result<Unit>.NoContentSuccess(Unit.Value);
-//             }
-//         }
-//     }
-// }
+				if (events.Count() > 0) return Result<Unit>.Failure("Can't delete because organizer already have event!");
+				organizerinDb.Status = StatusEnum.Unavailable;
+				if (await _organizerService.Update(organizerinDb)) return Result<Unit>.Failure("Failed to delete organizer");
+				return Result<Unit>.NoContentSuccess(Unit.Value);
+			}
+		}
+	}
+}

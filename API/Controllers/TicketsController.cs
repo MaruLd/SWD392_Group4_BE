@@ -24,9 +24,14 @@ namespace API.Controllers
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Ticket>> GetTicket(Guid id)
 		{
-
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
+
+		// [HttpGet("{id}/buy")]
+		// public async Task<ActionResult<Ticket>> BuyTicket(Guid id)
+		// {
+		// 	return HandleResult(await Mediator.Send(new Create.Command { dto = Ticket }));
+		// }
 
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
@@ -38,9 +43,9 @@ namespace API.Controllers
 
 		[Authorize(Roles = "Admin")]
 		[HttpPut]
-		public async Task<ActionResult> EditTicket(Guid id, EditTicketDTO dto)
+		public async Task<ActionResult> EditTicket(EditTicketDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Edit.Command { ticketId = id, dto = dto }));
+			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
 		}
 
 		[Authorize(Roles = "Admin")]

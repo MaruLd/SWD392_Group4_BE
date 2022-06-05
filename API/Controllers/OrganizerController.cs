@@ -41,10 +41,10 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
 		}
 
-		// [HttpDelete("{id}")]
-		// public async Task<ActionResult> DeleteEvent(Guid id)
-		// {
-		// 	return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
-		// }
+		[HttpDelete]
+		public async Task<ActionResult> DeleteEvent([FromBody] Guid id)
+		{
+			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
+		}
 	}
 }

@@ -10,9 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace API.Controllers
 {
 	[ApiController]
-  [Route("api/v{version:apiVersion}/[controller]")]
+	[Route("api/v{version:apiVersion}/[controller]")]
 	[ApiVersion("1.0")]
-	
 	public class BaseApiController : ControllerBase
 	{
 		private IMediator _mediator;
@@ -26,7 +25,7 @@ namespace API.Controllers
 			else if (result.IsSuccess && result.Value == null) return NotFound(result.Error);
 			return BadRequest(result.Error);
 
-			
+
 		}
 	}
 }

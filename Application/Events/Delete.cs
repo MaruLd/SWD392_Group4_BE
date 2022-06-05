@@ -55,7 +55,6 @@ namespace Application.Events
 				}
 
 				eventInDb.Status = StatusEnum.Unavailable;
-				
 				var result = await _eventService.Update(eventInDb);
 
 				if (!result) return Result<Unit>.Failure("Failed to delete event");
