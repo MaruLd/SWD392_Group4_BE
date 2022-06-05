@@ -11,6 +11,8 @@ namespace Application.Events.DTOs
 	public class EditEventDTO
 	{
 		[Required]
+		public Guid Id { get; set; }
+		[Required]
 		public String? Title { get; set; }
 		[Required]
 		public String? Description { get; set; }

@@ -24,15 +24,6 @@ namespace Application.Events
 
 		}
 
-		// public class CommandValidator : AbstractValidator<Command>
-		// {
-		// 	public CommandValidator()
-		// 	{
-		// 		RuleFor(x => x.Event).SetValidator(new EventValidator());
-		// 	}
-
-		// }
-
 		public class Handler : IRequestHandler<Command, Result<EventDTO>>
 		{
 			private readonly EventService _eventService;

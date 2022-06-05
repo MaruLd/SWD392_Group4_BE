@@ -20,8 +20,7 @@ namespace Application.Events
 	{
 		public class Command : IRequest<Result<Unit>>
 		{
-			public Guid eventId { get; set; }
-			public EditEventDTO Event { get; set; }
+			public EditEventDTO dto { get; set; }
 		}
 
 		// public class CommandValidator : AbstractValidator<Command>
@@ -52,7 +51,7 @@ namespace Application.Events
 			public async Task<Result<Unit>>
 			Handle(Command request, CancellationToken cancellationToken)
 			{
-				var eventInDb = await _eventService.GetByID(request.eventId);
+				var eventInDb = await _eventService.GetByID(request.dto.Id);
 				if (eventInDb == null) return Result<Unit>.Failure("Event not found!");
 
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
@@ -66,7 +65,7 @@ namespace Application.Events
 					return Result<Unit>.Failure("You have no permission!");
 				}
 
-				_mapper.Map(request.Event, eventInDb);
+				_mapper.Map(request.dto, eventInDb);
 				var result = await _eventService.Update(eventInDb);
 
 				if (!result) return Result<Unit>.Failure("Failed to update event");
