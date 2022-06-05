@@ -36,9 +36,9 @@ namespace API.Controllers
 
 		[Authorize(Roles = "Admin")]
 		[HttpPut("{id}")]
-		public async Task<ActionResult> EditEvent(Guid id, EditEventDTO Event)
+		public async Task<ActionResult> EditEvent(Guid id, EditEventDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Edit.Command { eventId = id, dto = Event }));
+			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
 		}
 
 		[Authorize(Roles = "Admin")]
