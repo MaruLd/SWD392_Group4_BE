@@ -40,19 +40,9 @@ namespace API.Controllers
 			this._roleManager = roleManager;
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> GetTestToken([FromQuery] string email)
-		{
-			//return Ok("token : " + _config.GetValue<string>("JWTSecretKey"));
-			var user = await _userService.GetByEmail(email);
-			if (user == null)
-			{
-				await _userManager.CreateAsync(new User() { Email = email, UserName = "AUserName", DisplayName = "ADisplayName" });
-			}
-
-			return Ok(_tokenService.CreateTestToken(email));
-		}
-
+		/// <summary>
+		/// Login with google token and return a JWT token
+		/// </summary>
 		[HttpPost("auth-google")]
 		public async Task<ActionResult<LoginResultDTO>> TestGoogleAuth([FromQuery] string token)
 		{
@@ -87,7 +77,7 @@ namespace API.Controllers
 				var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
 				return Ok(await CreateUserObject(user, role));
 			}
-			
+
 			return null;
 		}
 

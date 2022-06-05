@@ -27,6 +27,10 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 
+
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		public async Task<ActionResult> CreateEvent(CreateEventDTO Event)
@@ -34,6 +38,10 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Create.Command { Event = Event }));
 		}
 
+
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPut]
 		public async Task<ActionResult> EditEvent(EditEventDTO dto)
@@ -41,6 +49,10 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
 		}
 
+
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpDelete]
 		public async Task<ActionResult> DeleteEvent([FromBody] Guid id)

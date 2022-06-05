@@ -17,32 +17,43 @@ namespace API.Controllers
 	public class OrganizerController : BaseApiController
 	{
 		[HttpGet]
-		public async Task<ActionResult<List<OrganizerDTO>>> GetEvents([FromQuery] OrganizerQueryParams queryParams)
+		public async Task<ActionResult<List<OrganizerDTO>>> GetOrganziers([FromQuery] OrganizerQueryParams queryParams)
 		{
 			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
 
 		[HttpGet("{id}")]
-		public async Task<ActionResult<OrganizerDTO>> GetEvent(Guid id)
+		public async Task<ActionResult<OrganizerDTO>> GetOraganzier(Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
-		public async Task<ActionResult> CreateEvent(CreateOrganizerDTO dto)
+		public async Task<ActionResult> CreateOrganizer(CreateOrganizerDTO dto)
 		{
 			return HandleResult(await Mediator.Send(new Create.Command { dto = dto }));
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
+		[Authorize(Roles = "Admin")]
 		[HttpPut]
-		public async Task<ActionResult> EditEvent(EditOrganizerDTO dto)
+		public async Task<ActionResult> EditOrganizer(EditOrganizerDTO dto)
 		{
 			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
+		[Authorize(Roles = "Admin")]
 		[HttpDelete]
-		public async Task<ActionResult> DeleteEvent([FromBody] Guid id)
+		public async Task<ActionResult> DeleteOrganizer([FromBody] Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
 		}

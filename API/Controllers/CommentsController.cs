@@ -14,7 +14,6 @@ namespace API.Controllers
 	[ApiController]
 	public class CommentsController : BaseApiController
 	{
-		// GET: api/<CommentsController>
 		[HttpGet]
 		public async Task<ActionResult<List<CommentDTO>>> GetComments(Guid postid, [FromQuery] CommentQueryParams queryParams)
 		{
@@ -27,6 +26,9 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Details.Query { postId = postid }));
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize]
 		[HttpPost]
 		public async Task<ActionResult> CreateComment(CreateCommentDTO dto)
@@ -34,6 +36,9 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Create.Command { dto = dto }));
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize]
 		[HttpPut()]
 		public async Task<ActionResult> EditComment(Guid postid, EditCommentDTO dto)
@@ -42,6 +47,9 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize]
 		[HttpDelete]
 		public async Task<ActionResult> DeleteComment([FromBody] Guid id)

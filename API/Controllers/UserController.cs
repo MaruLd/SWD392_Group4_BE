@@ -11,70 +11,53 @@ using Microsoft.AspNetCore.Identity;
 using Domain;
 using Application.Services;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Application.Users.DTOs;
+using Application.Users;
+using Application.Core;
 
 namespace API.Controllers
 {
 	[ApiController]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	[ApiVersion("1.0")]
-	public class UserController : ControllerBase
+	public class UserController : BaseApiController
 	{
-		private readonly UserManager<User> _userManager;
-		private readonly TokenService _tokenService;
-		private readonly IConfiguration _config;
-		private readonly FirebaseService _firebaseService;
-		public UserController(UserManager<User> userManager, TokenService tokenService,
-		  IConfiguration config, FirebaseService firebaseService)
+		private readonly UserService _userService;
+
+		public UserController(UserService userService)
 		{
-			_firebaseService = firebaseService;
-			_config = config;
-			_tokenService = tokenService;
-			_userManager = userManager;
+			this._userService = userService;
 		}
 
+		/// <summary>
+		/// [Authorize] 
+		/// </summary>
+		[Authorize(Roles = "Admin")]
 		[HttpGet]
-
-		public async Task<ActionResult<LoginResultDTO>> GetCurrentUser()
+		public async Task<ActionResult<List<UserDTO>>> GetUsers([FromQuery] UserQueryParams queryParams)
 		{
-			var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
-
-			return await CreateUserObject(user);
+			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
 
-		
-
-		[HttpPost("google-login")]
-
-		public async Task<ActionResult<LoginResultDTO>> GoogleLogin([FromQuery] string token)
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
+		[Authorize]
+		[HttpGet("me")]
+		public async Task<ActionResult<UserDTO>> GetYourself()
 		{
-			var result = await _firebaseService.VerifyIdToken(token);
-			if (result == null)
-			{
-				return Unauthorized();
-			}
-
-			var ec = result.Claims.FirstOrDefault(c => c.Key == "email").Value.ToString();
-			var user = await _userManager.FindByEmailAsync(ec);
-
-			if (result != null)
-			{
-				return await CreateUserObject(user);
-			}
-			return Unauthorized();
-
+			return HandleResult(await Mediator.Send(new Details.Query { Id = Guid.Parse(User.GetUserId()) }));
 		}
 
-		private async Task<LoginResultDTO> CreateUserObject(User user)
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
+		[Authorize(Roles = "Admin")]
+		[HttpPut]
+		public async Task<ActionResult<UserDTO>> EditUser(EditUserDTO dto)
 		{
-			return new LoginResultDTO
-			{
-				Id = user.Id,
-				DisplayName = user.DisplayName,
-				Token = await _tokenService.CreateToken(user),
-				Email = user.Email,
-				Role = ">>>",
-				Image = user.ImageURL
-			};
+			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
 		}
 	}
 }

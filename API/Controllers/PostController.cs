@@ -27,6 +27,9 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		public async Task<ActionResult> CreatePost(CreatePostDTO Post)
@@ -34,6 +37,9 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Create.Command { dto = Post }));
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPut]
 		public async Task<ActionResult> EditPost(EditPostDTO dto)
@@ -41,6 +47,9 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpDelete]
 		public async Task<ActionResult> DeletePost(Guid id)

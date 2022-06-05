@@ -42,8 +42,7 @@ namespace Application.Services
 					break;
 			}
 
-			var list = await PagedList<Ticket>.CreateAsync(query, ticketParams.PageNumber, ticketParams.PageSize);
-			return list;
+			return await PagedList<Ticket>.CreateAsync(query, ticketParams.PageNumber, ticketParams.PageSize);
 		}
 
 		public async Task<List<Ticket>> GetAllFromEvent(Guid eventId)

@@ -33,7 +33,10 @@ namespace API.Controllers
 		// 	return HandleResult(await Mediator.Send(new Create.Command { dto = Ticket }));
 		// }
 
-		[Authorize(Roles = "Admin")]
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
+		[Authorize]
 		[HttpPost]
 		public async Task<ActionResult> CreateTicket(CreateTicketDTO Ticket)
 		{
@@ -41,13 +44,19 @@ namespace API.Controllers
 		}
 
 
-		[Authorize(Roles = "Admin")]
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
+		[Authorize]
 		[HttpPut]
 		public async Task<ActionResult> EditTicket(EditTicketDTO dto)
 		{
 			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpDelete]
 		public async Task<ActionResult> DeleteTicket(Guid id)

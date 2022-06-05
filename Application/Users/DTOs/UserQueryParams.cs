@@ -1,17 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Application.Core;
 using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Application.Comments.DTOs
+namespace Application.Users.DTOs
 {
-	public class CommentQueryParams : PaginationParams
+	public class UserQueryParams : PaginationParams
 	{
+		[FromQuery(Name = "email")]
+		public string Email { get; set; }
+		[FromQuery(Name = "display-name")]
+		public string DisplayName { get; set; }
+
 		[FromQuery(Name = "order-by")]
 		public OrderByEnum OrderBy { get; set; } = OrderByEnum.DateDescending;
 	}

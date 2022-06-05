@@ -17,6 +17,9 @@ namespace API.Controllers
 			this._config = config;
 		}
 
+		/// <summary>
+		/// [Currently Not Wokrking] [WIP]
+		/// </summary>
 		[HttpPost]
 		public async Task<ActionResult> UploadImage(IFormFile files)
 		{

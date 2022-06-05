@@ -39,6 +39,9 @@ namespace API.Controllers
 			return Ok(ecDto);
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		public async Task<ActionResult<EventCategoryDTO>> CreateCategory([FromQuery] string categoryName)
@@ -49,6 +52,9 @@ namespace API.Controllers
 			return Ok(_mapper.Map<EventCategoryDTO>(ec));
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPut()]
 		public async Task<ActionResult> EditCategory(int id, string categoryName)
@@ -60,9 +66,12 @@ namespace API.Controllers
 			return await _eventCategoryService.Update(_mapper.Map<EventCategory>(cat)) ? NoContent() : BadRequest();
 		}
 
+		/// <summary>
+		/// [Authorize]
+		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpDelete("{id}")]
-		public async Task<ActionResult> DeleteCategory(int id)
+		public async Task<ActionResult> DeleteCategory([FromBody] int id)
 		{
 			var cat = await _eventCategoryService.GetByID(id);
 			if (cat == null) return NotFound("Category not found!");

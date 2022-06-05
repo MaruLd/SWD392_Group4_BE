@@ -9,6 +9,7 @@ using Application.Events.DTOs;
 using Application.Organizers.DTOs;
 using Application.Posts.DTOs;
 using Application.Tickets.DTOs;
+using Application.Users.DTOs;
 using AutoMapper;
 using Domain;
 
@@ -54,7 +55,9 @@ namespace Application.Core
 			CreateMap<EventAgenda, EventAgendaDTO>();
 			CreateMap<EventAgendaDTO, EventAgenda>();
 
-
+			CreateMap<EditUserDTO, User>();
+			CreateMap<User, UserDTO>();
+			CreateMap<UserDTO, User>();
 		}
 
 	}

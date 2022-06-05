@@ -9,6 +9,7 @@ using Persistence;
 using Persistence.Repositories;
 using Domain.Enums;
 using Application.Comments.DTOs;
+using Application.Core;
 
 namespace Application.Services
 {
@@ -39,7 +40,7 @@ namespace Application.Services
 					break;
 			}
 
-			return await query.OrderBy(e => e.CreatedDate).ToListAsync();
+			return await PagedList<Comment>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);
 		}
 
 		public async Task<List<Comment>> GetAllFromPost(Guid postId)
