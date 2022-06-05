@@ -35,7 +35,7 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Create.Command { dto = dto }));
 		}
 
-		[HttpPut("{id}")]
+		[HttpPut]
 		public async Task<ActionResult> EditEvent(EditOrganizerDTO dto)
 		{
 			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));

@@ -30,13 +30,13 @@ namespace Persistence
       */
     }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("Server=evsmart-database.cmiv12nvywqh.ap-southeast-1.rds.amazonaws.com,1433;Initial Catalog=SmartEvent;Persist Security Info=False;User ID=admin1;Password=Kindly?Estranged?Overrule4?Bonding?Facebook;");
-            }
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    if (!optionsBuilder.IsConfigured)
+        //    {
+        //        optionsBuilder.UseSqlServer("Server=evsmart-database.cmiv12nvywqh.ap-southeast-1.rds.amazonaws.com,1433;Initial Catalog=SmartEvent;Persist Security Info=False;User ID=admin1;Password=Kindly?Estranged?Overrule4?Bonding?Facebook;");
+        //    }
+        //}
 
         public DbSet<User> Users { get; set; }
 

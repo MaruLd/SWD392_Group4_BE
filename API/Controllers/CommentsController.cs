@@ -9,16 +9,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers 
 {
-	[Route("api/v{version:apiVersion}/event/{event-id}/post/{post-id}/comment")]
+	[Route("api/v{version:apiVersion}/events/{eventid}/posts/{postid}/comments")]
 	[ApiVersion("1.0")]
 	[ApiController]
     public class CommentsController : BaseApiController
 	{
 		// GET: api/<CommentsController>
 		[HttpGet]
-		public async Task<ActionResult<List<CommentDTO>>> GetComments([FromQuery] Guid PostId)
+		public async Task<ActionResult<List<CommentDTO>>> GetComments(Guid postid)
 		{
-			return HandleResult(await Mediator.Send(new List.Query() { PostId = PostId }));
+			return HandleResult(await Mediator.Send(new List.Query() { PostId = postid}));
 		}
 
 		[HttpGet("{id}")]
@@ -42,7 +42,7 @@ namespace API.Controllers
 		//}
 
 		[Authorize(Roles = "Admin")]
-		[HttpDelete()]
+		[HttpDelete]
 		public async Task<ActionResult> DeleteComment(Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
