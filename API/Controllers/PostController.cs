@@ -12,7 +12,6 @@ using Persistence;
 
 namespace API.Controllers
 {
-	[Authorize]
 	public class PostsController : BaseApiController
 	{
 		[HttpGet]

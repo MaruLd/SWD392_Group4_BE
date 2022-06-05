@@ -56,11 +56,10 @@ namespace Application.Services
 			query = query.Include(e => e.Tickets).Include(e => e.Organizers);
 
 			if (eventParams.OrganizerId != Guid.Empty) query = query.Where(e => e.Organizers.Any(o => o.Id == eventParams.OrganizerId));
-			if (eventParams.CategoryId != null) query = query.Where(e => e.EventCategoryId == eventParams.CategoryId);
+			if (eventParams.CategoryId != 0) query = query.Where(e => e.EventCategoryId == eventParams.CategoryId);
 
 
 			var list = await PagedList<Event>.CreateAsync(query, eventParams.PageNumber, eventParams.PageSize);
-
 			return list;
 		}
 

@@ -28,6 +28,8 @@ namespace API.Extensions
 			services.AddScoped<CommentRepository>();
 			services.AddScoped<OrganizerRepository>();
 			services.AddScoped<EventCategoryRepository>();
+			services.AddScoped<EventAgendaRepository>();
+
 
 
 
@@ -38,6 +40,8 @@ namespace API.Extensions
 			services.AddScoped<EventUserService>();
 			services.AddScoped<OrganizerService>();
 			services.AddScoped<EventCategoryService>();
+			services.AddScoped<EventAgendaService>();
+
 
 
 

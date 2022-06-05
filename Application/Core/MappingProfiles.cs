@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Comments.DTOs;
+using Application.EventAgendas.DTOs;
 using Application.EventCategory.DTOs;
 using Application.Events.DTOs;
 using Application.Organizers.DTOs;
@@ -32,6 +33,7 @@ namespace Application.Core
 			CreateMap<CreatePostDTO, Post>();
 			CreateMap<EditPostDTO, Post>();
 			CreateMap<Post, PostDTO>();
+			CreateMap<PostDTO, Post>();
 
 			CreateMap<CreateCommentDTO, Comment>();
 			CreateMap<Comment, CommentDTO>();
@@ -41,6 +43,11 @@ namespace Application.Core
 			CreateMap<Ticket, OrganizerDTO>();
 
 			CreateMap<Domain.EventCategory, EventCategoryDTO>();
+
+			CreateMap<CreateEventAgendaDTO, EventAgenda>();
+			CreateMap<EventAgenda, EventAgendaDTO>();
+			CreateMap<EventAgendaDTO, EventAgenda>();
+
 
 		}
 

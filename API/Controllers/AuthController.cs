@@ -54,7 +54,7 @@ namespace API.Controllers
 		}
 
 		[HttpPost("auth-google")]
-		public async Task<IActionResult> TestGoogleAuth([FromQuery] string token)
+		public async Task<ActionResult<LoginResultDTO>> TestGoogleAuth([FromQuery] string token)
 		{
 			var claims = await _firebaseService.VerifyIdToken(token);
 
@@ -87,6 +87,7 @@ namespace API.Controllers
 				var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
 				return Ok(await CreateUserObject(user, role));
 			}
+			
 			return null;
 		}
 
