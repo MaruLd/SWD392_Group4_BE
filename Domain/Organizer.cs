@@ -19,7 +19,6 @@ namespace Domain
 		public String? Description { get; set; }
 		public String? ImageURL { get; set; }
 
-		[Column(TypeName = "nvarchar(100)")]
 		public StatusEnum Status { get; set; }
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 

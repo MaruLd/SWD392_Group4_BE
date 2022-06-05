@@ -37,9 +37,9 @@ public class Event
 	public virtual ICollection<Post> Posts { get; set; }
 	[JsonIgnore]
 	public virtual ICollection<EventAgenda> EventAgenda { get; set; }
-	
-	[Column(TypeName = "nvarchar(100)")]
+
 	public StatusEnum Status { get; set; }
+
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 
 }

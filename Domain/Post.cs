@@ -30,8 +30,7 @@ public class Post
 	public virtual User? User { get; set; }
 	public Guid? UserId { get; set; }
 
-	[Column(TypeName = "nvarchar(100)")]
-	public EventUserStatusEnum Status { get; set; }
+	public StatusEnum Status { get; set; }
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 
 	[JsonIgnore]

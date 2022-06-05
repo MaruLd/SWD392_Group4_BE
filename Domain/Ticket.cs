@@ -22,8 +22,7 @@ namespace Domain
 		public int Quantity { get; set; }
 
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
-
-		[Column(TypeName = "nvarchar(100)")]
+		
 		public StatusEnum Status { get; set; }
 		[JsonIgnore]
 		public virtual Event? Event { get; set; }

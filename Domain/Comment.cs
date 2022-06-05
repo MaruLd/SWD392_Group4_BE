@@ -26,7 +26,6 @@ namespace Domain
 		[JsonIgnore]
 		public virtual ICollection<CommentLike> CommentLikes { get; set; }
 
-		[Column(TypeName = "nvarchar(100)")]
 		public StatusEnum Status { get; set; }
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 	}
