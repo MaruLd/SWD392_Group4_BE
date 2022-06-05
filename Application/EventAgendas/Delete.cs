@@ -3,47 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Core;
-using Application.Events;
-using Application.Events.DTOs;
 using Application.Interfaces;
 using Application.Services;
 using AutoMapper;
 using Domain;
 using Domain.Enums;
-using FluentValidation;
 using MediatR;
 using Persistence;
 
 namespace Application.EventAgendas
 {
-	public class Edit
+	public class Delete
 	{
 		public class Command : IRequest<Result<Unit>>
 		{
-			public EditEventDTO dto { get; set; }
+			public Guid Id { get; set; }
 		}
-
-		// public class CommandValidator : AbstractValidator<Command>
-		// {
-		//     public CommandValidator()
-		//     {
-		//         RuleFor(x => x.Event).SetValidator(new EventValidator());
-		//     }
-		// }
 
 		public class Handler : IRequestHandler<Command, Result<Unit>>
 		{
 			private readonly UserService _userService;
 			private readonly EventService _eventService;
 			private readonly EventUserService _eventUserService;
+			private readonly EventAgendaService _eventAgendaService;
 			private readonly IUserAccessor _userAccessor;
 			private readonly IMapper _mapper;
 
-			public Handler(EventService eventService, EventUserService eventUserService, UserService userService, IMapper mapper, IUserAccessor userAccessor)
+			public Handler(EventService eventService, EventUserService eventUserService, EventAgendaService eventAgendaService, UserService userService, IMapper mapper, IUserAccessor userAccessor)
 			{
 				_userService = userService;
 				_eventService = eventService;
 				_eventUserService = eventUserService;
+				this._eventAgendaService = eventAgendaService;
 				_userAccessor = userAccessor;
 				_mapper = mapper;
 			}
@@ -51,7 +42,10 @@ namespace Application.EventAgendas
 			public async Task<Result<Unit>>
 			Handle(Command request, CancellationToken cancellationToken)
 			{
-				var eventInDb = await _eventService.GetByID(request.dto.Id);
+				var agenda = await _eventAgendaService.GetByID(request.Id);
+				if (agenda == null) return Result<Unit>.Failure("Agenda not found!");
+
+				var eventInDb = await _eventService.GetByID((Guid)agenda.EventId);
 				if (eventInDb == null) return Result<Unit>.Failure("Event not found!");
 
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
@@ -65,11 +59,9 @@ namespace Application.EventAgendas
 					return Result<Unit>.Forbidden("You have no permission!");
 				}
 
-				_mapper.Map(request.dto, eventInDb);
-				var result = await _eventService.Update(eventInDb);
+				var result = await _eventAgendaService.Delete(agenda);
 
-				if (!result) return Result<Unit>.Failure("Failed to update event");
-
+				if (!result) return Result<Unit>.Failure("Failed to delete agenda");
 				return Result<Unit>.NoContentSuccess(Unit.Value);
 			}
 		}

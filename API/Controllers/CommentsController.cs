@@ -7,41 +7,46 @@ using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace API.Controllers 
+namespace API.Controllers
 {
-	[Route("api/v{version:apiVersion}/posts/{postid}/[controller]")]
+	[Route("api/v{version:apiVersion}/posts/{postid}/comments")]
+	[ApiVersion("1.0")]
 	[ApiController]
-    public class CommentsController : BaseApiController
+	public class CommentsController : BaseApiController
 	{
 		// GET: api/<CommentsController>
 		[HttpGet]
-		public async Task<ActionResult<List<CommentDTO>>> GetComments(Guid postid)
+		public async Task<ActionResult<List<CommentDTO>>> GetComments(Guid postid, [FromQuery] CommentQueryParams queryParams)
 		{
-			return HandleResult(await Mediator.Send(new List.Query() { PostId = postid}));
+			return HandleResult(await Mediator.Send(new List.Query() { postId = postid, queryParams = queryParams }));
 		}
 
 		[HttpGet("{id}")]
-		public async Task<ActionResult<CommentDTO>> GetComment(Guid id)
+		public async Task<ActionResult<CommentDTO>> GetComment(Guid postid)
 		{
-			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
+			return HandleResult(await Mediator.Send(new Details.Query { postId = postid }));
 		}
 
+		[Authorize]
 		[HttpPost]
-		public async Task<ActionResult> CreateComment([FromBody]CreateCommentDTO Comment)
+		public async Task<ActionResult> CreateComment(CreateCommentDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Create.Command { Comment = Comment }));
+			return HandleResult(await Mediator.Send(new Create.Command { dto = dto }));
 		}
 
-        [HttpPut()]
-        public async Task<ActionResult> EditComment(CommentDTO Comment)
-        {
-            return HandleResult(await Mediator.Send(new Edit.Command { Comment = Comment }));
-        }
-
-		[HttpDelete]
-		public async Task<ActionResult> DeleteComment([FromBody]Guid id)
+		[Authorize]
+		[HttpPut()]
+		public async Task<ActionResult> EditComment(Guid postid, EditCommentDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
+			dto.PostId = postid;
+			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
+		}
+
+		[Authorize]
+		[HttpDelete]
+		public async Task<ActionResult> DeleteComment([FromBody] Guid id)
+		{
+			return HandleResult(await Mediator.Send(new Delete.Command { commentId = id }));
 		}
 	}
 }

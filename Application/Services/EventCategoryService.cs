@@ -1,17 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
-using Application.Tickets.DTOs;
-using Domain;
-using Persistence;
+
 using Persistence.Repositories;
-using Application.Organizers.DTOs;
-using Application.Core;
-using Domain.Enums;
-using Application.EventCategory.DTOs;
 using AutoMapper;
+using Domain;
 
 namespace Application.Services
 {
@@ -28,20 +21,17 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<List<EventCategoryDTO>> GetAll() => _mapper.Map<List<EventCategoryDTO>>(await _eventCategoryRepository.GetAll());
-		public async Task<EventCategoryDTO> GetByID(int id)
+		public async Task<List<EventCategory>> GetAll() => _mapper.Map<List<EventCategory>>(await _eventCategoryRepository.GetAll());
+		public async Task<EventCategory> GetByID(int id)
 		{
-			var ec = await _eventCategoryRepository.GetByID(id);
+			var ec = await _eventCategoryRepository.GetQuery().Where(c => c.Id == id).Include(c => c.Events).FirstOrDefaultAsync();
 			if (ec == null) return null;
-			var ecDto = _mapper.Map<EventCategoryDTO>(ec);
-
-			int eCounts = await _eventRepository.GetQuery().Where(e => e.EventCategoryId == ec.Id).CountAsync();
-			ecDto.EventCount = eCounts;
-			return ecDto;
+			return ec;
 		}
 
-		public async Task<bool> Insert(Domain.EventCategory e) { _eventCategoryRepository.Insert(e); return await _eventCategoryRepository.Save(); }
-		public async Task<bool> Update(Domain.EventCategory e) { _eventCategoryRepository.Update(e); return await _eventCategoryRepository.Save(); }
+		public async Task<bool> Insert(EventCategory e) { _eventCategoryRepository.Insert(e); return await _eventCategoryRepository.Save(); }
+		public async Task<bool> Update(EventCategory e) { _eventCategoryRepository.Update(e); return await _eventCategoryRepository.Save(); }
+		public async Task<bool> Delete(EventCategory e) { _eventCategoryRepository.Delete(e); return await _eventCategoryRepository.Save(); }
 		public async Task<bool> Save() { return await _eventCategoryRepository.Save(); }
 	}
 }

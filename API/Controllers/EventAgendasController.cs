@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.EventAgendas.DTOs;
 using Application.EventAgendas;
-using Application.EventAgendas.DTOs;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,17 +19,18 @@ namespace API.Controllers
 		[HttpGet]
 		public async Task<ActionResult<List<EventAgendaDTO>>> GetEventsAgenda(
 			Guid eventId,
-			[FromQuery] EventAgendaParams queryParams
+			[FromQuery] EventAgendaQueryParams queryParams
 			)
 		{
-			return HandleResult(await Mediator.Send(new List.Query() { eventId = eventId, queryParams = queryParams }));
+			queryParams.EventId = eventId;
+			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
 
-		// [HttpGet("{id}")]
-		// public async Task<ActionResult<EventAgendaDTO>> GetEventAgenda(Guid id)
-		// {
-		// 	return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
-		// }
+		[HttpGet("{id}")]
+		public async Task<ActionResult<EventAgendaDTO>> GetEventAgenda(Guid id)
+		{
+			return HandleResult(await Mediator.Send(new Details.Query { id = id }));
+		}
 
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
@@ -42,18 +42,18 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Create.Command { eventId = eventId, dto = dto }));
 		}
 
-		// [Authorize(Roles = "Admin")]
-		// [HttpPut]
-		// public async Task<ActionResult> EditEvent(EditEventDTO dto)
-		// {
-		// 	return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
-		// }
+		[Authorize(Roles = "Admin")]
+		[HttpPut]
+		public async Task<ActionResult> EditEvent(EditEventAgendaDTO dto)
+		{
+			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
+		}
 
-		// [Authorize(Roles = "Admin")]
-		// [HttpDelete]
-		// public async Task<ActionResult> DeleteEvent([FromBody] Guid id)
-		// {
-		// 	return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
-		// }
+		[Authorize(Roles = "Admin")]
+		[HttpDelete]
+		public async Task<ActionResult> DeleteEvent([FromBody] Guid id)
+		{
+			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
+		}
 	}
 }

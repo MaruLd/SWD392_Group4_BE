@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Application.EventCategory.DTOs
+namespace Application.EventCategories.DTOs
 {
 	public class EventCategoryDTO
 	{

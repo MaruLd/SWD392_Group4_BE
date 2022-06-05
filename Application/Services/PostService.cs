@@ -24,9 +24,14 @@ namespace Application.Services
 		{
 			var query = _PostRepository.GetQuery();
 
-			if (dto.EventId != null)
+			if (dto.EventId != Guid.Empty)
 			{
 				query = query.Where(t => t.EventId == dto.EventId);
+			}
+
+			if (dto.Title != null)
+			{
+				query = query.Where(t => t.Title.ToLower().Contains(dto.Title.ToLower()));
 			}
 
 			switch (dto.OrderBy)

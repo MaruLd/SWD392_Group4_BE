@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.EventCategory.DTOs;
+using Application.EventCategories.DTOs;
 using Application.Services;
 using AutoMapper;
 using Domain;
@@ -27,7 +27,8 @@ namespace API.Controllers
 		[HttpGet]
 		public async Task<ActionResult<List<EventCategoryDTO>>> GetCategories()
 		{
-			return Ok(await _eventCategoryService.GetAll());
+			var result = await _eventCategoryService.GetAll();
+			return Ok(_mapper.Map<List<EventCategoryDTO>>(result));
 		}
 
 		[HttpGet("{id}")]
@@ -66,8 +67,9 @@ namespace API.Controllers
 			var cat = await _eventCategoryService.GetByID(id);
 			if (cat == null) return NotFound("Category not found!");
 
-			if (cat.EventCount > 0) return BadRequest("This category already have event!");
-			return await _eventCategoryService.Update(_mapper.Map<EventCategory>(cat)) ? NoContent() : BadRequest();
+			if (cat.Events.Count() > 0) return BadRequest("This category already have event!");
+
+			return await _eventCategoryService.Delete(cat) ? NoContent() : BadRequest();
 		}
 	}
 }

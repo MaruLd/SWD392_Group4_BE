@@ -29,9 +29,7 @@ namespace API.Extensions
 			services.AddScoped<OrganizerRepository>();
 			services.AddScoped<EventCategoryRepository>();
 			services.AddScoped<EventAgendaRepository>();
-
-
-
+			services.AddScoped<CommentRepository>();
 
 			services.AddScoped<EventService>();
 			services.AddScoped<TicketService>();
@@ -41,9 +39,7 @@ namespace API.Extensions
 			services.AddScoped<OrganizerService>();
 			services.AddScoped<EventCategoryService>();
 			services.AddScoped<EventAgendaService>();
-
-
-
+			services.AddScoped<CommentService>();
 
 			services.AddScoped<TokenService>();
 			services.AddScoped<FirebaseService>();

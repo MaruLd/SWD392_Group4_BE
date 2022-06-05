@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Comments.DTOs;
 using Application.Core;
+using Application.Interfaces;
+using Application.Services;
 using AutoMapper;
 using Domain;
 using FluentValidation;
@@ -12,39 +14,51 @@ using Persistence;
 
 namespace Application.Comments
 {
-    public class Edit
-    {
-        public class Command : IRequest<Result<Unit>>
-        {
-            public CommentDTO Comment { get; set; }
-            
-        }
+	public class Edit
+	{
+		public class Command : IRequest<Result<CommentDTO>>
+		{
+			public EditCommentDTO dto { get; set; }
+		}
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
-        {
-            private readonly DataContext _context;
-            private readonly IMapper _mapper;
+		public class Handler : IRequestHandler<Command, Result<CommentDTO>>
+		{
+			private readonly EventService _eventService;
+			private readonly PostService _postService;
+			private readonly CommentService _commentService;
+			private readonly UserService _userService;
+			private readonly EventUserService _eventUserService;
+			private readonly IUserAccessor _userAccessor;
+			private readonly IMapper _mapper;
 
-            public Handler(DataContext context, IMapper mapper)
-            {
-                _context = context;
-                _mapper = mapper;
-            }
+			public Handler(EventService eventService, PostService postService, CommentService commentService, UserService userService, EventUserService eventUserService, IUserAccessor userAccessor, IMapper mapper)
+			{
+				this._eventService = eventService;
+				this._postService = postService;
+				this._commentService = commentService;
+				this._userService = userService;
+				this._eventUserService = eventUserService;
+				this._userAccessor = userAccessor;
+				this._mapper = mapper;
+			}
 
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
-            {
-                var Comment = await _context.Comments.FindAsync(request.Comment.Id);
+			public async Task<Result<CommentDTO>>
+			Handle(Command request, CancellationToken cancellationToken)
+			{
+				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
 
-                if (Comment == null) return Result<Unit>.Failure("Comment not found");
+				var post = await _postService.GetByID(request.dto.PostId);
+				if (post == null) return Result<CommentDTO>.NotFound("Post not found!");
 
-                _mapper.Map(request.Comment, Comment);
+				var eventUser = await _eventUserService.GetByID((Guid)post.EventId, user.Id);
+				if (eventUser == null) return Result<CommentDTO>.Failure("You aren't in the event!");
 
-                var result = await _context.SaveChangesAsync() > 0;
+				var comment = await _commentService.GetByID(request.dto.CommentId);
+				var result = await _commentService.Insert(comment);
 
-                if (!result) return Result<Unit>.Failure("Failed to update the comment");
-
-                return Result<Unit>.NoContentSuccess(Unit.Value);
-            }
-        }
-    }
+				if (!result) return Result<CommentDTO>.Failure("Failed to create comment");
+				return Result<CommentDTO>.CreatedSuccess(_mapper.Map<CommentDTO>(comment));
+			}
+		}
+	}
 }

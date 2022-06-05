@@ -36,16 +36,16 @@ namespace API.Controllers
 
 		[Authorize(Roles = "Admin")]
 		[HttpPut]
-		public async Task<ActionResult> EditPost(Guid id, EditPostDTO dto)
+		public async Task<ActionResult> EditPost(EditPostDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Edit.Command { postId = id, dto = dto }));
+			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
 		}
 
 		[Authorize(Roles = "Admin")]
 		[HttpDelete]
 		public async Task<ActionResult> DeletePost(Guid id)
 		{
-			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
+			return HandleResult(await Mediator.Send(new Delete.Command { id = id }));
 		}
 	}
 }

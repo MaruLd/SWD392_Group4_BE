@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Comments.DTOs;
 using Application.EventAgendas.DTOs;
-using Application.EventCategory.DTOs;
+using Application.EventCategories.DTOs;
 using Application.Events.DTOs;
 using Application.Organizers.DTOs;
 using Application.Posts.DTOs;
@@ -25,10 +25,12 @@ namespace Application.Core
 			CreateMap<Event, EventDTO>()
 				.ForMember(dst => dst.Tickets, src => src.MapFrom(t => t.Tickets))
 				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.Organizers));
+			CreateMap<EventDTO, Event>();
 
 			CreateMap<CreateTicketDTO, Ticket>();
 			CreateMap<EditTicketDTO, Ticket>();
 			CreateMap<Ticket, TicketDTO>();
+			CreateMap<TicketDTO, Ticket>();
 
 			CreateMap<CreatePostDTO, Post>();
 			CreateMap<EditPostDTO, Post>();
@@ -40,12 +42,15 @@ namespace Application.Core
 			CreateMap<CommentDTO, Comment>();
 
 			CreateMap<CreateOrganizerDTO, Organizer>();
+			CreateMap<EditOrganizerDTO, Organizer>();
+			CreateMap<OrganizerDTO, Organizer>();
 			CreateMap<Organizer, OrganizerDTO>();
-			CreateMap<Ticket, OrganizerDTO>();
 
-			CreateMap<Domain.EventCategory, EventCategoryDTO>();
+			CreateMap<EventCategory, EventCategoryDTO>();
+			CreateMap<EventCategoryDTO, EventCategory>();
 
 			CreateMap<CreateEventAgendaDTO, EventAgenda>();
+			CreateMap<EditEventAgendaDTO, EventAgenda>();
 			CreateMap<EventAgenda, EventAgendaDTO>();
 			CreateMap<EventAgendaDTO, EventAgenda>();
 

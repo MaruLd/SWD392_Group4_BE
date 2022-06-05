@@ -63,6 +63,11 @@ namespace Application.Services
 			return list;
 		}
 
+		internal Task GetByID(Guid? eventId)
+		{
+			throw new NotImplementedException();
+		}
+
 		public async Task<Event> GetByID(Guid id) => await _eventRepository.GetByID(id);
 
 		public async Task<Event> CreateEvent(CreateEventDTO e, Guid userId)
