@@ -4,41 +4,41 @@ using System.Linq;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.S3.Transfer;
+using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
 	public class ImageController : BaseApiController
 	{
-		private readonly IConfiguration _config;
+		private readonly AWSService _awsService;
 
-		public ImageController(IConfiguration config)
+		public ImageController(IConfiguration config, AWSService awsService)
 		{
-			this._config = config;
+			this._awsService = awsService;
 		}
 
 		/// <summary>
-		/// [Currently Not Wokrking] [WIP]
+		/// [Authorize]
 		/// </summary>
 		[HttpPost]
+		[Authorize]
 		public async Task<ActionResult> UploadImage(IFormFile files)
 		{
-			var config = new AmazonS3Config
-			{
-				AuthenticationRegion = _config.GetValue<string>("AWS:AccessKey"), // Should match the `MINIO_REGION` environment variable.
-				ServiceURL = "http://localhost:9000", // replace http://localhost:9000 with URL of your MinIO server
-				ForcePathStyle = true // MUST be true to work correctly with MinIO server
-			};
-			var accessKey = _config.GetValue<string>("AWS:AccessKey");
-			var secretKey = _config.GetValue<string>("AWS:SecretKey");
+			var key = await _awsService.UploadImage(files);
+			//commensing the transfer
+			return Ok(key);
+		}
 
-			var amazonS3Client = new AmazonS3Client(accessKey, secretKey, config);
-			var s3Client = new AmazonS3Client();
-
-			return Ok();
-
-
-
+		[HttpGet]
+		public async Task<ActionResult> GetImage(string key)
+		{
+			var url = await _awsService.GetImage(key);
+			//commensing the transfer
+			return Redirect(url);
 		}
 	}
 }
