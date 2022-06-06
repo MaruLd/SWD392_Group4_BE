@@ -53,7 +53,7 @@ namespace Application.Organizers
 
 				if (events.Count() > 0) return Result<Unit>.Failure("Can't delete because organizer already have event!");
 				organizerinDb.Status = StatusEnum.Unavailable;
-				if (await _organizerService.Update(organizerinDb)) return Result<Unit>.Failure("Failed to delete organizer");
+				if (!await _organizerService.Update(organizerinDb)) return Result<Unit>.Failure("Failed to delete organizer");
 				return Result<Unit>.NoContentSuccess(Unit.Value);
 			}
 		}

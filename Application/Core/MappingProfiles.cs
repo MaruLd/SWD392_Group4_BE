@@ -25,7 +25,8 @@ namespace Application.Core
 			CreateMap<EditEventDTO, Event>();
 			CreateMap<Event, EventDTO>()
 				.ForMember(dst => dst.Tickets, src => src.MapFrom(t => t.Tickets))
-				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.Organizers));
+				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.Organizers))
+				.ForMember(dst => dst.EventCategory, src => src.MapFrom(o => o.EventCategory));
 			CreateMap<EventDTO, Event>();
 
 			CreateMap<CreateTicketDTO, Ticket>();

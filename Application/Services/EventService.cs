@@ -53,22 +53,27 @@ namespace Application.Services
 					break;
 			}
 
-			query = query.Include(e => e.Tickets).Include(e => e.Organizers);
+			query = query
+				.Include(e => e.Organizers)
+				.Include(e => e.EventCategory);
 
 			if (eventParams.OrganizerId != Guid.Empty) query = query.Where(e => e.Organizers.Any(o => o.Id == eventParams.OrganizerId));
 			if (eventParams.CategoryId != 0) query = query.Where(e => e.EventCategoryId == eventParams.CategoryId);
-
 
 			var list = await PagedList<Event>.CreateAsync(query, eventParams.PageNumber, eventParams.PageSize);
 			return list;
 		}
 
-		internal Task GetByID(Guid? eventId)
+		public async Task<Event> GetByID(Guid id)
 		{
-			throw new NotImplementedException();
+			var e = await _eventRepository.GetQuery()
+				.Where(entity => entity.Status == StatusEnum.Available)
+				.Where(e => e.Id == id)
+				.Include(e => e.EventCategory)
+				.Include(e => e.Organizers)
+				.Include(e => e.EventCategory).FirstOrDefaultAsync();
+			return e;
 		}
-
-		public async Task<Event> GetByID(Guid id) => await _eventRepository.GetByID(id);
 
 		public async Task<Event> CreateEvent(CreateEventDTO e, Guid userId)
 		{

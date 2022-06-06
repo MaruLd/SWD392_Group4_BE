@@ -12,6 +12,5 @@ namespace Application.Organizers.DTOs
 		public String? ImageURL { get; set; }
 
 		public String Status { get; set; }
-		public DateTime CreatedDate { get; set; } = DateTime.Now;
 	}
 }

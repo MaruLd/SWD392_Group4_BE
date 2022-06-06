@@ -52,7 +52,7 @@ namespace Application.Organizers
 				var result = await _organizerService.Insert(o);
 
 				if (!result) return Result<OrganizerDTO>.Failure("Failed to create organizer");
-				return Result<OrganizerDTO>.CreatedSuccess(_mapper.Map<OrganizerDTO>(result));
+				return Result<OrganizerDTO>.CreatedSuccess(_mapper.Map<OrganizerDTO>(o));
 			}
 		}
 	}

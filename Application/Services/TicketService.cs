@@ -24,6 +24,7 @@ namespace Application.Services
 		public async Task<List<Ticket>> Get(TicketQueryParams ticketParams)
 		{
 			var query = _ticketRepository.GetQuery();
+			query = query.Where(e => e.Status == StatusEnum.Available);
 
 			if (ticketParams.EventId != null)
 			{
@@ -56,7 +57,7 @@ namespace Application.Services
 			var query = _ticketRepository.GetQuery();
 			var t = await query.Where(t => t.Id == id).Include(t => t.Users).FirstOrDefaultAsync();
 
-			return (List<User>) t.Users;
+			return (List<User>)t.Users;
 		}
 
 		public async Task<Ticket> GetByID(Guid id) => await _ticketRepository.GetByID(id);
