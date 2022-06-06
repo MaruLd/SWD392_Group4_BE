@@ -11,7 +11,7 @@ using Domain.Enums;
 using MediatR;
 using Persistence;
 
-namespace Application.Events
+namespace Application.EventUsers
 {
 	public class Delete
 	{

@@ -24,7 +24,7 @@ namespace Application.Services
 		public async Task<List<Ticket>> Get(TicketQueryParams ticketParams)
 		{
 			var query = _ticketRepository.GetQuery();
-			query = query.Where(e => e.Status == StatusEnum.Available);
+			query = query.Where(e => e.Status != StatusEnum.Unavailable);
 
 			if (ticketParams.EventId != null)
 			{

@@ -2,11 +2,11 @@ namespace Domain.Enums
 {
 	public enum EventUserTypeEnum
 	{
-		Student,
-		Lecture,
-		Guest,
-		Speaker,
-		Moderator,
-		Creator
+		Student = 1,
+		Lecture = 2,
+		Guest = 3,
+		Speaker = 4,
+		Moderator = 5,
+		Creator = 6
 	}
 }

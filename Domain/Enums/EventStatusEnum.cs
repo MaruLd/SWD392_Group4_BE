@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums
 {
-	public enum StatusEnum
+	public enum EvenStatusEnum
 	{
 		Available = 1,
-		Unavailable = 2
+		Started = 2,
+		Ended = 3,
+		Unavailable = 4
 	}
 }

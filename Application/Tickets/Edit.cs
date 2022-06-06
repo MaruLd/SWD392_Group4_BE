@@ -55,7 +55,7 @@ namespace Application.Tickets
 				var eventUser = await _eventUserService.GetByID(ticket.EventId.Value, user.Id);
 				if (eventUser == null) return Result<Unit>.Failure("You aren't in the event!");
 
-				if (eventUser.Type >= EventUserTypeEnum.Moderator)
+				if (!eventUser.IsModerator())
 				{
 					return Result<Unit>.Failure("You have no permission!");
 				}

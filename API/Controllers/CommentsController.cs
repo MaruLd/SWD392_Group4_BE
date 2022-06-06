@@ -11,7 +11,6 @@ namespace API.Controllers
 {
 	[Route("api/v{version:apiVersion}/posts/{postid}/comments")]
 	[ApiVersion("1.0")]
-	[ApiController]
 	public class CommentsController : BaseApiController
 	{
 		/// <summary>

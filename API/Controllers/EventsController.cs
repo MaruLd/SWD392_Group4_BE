@@ -45,7 +45,7 @@ namespace API.Controllers
 
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Edit Event
+		/// [Authorize] [> Moderator] Edit Event
 		/// </summary>
 		[Authorize]
 		[HttpPut]
@@ -56,7 +56,7 @@ namespace API.Controllers
 
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Delete Event
+		/// [Authorize] [> Moderator] Delete Event
 		/// </summary>
 		[Authorize]
 		[HttpDelete]

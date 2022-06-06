@@ -19,6 +19,7 @@ namespace Application.Events.DTOs
 		[FromQuery(Name = "order-by")]
 		public OrderByEnum OrderBy { get; set; } = OrderByEnum.DateDescending;
 
+
 		[FromQuery(Name = "start-time")]
 		public DateTime? StartTime { get; set; }
 		[FromQuery(Name = "end-time")]

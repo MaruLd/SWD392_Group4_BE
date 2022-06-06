@@ -59,7 +59,7 @@ namespace Application.Tickets
 				var eventUser = await _eventUserService.GetByID(eventInDb.Id, user.Id);
 
 				if (eventUser == null) return Result<TicketDTO>.Forbidden("You aren't in the event!");
-				if (eventUser.Type >= EventUserTypeEnum.Moderator)
+				if (!eventUser.IsModerator())
 				{
 					return Result<TicketDTO>.Forbidden("You have no permission!");
 				}

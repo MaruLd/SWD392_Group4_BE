@@ -48,7 +48,7 @@ namespace Application.Posts
 				var eventUser = await _eventUserService.GetByID(request.dto.EventID, user.Id);
 
 				if (eventUser == null) return Result<PostDTO>.Failure("You aren't in the event!");
-				if (eventUser.Type >= EventUserTypeEnum.Moderator)
+				if (!eventUser.IsModerator())
 				{
 					return Result<PostDTO>.Failure("You have no permission!");
 				}
