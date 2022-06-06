@@ -83,7 +83,9 @@ namespace API.Extensions
 			  policy
 	  .AllowAnyMethod()
 	  .AllowAnyHeader()
-	  .WithOrigins("http://localhost:3000");
+	  .WithOrigins("http://localhost:3000",
+	  "https://evsmart.netlify.app",
+	  "http://evsmart.netlify.app");
 		  });
 			  });
 
