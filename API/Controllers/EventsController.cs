@@ -15,12 +15,18 @@ namespace API.Controllers
 {
 	public class EventsController : BaseApiController
 	{
+		/// <summary>
+		/// Get Events
+		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult<List<EventDTO>>> GetEvents([FromQuery] EventQueryParams queryParams)
 		{
 			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
 
+		/// <summary>
+		/// Get Event
+		/// </summary>
 		[HttpGet("{id}")]
 		public async Task<ActionResult<EventDTO>> GetEvent(Guid id)
 		{
@@ -28,7 +34,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Admin Only] Create Event
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
@@ -39,9 +45,9 @@ namespace API.Controllers
 
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] [Moderator or Creator] Edit Event
 		/// </summary>
-		[Authorize(Roles = "Admin")]
+		[Authorize]
 		[HttpPut]
 		public async Task<ActionResult> EditEvent(EditEventDTO dto)
 		{
@@ -50,9 +56,9 @@ namespace API.Controllers
 
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] [Moderator or Creator] Delete Event
 		/// </summary>
-		[Authorize(Roles = "Admin")]
+		[Authorize]
 		[HttpDelete]
 		public async Task<ActionResult> DeleteEvent([FromBody] Guid id)
 		{

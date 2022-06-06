@@ -49,9 +49,7 @@ namespace Application.Posts
 
 				var eventUser = await _eventUserService.GetByID(post.EventId.Value, user.Id);
 				if (eventUser == null) return Result<Unit>.Unauthorized("You aren't in the event!");
-
-				var allowedRole = new List<EventUserTypeEnum> { EventUserTypeEnum.Admin, EventUserTypeEnum.Manager };
-				if (!allowedRole.Contains(eventUser.Type))
+				if (eventUser.Type >= EventUserTypeEnum.Moderator)
 				{
 					return Result<Unit>.Failure("You have no permission!");
 				}

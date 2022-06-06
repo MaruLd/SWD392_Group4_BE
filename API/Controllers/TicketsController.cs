@@ -15,12 +15,18 @@ namespace API.Controllers
 	[Authorize]
 	public class TicketsController : BaseApiController
 	{
+		/// <summary>
+		/// Get Tickets
+		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult<List<Ticket>>> GetTickets([FromQuery] TicketQueryParams queryParams)
 		{
 			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
 
+		/// <summary>
+		/// Get Ticket
+		/// </summary>
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Ticket>> GetTicket(Guid id)
 		{
@@ -34,7 +40,7 @@ namespace API.Controllers
 		// }
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] [Moderator or Creator] Create Ticket
 		/// </summary>
 		[Authorize]
 		[HttpPost]
@@ -45,7 +51,7 @@ namespace API.Controllers
 
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] [Moderator or Creator] Edit Ticket
 		/// </summary>
 		[Authorize]
 		[HttpPut]
@@ -55,9 +61,9 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] [Moderator or Creator] Delete Ticket
 		/// </summary>
-		[Authorize(Roles = "Admin")]
+		[Authorize]
 		[HttpDelete]
 		public async Task<ActionResult> DeleteTicket(Guid id)
 		{

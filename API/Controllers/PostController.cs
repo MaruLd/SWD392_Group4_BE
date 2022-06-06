@@ -14,12 +14,18 @@ namespace API.Controllers
 {
 	public class PostsController : BaseApiController
 	{
+		/// <summary>
+		/// [Authorize] Get Posts
+		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult<List<Post>>> GetPosts([FromQuery] PostQueryParams queryParams)
 		{
 			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
 
+		/// <summary>
+		/// [Authorize] Get Post
+		/// </summary>
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Post>> GetPost(Guid id)
 		{
@@ -28,9 +34,9 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] [Moderator or Creator] Create Post
 		/// </summary>
-		[Authorize(Roles = "Admin")]
+		[Authorize]
 		[HttpPost]
 		public async Task<ActionResult> CreatePost(CreatePostDTO Post)
 		{
@@ -38,9 +44,9 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] [Moderator or Creator] Edit Post
 		/// </summary>
-		[Authorize(Roles = "Admin")]
+		[Authorize]
 		[HttpPut]
 		public async Task<ActionResult> EditPost(EditPostDTO dto)
 		{
@@ -48,9 +54,9 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] [Moderator or Creator] Delete Post
 		/// </summary>
-		[Authorize(Roles = "Admin")]
+		[Authorize]
 		[HttpDelete]
 		public async Task<ActionResult> DeletePost(Guid id)
 		{

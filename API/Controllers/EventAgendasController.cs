@@ -16,7 +16,9 @@ namespace API.Controllers
 	[Route("api/v{version:apiVersion}/event/{eventId}/agenda")]
 	public class EventAgendasController : BaseApiController
 	{
-
+		/// <summary>
+		/// Get Event Agendas
+		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult<List<EventAgendaDTO>>> GetEventAgendas(
 			Guid eventId,
@@ -27,7 +29,9 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
 
-
+		/// <summary>
+		/// Get Event Agenda
+		/// </summary>
 		[HttpGet("{id}")]
 		public async Task<ActionResult<EventAgendaDTO>> GetEventAgenda(Guid id)
 		{
@@ -35,7 +39,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] Create Event Agenda
+		/// [Authorize] [Moderator or Creator] Create Event Agenda
 		/// </summary>
 		[Authorize]
 		[HttpPost]
@@ -48,7 +52,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] Edit Event Agenda
+		/// [Authorize] [Moderator or Creator] Edit Event Agenda
 		/// </summary>
 		[Authorize]
 		[HttpPut]
@@ -58,7 +62,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] Delete Event Agenda
+		/// [Authorize] [Moderator or Creator] Delete Event Agenda
 		/// </summary>
 		[Authorize]
 		[HttpDelete]

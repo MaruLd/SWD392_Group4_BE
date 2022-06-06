@@ -23,6 +23,7 @@ namespace Application.Comments
 		public class Handler : IRequestHandler<Command, Result<Unit>>
 		{
 			private readonly CommentService _commentService;
+			private readonly EventUserService _eventUserService;
 			private readonly UserService _userService;
 			private readonly IUserAccessor _userAccessor;
 			private readonly IMapper _mapper;
@@ -30,6 +31,7 @@ namespace Application.Comments
 			public Handler(EventService eventService, PostService postService, CommentService commentService, UserService userService, EventUserService eventUserService, IUserAccessor userAccessor, IMapper mapper)
 			{
 				this._commentService = commentService;
+				this._eventUserService = eventUserService;
 				this._userAccessor = userAccessor;
 				this._mapper = mapper;
 			}
@@ -41,9 +43,15 @@ namespace Application.Comments
 				var comment = await _commentService.GetByID(request.commentId);
 				if (comment == null) return Result<Unit>.NotFound("Comment not found!");
 
+				var eventUser = await _eventUserService.GetByID(comment.Post.Event.Id, user.Id);
+				if (eventUser == null) return Result<Unit>.Failure("It's not your comment");
+
 				if (comment.UserId != user.Id)
 				{
-					if (!(_userAccessor.GetRole() == "Admin")) return Result<Unit>.NotFound("It's not your comment");
+					if (!(_userAccessor.GetRole() == "Admin")
+					 && eventUser.Type < EventUserTypeEnum.Moderator
+					)
+						return Result<Unit>.Failure("It's not your comment");
 				}
 				comment.Status = StatusEnum.Unavailable;
 				var result = await _commentService.Save();
