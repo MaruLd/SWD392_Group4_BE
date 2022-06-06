@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using API.DTOs;
 using Application.Services;
+using AutoMapper;
 using Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,35 +21,30 @@ namespace API.Controllers
 		private readonly UserService _userService;
 		private readonly IConfiguration _config;
 		private readonly UserManager<User> _userManager;
+		private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
 		public AuthController(TokenService tokenService,
 						UserService userService,
 						IConfiguration config,
 						FirebaseService firebaseService,
-						UserManager<User> userManager)
+						UserManager<User> userManager,
+						RoleManager<IdentityRole<Guid>> roleManager,
+						IMapper mapper
+						)
 		{
 			_firebaseService = firebaseService;
 			_tokenService = tokenService;
 			this._userService = userService;
 			_config = config;
 			_userManager = userManager;
+			this._roleManager = roleManager;
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> GetTestToken([FromQuery] string email)
-		{
-			//return Ok("token : " + _config.GetValue<string>("JWTSecretKey"));
-			var user = await _userService.GetByEmail(email);
-			if (user == null)
-			{
-				await _userManager.CreateAsync(new User() { Email = email, UserName = "AUserName", DisplayName = "ADisplayName" });
-			}
-
-			return Ok(_tokenService.CreateToken(email));
-		}
-
+		/// <summary>
+		/// Login with google token and return a JWT token
+		/// </summary>
 		[HttpPost("auth-google")]
-		public async Task<IActionResult> TestGoogleAuth([FromQuery] string token)
+		public async Task<ActionResult<LoginResultDTO>> TestGoogleAuth([FromQuery] string token)
 		{
 			var claims = await _firebaseService.VerifyIdToken(token);
 
@@ -56,20 +53,47 @@ namespace API.Controllers
 				return BadRequest(Results.BadRequest("Token not valid!"));
 			}
 
-			var ec = claims.Claims.FirstOrDefault(c => c.Key == "email").Value.ToString();
-			var user = await _userService.GetByEmail(ec);
+			var email = claims.Claims.FirstOrDefault(c => c.Key == "email").Value.ToString();
+
+			if (email.Split("@").Last() != "fpt.edu.vn") return StatusCode(418, "The system currently only accepted [fpt.edu.vn] email!");
+			var name = claims.Claims.FirstOrDefault(c => c.Key == "name").Value.ToString();
+
+			var user = await _userService.GetByEmail(email);
 
 			if (user == null)
 			{
-				_userManager.CreateAsync(new User() { Email = user.Email, UserName = user.UserName, DisplayName = user.DisplayName });
+				user = new User()
+				{
+					Email = email,
+					UserName = email,
+					DisplayName = name
+				};
+
+				await _userManager.CreateAsync(user);
+
+				var role = await _roleManager.FindByNameAsync("User");
+				await _userManager.AddToRoleAsync(user, role.Name);
+			}
+			else
+			{
+				var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+				return Ok(await CreateUserObject(user, role));
 			}
 
-			return Ok(_tokenService.CreateToken(ec));
+			return null;
 		}
 
-		[HttpGet("Error")]
-		public IActionResult ErrorAuth() {
-			return BadRequest();
+		private async Task<LoginResultDTO> CreateUserObject(User user, string role)
+		{
+			return new LoginResultDTO
+			{
+				Id = user.Id,
+				DisplayName = user.DisplayName,
+				Token = await _tokenService.CreateToken(user, role),
+				Email = user.Email,
+				Role = role,
+				Image = user.ImageURL
+			};
 		}
 	}
 }

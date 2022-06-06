@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
+using Domain.Enums;
 
 namespace Persistence
 {
@@ -10,7 +11,7 @@ namespace Persistence
 	{
 		public static async Task SeedData(DataContext context)
 		{
-			if (context.Event.Any()) return;
+			if (context.Events.Any()) return;
 
 			var events = new List<Event>
 			{
@@ -21,8 +22,8 @@ namespace Persistence
 					EndTime = DateTime.Now.AddMonths(1).AddHours(2),
 					Description = "Description about the event",
 					EventCategoryId = 1,
-					Multiplier_Factor = 1,
-					Status = "AVAILABLE"
+					MultiplierFactor = 1,
+					Status = StatusEnum.Available
 				},
 				 new Event
 				{
@@ -31,8 +32,8 @@ namespace Persistence
 					EndTime = DateTime.Now.AddMonths(1).AddHours(2),
 					Description = "Description about the event",
 					EventCategoryId = 1,
-					Multiplier_Factor = 1,
-					Status = "AVAILABLE"
+					MultiplierFactor = 1,
+					Status = StatusEnum.Available
 				},
 				 new Event
 				{
@@ -41,8 +42,8 @@ namespace Persistence
 					EndTime = DateTime.Now.AddMonths(1).AddHours(2),
 					Description = "Description about the event",
 					EventCategoryId = 1,
-					Multiplier_Factor = 1,
-					Status = "AVAILABLE"
+					MultiplierFactor = 1,
+					Status = StatusEnum.Available
 				},
 				 new Event
 				{
@@ -51,8 +52,8 @@ namespace Persistence
 					EndTime = DateTime.Now.AddMonths(1).AddHours(2),
 					Description = "Description about the event",
 					EventCategoryId = 1,
-					Multiplier_Factor = 1,
-					Status = "AVAILABLE"
+					MultiplierFactor = 1,
+					Status = StatusEnum.Available
 				},
 				 new Event
 				{
@@ -61,8 +62,8 @@ namespace Persistence
 					EndTime = DateTime.Now.AddMonths(1).AddHours(2),
 					Description = "Description about the event",
 					EventCategoryId = 1,
-					Multiplier_Factor = 1,
-					Status = "AVAILABLE"
+					MultiplierFactor = 1,
+					Status = StatusEnum.Available
 				},
 				 new Event
 				{
@@ -71,11 +72,11 @@ namespace Persistence
 					EndTime = DateTime.Now.AddMonths(1).AddHours(2),
 					Description = "Description about the event",
 					EventCategoryId = 1,
-					Multiplier_Factor = 1,
-					Status = "AVAILABLE"
+					MultiplierFactor = 1,
+					Status = StatusEnum.Available
 				}
 			};
-			await context.Event.AddRangeAsync(events);
+			await context.Events.AddRangeAsync(events);
 			await context.SaveChangesAsync();
 		}
 	}

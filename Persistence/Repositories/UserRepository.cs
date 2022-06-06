@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.EntityFrameworkCore;
-using Persistence.Params;
 
 namespace Persistence.Repositories
 {

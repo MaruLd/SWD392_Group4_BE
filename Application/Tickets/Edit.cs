@@ -8,6 +8,7 @@ using Application.Services;
 using Application.Tickets.DTOs;
 using AutoMapper;
 using Domain;
+using Domain.Enums;
 using FluentValidation;
 using MediatR;
 using Persistence;
@@ -18,19 +19,10 @@ namespace Application.Tickets
 	{
 		public class Command : IRequest<Result<Unit>>
 		{
+			public Guid ticketId { get; set; }
 			public EditTicketDTO dto { get; set; }
 
 		}
-
-		// public class CommandValidator : AbstractValidator<Command>
-		// {
-		//     public CommandValidator()
-		//     {
-		//         RuleFor(x => x.Ticket).SetValidator(new TicketValidator());
-
-		//     }
-
-		// }
 
 		public class Handler : IRequestHandler<Command, Result<Unit>>
 		{
@@ -43,7 +35,7 @@ namespace Application.Tickets
 
 			public Handler(EventService eventService, TicketService ticketService, UserService userService, EventUserService eventUserService, IUserAccessor userAccessor, IMapper mapper)
 			{
-				this._eventService = eventService;
+                this._eventService = eventService;
 				this._ticketService = ticketService;
 				this._userService = userService;
 				this._eventUserService = eventUserService;
@@ -53,7 +45,7 @@ namespace Application.Tickets
 			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
 			{
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
-				var ticket = await _ticketService.GetByID(request.dto.Id);
+				var ticket = await _ticketService.GetByID(request.ticketId);
 
 				if (ticket == null) return Result<Unit>.Failure("Ticket not found!");
 
@@ -63,8 +55,7 @@ namespace Application.Tickets
 				var eventUser = await _eventUserService.GetByID(ticket.EventId.Value, user.Id);
 				if (eventUser == null) return Result<Unit>.Failure("You aren't in the event!");
 
-				var allowedRole = new List<EventUserType> { EventUserType.Admin, EventUserType.Manager };
-				if (!allowedRole.Contains(eventUser.Type))
+				if (eventUser.Type >= EventUserTypeEnum.Moderator)
 				{
 					return Result<Unit>.Failure("You have no permission!");
 				}
@@ -74,7 +65,7 @@ namespace Application.Tickets
 				var result = await _ticketService.Save();
 				if (!result) return Result<Unit>.Failure("Failed to update ticket or no changes was made!");
 
-				return Result<Unit>.Success(Unit.Value);
+				return Result<Unit>.NoContentSuccess(Unit.Value);
 			}
 		}
 	}

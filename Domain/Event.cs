@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Domain.Enums;
 
 namespace Domain;
 
@@ -16,11 +17,12 @@ public class Event
 
 	public String? Title { get; set; }
 	public String? Description { get; set; }
+	public String? ImageURL { get; set; }
 
 	public DateTime StartTime { get; set; }
 	public DateTime EndTime { get; set; }
 
-	public float Multiplier_Factor { get; set; }
+	public float MultiplierFactor { get; set; }
 
 	public virtual EventCategory? EventCategory { get; set; }
 	public int? EventCategoryId { get; set; }
@@ -36,7 +38,8 @@ public class Event
 	[JsonIgnore]
 	public virtual ICollection<EventAgenda> EventAgenda { get; set; }
 
-	public String Status { get; set; }
+	public StatusEnum Status { get; set; }
+
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 
 }

@@ -3,42 +3,66 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.Interfaces;
+using Application.Services;
+using AutoMapper;
 using Domain;
+using Domain.Enums;
 using MediatR;
 using Persistence;
 
 namespace Application.Tickets
 {
-    public class Delete
-    {
-         public class Command : IRequest<Result<Unit>>
-        {
-            public Guid Id { get; set; }
-        }
+	public class Delete
+	{
+		public class Command : IRequest<Result<Unit>>
+		{
+			public Guid Id { get; set; }
+		}
 
-        public class Handler : IRequestHandler<Command,Result<Unit>>
-        {
-            private readonly DataContext _context;
+		private readonly TicketService _ticketService;
+		private readonly UserService _userService;
+		private readonly EventService _eventService;
+		private readonly EventUserService _eventUserService;
+		private readonly IUserAccessor _userAccessor;
+		private readonly IMapper _mapper;
 
-            public Handler(DataContext context)
-            {
-                _context = context;
-            }
+		public Delete(TicketService ticketService, EventService eventService, EventUserService eventUserService, UserService userService, IMapper mapper, IUserAccessor userAccessor)
+		{
+			_userService = userService;
+			_ticketService = ticketService;
+			_eventService = eventService;
+			_eventUserService = eventUserService;
+			_userAccessor = userAccessor;
+			_mapper = mapper;
+		}
 
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
-            {
-                
-               
-                var Ticket = await _context.Ticket.FindAsync(request.Id);
+		public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+		{
+			var ticket = await _ticketService.GetByID(request.Id);
+			if (ticket == null) return Result<Unit>.AcceptedSuccess(Unit.Value); //If you DELETE something that doesn't exist, you should just return a 204 (even if the resource never existed). The client wanted the resource gone and it is gone. Returning a 404 is exposing internal processing that is unimportant to the client and will result in an unnecessary error condition.
 
-                _context.Remove(Ticket);
+			var eventInDb = await _eventService.GetByID((Guid)ticket.EventId);
+			if (eventInDb == null) return Result<Unit>.AcceptedSuccess(Unit.Value); // Actually not needed but check anyways
 
-                var result = await _context.SaveChangesAsync()>0;
-                
-                if (!result) return Result<Unit>.Failure("Failed to delete ticket");
+			var user = await _userService.GetByEmail(_userAccessor.GetEmail());
+			var eventUser = await _eventUserService.GetByID(eventInDb.Id, user.Id);
 
-				return Result<Unit>.Success(Unit.Value);
-            }
-        }
-    }
+			if (eventUser == null) return Result<Unit>.Forbidden("You have no permission!");
+			if (eventUser.Type >= EventUserTypeEnum.Moderator)
+			{
+				return Result<Unit>.Forbidden("You have no permission!");
+			}
+
+
+			var users = await _ticketService.GetAllUserByTicketId(ticket.Id);
+			if (users.Count > 0) return Result<Unit>.Failure("Can't delete ticket that already been bought!");
+
+			ticket.Status = StatusEnum.Unavailable;
+			var result = await _eventService.Update(eventInDb);
+
+			if (!result) return Result<Unit>.Failure("Failed to delete the ticket");
+			return Result<Unit>.NoContentSuccess(Unit.Value);
+		}
+	}
 }

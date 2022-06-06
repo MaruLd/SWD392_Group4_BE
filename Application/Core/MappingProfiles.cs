@@ -2,8 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Comments.DTOs;
+using Application.EventAgendas.DTOs;
+using Application.EventCategories.DTOs;
 using Application.Events.DTOs;
+using Application.Organizers.DTOs;
+using Application.Posts.DTOs;
 using Application.Tickets.DTOs;
+using Application.Users.DTOs;
 using AutoMapper;
 using Domain;
 
@@ -13,17 +19,46 @@ namespace Application.Core
 	{
 		public MappingProfiles()
 		{
-			CreateMap<Event, EventDTO>();
-			CreateMap<Event, Event>();
-			CreateMap<EventDTO, Event>();
+
 
 			CreateMap<CreateEventDTO, Event>();
 			CreateMap<EditEventDTO, Event>();
-
+			CreateMap<Event, EventDTO>()
+				.ForMember(dst => dst.Tickets, src => src.MapFrom(t => t.Tickets))
+				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.Organizers))
+				.ForMember(dst => dst.EventCategory, src => src.MapFrom(o => o.EventCategory));
+			CreateMap<EventDTO, Event>();
 
 			CreateMap<CreateTicketDTO, Ticket>();
 			CreateMap<EditTicketDTO, Ticket>();
 			CreateMap<Ticket, TicketDTO>();
+			CreateMap<TicketDTO, Ticket>();
+
+			CreateMap<CreatePostDTO, Post>();
+			CreateMap<EditPostDTO, Post>();
+			CreateMap<Post, PostDTO>();
+			CreateMap<PostDTO, Post>();
+
+			CreateMap<CreateCommentDTO, Comment>();
+			CreateMap<Comment, CommentDTO>();
+			CreateMap<CommentDTO, Comment>();
+
+			CreateMap<CreateOrganizerDTO, Organizer>();
+			CreateMap<EditOrganizerDTO, Organizer>();
+			CreateMap<OrganizerDTO, Organizer>();
+			CreateMap<Organizer, OrganizerDTO>();
+
+			CreateMap<EventCategory, EventCategoryDTO>();
+			CreateMap<EventCategoryDTO, EventCategory>();
+
+			CreateMap<CreateEventAgendaDTO, EventAgenda>();
+			CreateMap<EditEventAgendaDTO, EventAgenda>();
+			CreateMap<EventAgenda, EventAgendaDTO>();
+			CreateMap<EventAgendaDTO, EventAgenda>();
+
+			CreateMap<EditUserDTO, User>();
+			CreateMap<User, UserDTO>();
+			CreateMap<UserDTO, User>();
 		}
 
 	}

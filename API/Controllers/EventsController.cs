@@ -9,41 +9,58 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
-using Persistence.Params;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
 {
 	public class EventsController : BaseApiController
 	{
+		/// <summary>
+		/// Get Events
+		/// </summary>
 		[HttpGet]
-		
-		public async Task<ActionResult<List<Event>>> GetEvents([FromQuery] ListEventParams dto)
+		public async Task<ActionResult<List<EventDTO>>> GetEvents([FromQuery] EventQueryParams queryParams)
 		{
-			return HandleResult(await Mediator.Send(new List.Query() { dto = dto }));
+			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
 
-		[Authorize]
+		/// <summary>
+		/// Get Event
+		/// </summary>
 		[HttpGet("{id}")]
-		public async Task<IActionResult> GetEvent(Guid id)
+		public async Task<ActionResult<EventDTO>> GetEvent(Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 
+		/// <summary>
+		/// [Admin Only] Create Event
+		/// </summary>
+		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		public async Task<ActionResult> CreateEvent(CreateEventDTO Event)
 		{
 			return HandleResult(await Mediator.Send(new Create.Command { Event = Event }));
 		}
 
-		[HttpPut("{id}")]
-		public async Task<ActionResult> EditEvent(Guid id, EditEventDTO Event)
+
+		/// <summary>
+		/// [Authorize] [Moderator or Creator] Edit Event
+		/// </summary>
+		[Authorize]
+		[HttpPut]
+		public async Task<ActionResult> EditEvent(EditEventDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Edit.Command { eventId = id, Event = Event }));
+			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
 		}
 
-		[HttpDelete("{id}")]
-		public async Task<ActionResult> DeleteEvent(Guid id)
+
+		/// <summary>
+		/// [Authorize] [Moderator or Creator] Delete Event
+		/// </summary>
+		[Authorize]
+		[HttpDelete]
+		public async Task<ActionResult> DeleteEvent([FromBody] Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
 		}

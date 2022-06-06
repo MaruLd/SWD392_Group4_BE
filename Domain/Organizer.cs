@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Domain.Enums;
 
 namespace Domain
 {
@@ -16,8 +17,9 @@ namespace Domain
 
 		public String? Name { get; set; }
 		public String? Description { get; set; }
+		public String? ImageURL { get; set; }
 
-		public String Status { get; set; }
+		public StatusEnum Status { get; set; }
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 
 		[JsonIgnore]

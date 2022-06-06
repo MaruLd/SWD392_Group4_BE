@@ -3,31 +3,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.Events.DTOs;
+using Application.Services;
+using AutoMapper;
 using Domain;
 using MediatR;
 using Persistence;
 
 namespace Application.Events
 {
-    public class Details 
-    {
-        public class Query : IRequest<Result<Event>>{
-            public Guid Id { get; set; }
-        }
+	public class Details
+	{
+		public class Query : IRequest<Result<EventDTO>>
+		{
+			public Guid Id { get; set; }
+		}
 
-        public class Handler : IRequestHandler<Query, Result<Event>>
-        {
-            private readonly DataContext _context;
+		public class Handler : IRequestHandler<Query, Result<EventDTO>>
+		{
+			private readonly EventService _eventService;
+			private readonly IMapper _mapper;
 
-            public Handler(DataContext context)
-            {
-                _context = context;
-            }
+			public Handler(EventService eventService, IMapper mapper)
+			{
+				;
+				_eventService = eventService;
+				_mapper = mapper;
+			}
 
-            public async Task<Result<Event>> Handle(Query request, CancellationToken cancellationToken)
-            {
-                return Result<Event>.Success(await _context.Event.FindAsync(request.Id));
-            }
-        }
-    }
+			public async Task<Result<EventDTO>> Handle(Query request, CancellationToken cancellationToken)
+			{
+				var e = await _eventService.GetByID(request.Id);
+				if (e == null) return Result<EventDTO>.Failure("Event not found!");
+				var dto = _mapper.Map<EventDTO>(e);
+				return Result<EventDTO>.Success(dto);
+			}
+		}
+	}
 }

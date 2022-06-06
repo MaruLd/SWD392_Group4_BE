@@ -8,6 +8,7 @@ using Application.Services;
 using Application.Tickets.DTOs;
 using AutoMapper;
 using Domain;
+using Domain.Enums;
 using FluentValidation;
 using MediatR;
 using Persistence;
@@ -16,7 +17,7 @@ namespace Application.Tickets
 {
 	public class Create
 	{
-		public class Command : IRequest<Result<Unit>>
+		public class Command : IRequest<Result<TicketDTO>>
 		{
 			public CreateTicketDTO dto { get; set; }
 		}
@@ -29,7 +30,7 @@ namespace Application.Tickets
 		//     }
 		// }
 
-		public class Handler : IRequestHandler<Command, Result<Unit>>
+		public class Handler : IRequestHandler<Command, Result<TicketDTO>>
 		{
 			private readonly EventService _eventService;
 			private readonly TicketService _ticketService;
@@ -48,29 +49,27 @@ namespace Application.Tickets
 				this._mapper = mapper;
 			}
 
-			public async Task<Result<Unit>>
+			public async Task<Result<TicketDTO>>
 			Handle(Command request, CancellationToken cancellationToken)
 			{
 				var eventInDb = await _eventService.GetByID(request.dto.EventId);
-				if (eventInDb == null) return Result<Unit>.Failure("Event not found!");
+				if (eventInDb == null) return Result<TicketDTO>.Failure("Event not found!");
 
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
 				var eventUser = await _eventUserService.GetByID(eventInDb.Id, user.Id);
 
-				if (eventUser == null) return Result<Unit>.Failure("You aren't in the event!");
-
-				var allowedRole = new List<EventUserType> { EventUserType.Admin, EventUserType.Manager };
-				if (!allowedRole.Contains(eventUser.Type))
+				if (eventUser == null) return Result<TicketDTO>.Forbidden("You aren't in the event!");
+				if (eventUser.Type >= EventUserTypeEnum.Moderator)
 				{
-					return Result<Unit>.Failure("You have no permission!");
+					return Result<TicketDTO>.Forbidden("You have no permission!");
 				}
 
 				var ticket = _mapper.Map<Ticket>(request.dto);
 
 				var result = await _ticketService.Insert(ticket);
-				if (!result) return Result<Unit>.Failure("Failed to create ticket");
+				if (!result) return Result<TicketDTO>.Failure("Failed to create ticket");
 
-				return Result<Unit>.Success(Unit.Value);
+				return Result<TicketDTO>.CreatedSuccess(_mapper.Map<TicketDTO>(ticket));
 			}
 		}
 	}

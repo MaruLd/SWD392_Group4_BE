@@ -1,3 +1,4 @@
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,10 @@ namespace Application.Events.DTOs
 		public DateTime StartTime { get; set; }
 		public DateTime EndTime { get; set; }
 
-		public float Multiplier_Factor { get; set; }
+		public float MultiplierFactor { get; set; }
 
 		public int? EventCategoryId { get; set; }
 
-		public String Status { get; set; }
+		public StatusEnum Status { get; set; }
 	}
 }

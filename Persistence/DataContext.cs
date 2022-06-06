@@ -1,52 +1,63 @@
+using System.Data;
 using Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Persistence
 {
-	public class DataContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
-	{
-		public DataContext(DbContextOptions options) :
-			base(options)
-		{
+  public class DataContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+  {
+    public DataContext(DbContextOptions options) : base(options) { }
 
-		}
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      base.OnModelCreating(modelBuilder);
+      modelBuilder.Entity<Comment>()
+  .HasMany(e => e.CommentLikes)
+  .WithOne(e => e.Comment)
+  .OnDelete(DeleteBehavior.Restrict);
 
-		protected override void OnModelCreating(ModelBuilder builder)
-		{
-			base.OnModelCreating(builder);
+      modelBuilder.Entity<User>()
+      .HasMany(e => e.CommentLikes)
+      .WithOne(e => e.User);
+      /*
+      var Comment = db.Set<Comment>().Include(e => e.CommentLikes).Single(e => e.Id == id);
+      db.RemoveRange(Comment.CommentLikes);
+      db.Remove(productType);
+      db.SaveChanges();
+      */
+    }
 
-		}
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    if (!optionsBuilder.IsConfigured)
+        //    {
+        //        optionsBuilder.UseSqlServer("Server=evsmart-database.cmiv12nvywqh.ap-southeast-1.rds.amazonaws.com,1433;Initial Catalog=SmartEvent;Persist Security Info=False;User ID=admin1;Password=Kindly?Estranged?Overrule4?Bonding?Facebook;");
+        //    }
+        //}
 
-		public DbSet<User> User { get; set; }
+        public DbSet<User> Users { get; set; }
 
-		public DbSet<Event> Event { get; set; }
+    public DbSet<Event> Events { get; set; }
 
-		public DbSet<EventAgenda> EventAgenda { get; set; }
+    public DbSet<EventAgenda> EventAgendas { get; set; }
 
-		public DbSet<Organizer> Organizer { get; set; }
+    public DbSet<Organizer> Organizers { get; set; }
 
-		public DbSet<Post> Post { get; set; }
+    public DbSet<Post> Posts { get; set; }
 
-		public DbSet<Ticket> Ticket { get; set; }
+    public DbSet<Ticket> Tickets { get; set; }
 
-		public DbSet<EventUser> EventUser { get; set; }
+    public DbSet<EventUser> EventUsers { get; set; }
 
-		public DbSet<EventCategory> EventCategory { get; set; }
+    public DbSet<EventCategory> EventCategories { get; set; }
 
-		public DbSet<Comment> Comment { get; set; }
+    public DbSet<Comment> Comments { get; set; }
 
-		// public DbSet<EventTicket> EventTickets { get; set; }
+    public DbSet<CommentLike> CommentLikes { get; set; }
 
-		// protected override void OnModelCreating(ModelBuilder builder)
-		// {
-		//     base.OnModelCreating(builder);
 
-		//     builder.Entity<EventTicket>(x => x.HasKey(et => new { et.TicketId, et.EventId }));
-
-		//     builder.Entity<EventTicket>().HasOne(t => t.Ticket).WithMany(e => e.EventTickets).HasForeignKey(et => et.TicketId);
-		//     builder.Entity<EventTicket>().HasOne(t => t.Event).WithMany(e => e.EventTickets).HasForeignKey(et => et.EventId);
-		// }
-	}
+  }
 }

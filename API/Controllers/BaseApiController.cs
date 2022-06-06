@@ -6,13 +6,14 @@ using Application.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
 {
 	[ApiController]
+	[Route("api/v{version:apiVersion}/[controller]")]
 	[ApiVersion("1.0")]
-  [Route("api/v{version:apiVersion}/[controller]")]
-	
+
 	public class BaseApiController : ControllerBase
 	{
 		private IMediator _mediator;
@@ -22,10 +23,11 @@ namespace API.Controllers
 		protected ActionResult HandleResult<T>(Result<T> result)
 		{
 			if (result == null) return NotFound();
-			if (result.IsSuccess && result.Value != null) return Ok(result.Value);
-			if (result.IsSuccess && result.Value == null) return NotFound();
-
+			else if (result.IsSuccess && result.Value != null) return StatusCode(result.StatusCode, result.Value);
+			else if (result.IsSuccess && result.Value == null) return NotFound(result.Error);
 			return BadRequest(result.Error);
+
+
 		}
 	}
 }

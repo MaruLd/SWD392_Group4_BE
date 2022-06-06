@@ -18,14 +18,17 @@ namespace Application.Services
 			_config = config;
 		}
 
-		public FirebaseApp GetDefaultApp() {
-			return FirebaseApp.GetInstance("DEFAULT");
+		public FirebaseApp GetInstance()
+		{
+			return FirebaseApp.GetInstance("[DEFAULT]");
 		}
 
-		public async Task<FirebaseToken> VerifyIdToken(string token) {
-			FirebaseAuth auth = FirebaseAuth.GetAuth(GetDefaultApp());
+		public async Task<FirebaseToken> VerifyIdToken(string token)
+		{
+			FirebaseAuth auth = FirebaseAuth.GetAuth(GetInstance());
 			var result = await auth.VerifyIdTokenAsync(token);
 			return result;
 		}
+
 	}
 }
