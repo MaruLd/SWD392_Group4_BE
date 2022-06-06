@@ -19,27 +19,37 @@ namespace API.Extensions
 		public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
 		{
 			services.AddScoped<EventRepository>();
-			services.AddScoped<EventAgenda>();
-			services.AddScoped<EventUserRepository>();
-			services.AddScoped<EventCategory>();
-			services.AddScoped<UserRepository>();
-			services.AddScoped<TicketRepository>();
-			services.AddScoped<PostRepository>();
-			services.AddScoped<CommentRepository>();
-			services.AddScoped<OrganizerRepository>();
-			services.AddScoped<EventCategoryRepository>();
-			services.AddScoped<EventAgendaRepository>();
-			services.AddScoped<CommentRepository>();
-
 			services.AddScoped<EventService>();
-			services.AddScoped<TicketService>();
-			services.AddScoped<PostService>();
-			services.AddScoped<UserService>();
-			services.AddScoped<EventUserService>();
-			services.AddScoped<OrganizerService>();
-			services.AddScoped<EventCategoryService>();
+
+			services.AddScoped<EventAgendaRepository>();
 			services.AddScoped<EventAgendaService>();
+
+			services.AddScoped<EventUserRepository>();
+			services.AddScoped<EventUserService>();
+
+			services.AddScoped<EventCategory>();
+			services.AddScoped<EventCategoryService>();
+
+			services.AddScoped<UserRepository>();
+			services.AddScoped<UserService>();
+
+			services.AddScoped<TicketRepository>();
+			services.AddScoped<TicketService>();
+
+			services.AddScoped<PostRepository>();
+			services.AddScoped<PostService>();
+
+			services.AddScoped<CommentRepository>();
 			services.AddScoped<CommentService>();
+
+			services.AddScoped<OrganizerRepository>();
+			services.AddScoped<OrganizerService>();
+
+			services.AddScoped<EventCategoryRepository>();
+			services.AddScoped<EventCategoryService>();
+
+			services.AddScoped<TicketUserRepository>();
+			services.AddScoped<TicketUserService>();
 
 			services.AddScoped<TokenService>();
 			services.AddSingleton<FirebaseService>();
@@ -54,10 +64,33 @@ namespace API.Extensions
 			  .AddSwaggerGen(c =>
 			  {
 				  c.SwaggerDoc("v1",
-		  new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
+		  				new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
 				  var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 				  var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 				  c.IncludeXmlComments(xmlPath);
+
+				  var securitySchema = new OpenApiSecurityScheme
+				  {
+					  Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+					  Name = "Authorization",
+					  In = ParameterLocation.Header,
+					  Type = SecuritySchemeType.Http,
+					  Scheme = "bearer",
+					  Reference = new OpenApiReference
+					  {
+						  Type = ReferenceType.SecurityScheme,
+						  Id = "Bearer"
+					  }
+				  };
+
+				  c.AddSecurityDefinition("Bearer", securitySchema);
+
+				  var securityRequirement = new OpenApiSecurityRequirement
+				{
+					{ securitySchema, new[] { "Bearer" } }
+				};
+
+				  c.AddSecurityRequirement(securityRequirement);
 			  });
 
 

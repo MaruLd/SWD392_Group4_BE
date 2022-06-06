@@ -6,9 +6,11 @@ using Application.Comments.DTOs;
 using Application.EventAgendas.DTOs;
 using Application.EventCategories.DTOs;
 using Application.Events.DTOs;
+using Application.EventUsers.DTOs;
 using Application.Organizers.DTOs;
 using Application.Posts.DTOs;
 using Application.Tickets.DTOs;
+using Application.TicketUsers.DTOs;
 using Application.Users.DTOs;
 using AutoMapper;
 using Domain;
@@ -23,16 +25,22 @@ namespace Application.Core
 
 			CreateMap<CreateEventDTO, Event>();
 			CreateMap<EditEventDTO, Event>();
+			CreateMap<EventDTO, Event>();
 			CreateMap<Event, EventDTO>()
+				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.Organizers))
+				.ForMember(dst => dst.EventCategory, src => src.MapFrom(o => o.EventCategory));
+			CreateMap<Event, DetailEventDTO>()
 				.ForMember(dst => dst.Tickets, src => src.MapFrom(t => t.Tickets))
 				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.Organizers))
 				.ForMember(dst => dst.EventCategory, src => src.MapFrom(o => o.EventCategory));
-			CreateMap<EventDTO, Event>();
 
 			CreateMap<CreateTicketDTO, Ticket>();
 			CreateMap<EditTicketDTO, Ticket>();
-			CreateMap<Ticket, TicketDTO>();
 			CreateMap<TicketDTO, Ticket>();
+			CreateMap<Ticket, TicketDTO>();
+			CreateMap<Ticket, DetailTicketDTO>()
+				.ForMember(t => t.Users, opt => opt.MapFrom(t => t.TicketUsers.Select(tu => tu.User).ToList()));
+
 
 			CreateMap<CreatePostDTO, Post>();
 			CreateMap<EditPostDTO, Post>();
@@ -59,6 +67,16 @@ namespace Application.Core
 			CreateMap<EditUserDTO, User>();
 			CreateMap<User, UserDTO>();
 			CreateMap<UserDTO, User>();
+
+			CreateMap<CreateEventUserDTO, EventUser>();
+			CreateMap<EditEventUserDTO, EventUser>();
+			CreateMap<EventUser, EventUserDTO>();
+			CreateMap<EventUserDTO, EventUser>();
+
+			CreateMap<CreateTicketUserDTO, TicketUser>();
+			// CreateMap<EditTicketUserDTO, TicketUser>();
+			CreateMap<TicketUser, TicketUserDTO>();
+			CreateMap<TicketUserDTO, TicketUser>();
 		}
 
 	}

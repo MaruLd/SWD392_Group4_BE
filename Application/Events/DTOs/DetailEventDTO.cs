@@ -8,7 +8,7 @@ using Domain;
 
 namespace Application.Events.DTOs
 {
-	public class EventDTO
+	public class DetailEventDTO
 	{
 		public Guid Id { get; set; }
 
@@ -20,11 +20,11 @@ namespace Application.Events.DTOs
 
 		public float MultiplierFactor { get; set; }
 
-
 		public String Status { get; set; }
 		public DateTime CreatedDate { get; set; }
 
 		public List<OrganizerDTO> Organizers { get; set; }
+		public List<TicketDTO> Tickets { get; set; }
 		public EventCategory EventCategory { get; set; }
 	}
 }

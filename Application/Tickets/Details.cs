@@ -14,12 +14,12 @@ namespace Application.Tickets
 {
 	public class Details
 	{
-		public class Query : IRequest<Result<TicketDTO>>
+		public class Query : IRequest<Result<DetailTicketDTO>>
 		{
 			public Guid Id { get; set; }
 		}
 
-		public class Handler : IRequestHandler<Query, Result<TicketDTO>>
+		public class Handler : IRequestHandler<Query, Result<DetailTicketDTO>>
 		{
 			private readonly TicketService _ticketService;
 			private readonly IMapper _mapper;
@@ -31,11 +31,11 @@ namespace Application.Tickets
 			}
 
 
-			public async Task<Result<TicketDTO>> Handle(Query request, CancellationToken cancellationToken)
+			public async Task<Result<DetailTicketDTO>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				var ticket = _ticketService.GetByID(request.Id);
-				var ticketDto = _mapper.Map<TicketDTO>(ticket);
-				return Result<TicketDTO>.Success(ticketDto);
+				var ticket = await _ticketService.GetByID(request.Id);
+				var ticketDto = _mapper.Map<DetailTicketDTO>(ticket);
+				return Result<DetailTicketDTO>.Success(ticketDto);
 			}
 		}
 	}

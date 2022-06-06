@@ -67,11 +67,11 @@ namespace Application.Services
 		public async Task<Event> GetByID(Guid id)
 		{
 			var e = await _eventRepository.GetQuery()
-				.Where(entity => entity.Status == StatusEnum.Available)
+				.Where(entity => entity.Status != StatusEnum.Unavailable)
 				.Where(e => e.Id == id)
 				.Include(e => e.EventCategory)
 				.Include(e => e.Organizers)
-				.Include(e => e.EventCategory).FirstOrDefaultAsync();
+				.Include(e => e.Tickets).FirstOrDefaultAsync();
 			return e;
 		}
 

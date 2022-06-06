@@ -9,6 +9,7 @@ using JorgeSerrano.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 
 namespace API
