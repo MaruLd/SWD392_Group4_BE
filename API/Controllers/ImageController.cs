@@ -22,7 +22,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] Upload Image
 		/// </summary>
 		[HttpPost]
 		[Authorize]
@@ -33,6 +33,9 @@ namespace API.Controllers
 			return Ok(key);
 		}
 
+		/// <summary>
+		/// Get Image
+		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult> GetImage(string key)
 		{

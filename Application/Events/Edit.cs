@@ -58,9 +58,7 @@ namespace Application.Events
 				var eventUser = await _eventUserService.GetByID(eventInDb.Id, user.Id);
 
 				if (eventUser == null) return Result<Unit>.Forbidden("You aren't in the event!");
-
-				var allowedRole = new List<EventUserTypeEnum> { EventUserTypeEnum.Admin, EventUserTypeEnum.Manager };
-				if (!allowedRole.Contains(eventUser.Type))
+				if (eventUser.Type >= EventUserTypeEnum.Moderator)
 				{
 					return Result<Unit>.Forbidden("You have no permission!");
 				}

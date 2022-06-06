@@ -4,8 +4,9 @@ namespace Domain.Enums
 	{
 		Student,
 		Lecture,
+		Guest,
 		Speaker,
-		Manager,
-		Admin
+		Moderator,
+		Creator
 	}
 }

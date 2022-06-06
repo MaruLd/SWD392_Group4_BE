@@ -24,6 +24,9 @@ namespace API.Controllers
 			_mapper = mapper;
 		}
 
+		/// <summary>
+		/// Get Categories
+		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult<List<EventCategoryDTO>>> GetCategories()
 		{
@@ -31,6 +34,9 @@ namespace API.Controllers
 			return Ok(_mapper.Map<List<EventCategoryDTO>>(result));
 		}
 
+		/// <summary>
+		/// Get Category
+		/// </summary>
 		[HttpGet("{id}")]
 		public async Task<ActionResult<EventCategoryDTO>> GetCategory([FromQuery] int id)
 		{
@@ -40,7 +46,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Admin Only] Create Category
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
@@ -53,7 +59,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Admin Only] Edit Category
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPut]
@@ -67,7 +73,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Admin Only] Delete Category
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpDelete]

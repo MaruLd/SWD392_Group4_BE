@@ -49,7 +49,10 @@ namespace Application.Services
 			return await query.Where(entity => entity.Status == StatusEnum.Available).Where(t => t.PostId == postId).OrderBy(e => e.CreatedDate).ToListAsync();
 		}
 
-		public async Task<Comment> GetByID(Guid id) => await _commentRepository.GetByID(id);
+		public async Task<Comment> GetByID(Guid id)
+		{
+			return await _commentRepository.GetQuery().Where(e => e.Id == id).Include(c => c.Post).ThenInclude(p => p.Event).FirstOrDefaultAsync();
+		}
 		public async Task<bool> Insert(Comment e) { _commentRepository.Insert(e); return await _commentRepository.Save(); }
 		public async Task<bool> Update(Comment e) { _commentRepository.Update(e); return await _commentRepository.Save(); }
 		public async Task<bool> Save() { return await _commentRepository.Save(); }

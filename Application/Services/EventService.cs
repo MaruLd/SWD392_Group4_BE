@@ -86,7 +86,7 @@ namespace Application.Services
 			{
 				EventId = eventEntity.Id,
 				UserId = userId,
-				Type = EventUserTypeEnum.Manager,
+				Type = EventUserTypeEnum.Moderator,
 				Status = EventUserStatusEnum.Attended,
 			});
 

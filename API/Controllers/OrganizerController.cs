@@ -16,20 +16,26 @@ namespace API.Controllers
 {
 	public class OrganizerController : BaseApiController
 	{
+		/// <summary>
+		/// Get Organizers
+		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult<List<OrganizerDTO>>> GetOrganziers([FromQuery] OrganizerQueryParams queryParams)
 		{
 			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
 
+		/// <summary>
+		/// Get Organizer
+		/// </summary>
 		[HttpGet("{id}")]
-		public async Task<ActionResult<OrganizerDTO>> GetOraganzier(Guid id)
+		public async Task<ActionResult<OrganizerDTO>> GetOrganzier(Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Admin Only] Create Organizer
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
@@ -39,7 +45,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Admin Only] Edit Organizer
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPut]
@@ -49,7 +55,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] Delete Organnizer
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpDelete]
