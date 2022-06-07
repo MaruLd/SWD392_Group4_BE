@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.EventUsers;
 using Application.EventUsers.DTOs;
 using Domain;
@@ -17,7 +18,7 @@ namespace API.Controllers
 	public class EventUsersController : BaseApiController
 	{
 		/// <summary>
-		/// Get Event Users
+		/// [Authorize] [> Moderator] Get Event Users
 		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult<List<EventUserDTO>>> GetEventUsers(Guid eventid, [FromQuery] EventUserQueryParams queryParams)
@@ -26,7 +27,16 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// Get Event User
+		///[Authorize] [>= Student] Get Self Event Users
+		/// </summary>
+		[HttpGet("me")]
+		public async Task<ActionResult<EventUserDTO>> GetEventUser(Guid eventid)
+		{
+			return HandleResult(await Mediator.Send(new Details.Query { eventId = eventid, userId = Guid.Parse(User.GetUserId()) }));
+		}
+
+		/// <summary>
+		///[Authorize] [>= Moderator] Get Event Users
 		/// </summary>
 		[HttpGet("{id}")]
 		public async Task<ActionResult<EventUserDTO>> GetEventUser(Guid eventid, Guid userid)

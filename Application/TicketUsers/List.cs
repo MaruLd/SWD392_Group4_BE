@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Core;
 using Application.Events.DTOs;
 using Application.EventUsers.DTOs;
+using Application.Interfaces;
 using Application.Services;
 using Application.TicketUsers.DTOs;
 using AutoMapper;
@@ -30,19 +31,47 @@ namespace Application.TicketUsers
 
 			private readonly IMapper _mapper;
 			private readonly TicketService _ticketService;
+			private readonly EventUserService _eventUserService;
 			private readonly TicketUserService _ticketUserService;
+			private readonly UserService _userService;
+			private readonly IUserAccessor _userAccessor;
 
-			public Handler(IMapper mapper, TicketService ticketService, TicketUserService ticketUserService)
+			public Handler(
+				IMapper mapper,
+				TicketService ticketService,
+				EventUserService eventUserService,
+				TicketUserService ticketUserService,
+				UserService userService,
+				IUserAccessor userAccessor)
 			{
 				_mapper = mapper;
 				this._ticketService = ticketService;
+				this._eventUserService = eventUserService;
 				this._ticketUserService = ticketUserService;
+				this._userService = userService;
+				this._userAccessor = userAccessor;
 			}
 
 			public async Task<Result<List<TicketUserDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
+				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
 				var t = await _ticketService.GetByID(request.ticketId);
-				if (t == null) return Result<List<TicketUserDTO>>.Failure("Ticket not found!");
+				if (t != null)
+				{
+					var eventUser = await _eventUserService.GetByID((Guid)t.EventId, user.Id);
+					if (eventUser == null) return Result<List<TicketUserDTO>>.Failure("No Permission");
+
+					if (!eventUser.IsModerator())
+					{
+						// Ticket found but not a moderator
+						return Result<List<TicketUserDTO>>.Failure("No Permission");
+					}
+				}
+				else
+				{
+					// TIcket not found and not a moderator
+					return Result<List<TicketUserDTO>>.Failure("No Permission");
+				}
 
 				var res = await _ticketUserService.Get(t.Id, request.queryParams);
 				return Result<List<TicketUserDTO>>.Success(_mapper.Map<List<TicketUserDTO>>(res));

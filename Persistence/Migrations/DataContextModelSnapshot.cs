@@ -49,7 +49,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Domain.CommentLike", b =>
@@ -76,7 +76,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CommentLikes");
+                    b.ToTable("CommentLikes", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Event", b =>
@@ -119,7 +119,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("EventCategoryId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("Domain.EventAgenda", b =>
@@ -150,7 +150,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("EventAgendas");
+                    b.ToTable("EventAgendas", (string)null);
                 });
 
             modelBuilder.Entity("Domain.EventCategory", b =>
@@ -167,7 +167,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EventCategories");
+                    b.ToTable("EventCategories", (string)null);
                 });
 
             modelBuilder.Entity("Domain.EventOrganizer", b =>
@@ -191,7 +191,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("OrganizerId");
 
-                    b.ToTable("EventOrganizers");
+                    b.ToTable("EventOrganizers", (string)null);
                 });
 
             modelBuilder.Entity("Domain.EventUser", b =>
@@ -221,7 +221,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("EventUsers");
+                    b.ToTable("EventUsers", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Organizer", b =>
@@ -247,7 +247,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizers");
+                    b.ToTable("Organizers", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Post", b =>
@@ -285,7 +285,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Ticket", b =>
@@ -325,7 +325,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("Tickets");
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("Domain.TicketUser", b =>
@@ -358,7 +358,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TicketUsers");
+                    b.ToTable("TicketUsers", (string)null);
                 });
 
             modelBuilder.Entity("Domain.User", b =>

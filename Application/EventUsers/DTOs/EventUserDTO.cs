@@ -12,9 +12,7 @@ namespace Application.EventUsers.DTOs
 {
 	public class EventUserDTO
 	{
-		public StatusEnum Status { get; set; }
 		public EventUserTypeEnum Type { get; set; }
-
 		public UserDTO User { get; set; }
 
 		public DateTime CreatedDate { get; set; }

@@ -24,6 +24,8 @@
 // 		public class Command : IRequest<Result<TicketUserDTO>> //Command do not return anything, but can return success or failure, return Unit also meant for nothing
 // 		{
 // 			public Guid ticketId { get; set; }
+// 			public Guid userId { get; set; }
+// 			public TicketUserStateEnum ticketUserStateEnum { get; set; }
 // 		}
 
 // 		public class Handler : IRequestHandler<Command, Result<TicketUserDTO>>
@@ -32,35 +34,62 @@
 // 			private readonly TicketService _ticketService;
 // 			private readonly UserService _userService;
 // 			private readonly TicketUserService _ticketUserService;
+// 			private readonly EventUserService _eventUserService;
 // 			private readonly IUserAccessor _userAccessor;
 // 			private readonly IMapper _mapper;
 
-// 			public Handler(EventService eventService, TicketService ticketService, UserService userService, TicketUserService ticketUserService, IMapper mapper, IUserAccessor userAccessor)
+// 			public Handler(
+// 				EventService eventService,
+// 				TicketService ticketService,
+// 				UserService userService,
+// 				TicketUserService ticketUserService,
+// 				EventUserService eventUserService
+// 				IMapper mapper,
+// 				IUserAccessor userAccessor)
 // 			{
 // 				_mapper = mapper;
 // 				_eventService = eventService;
 // 				this._ticketService = ticketService;
 // 				_userService = userService;
 // 				this._ticketUserService = ticketUserService;
+// 				this._eventUserService = eventUserService;
 // 				_userAccessor = userAccessor;
 // 			}
 
 // 			public async Task<Result<TicketUserDTO>> Handle(Command request, CancellationToken cancellationToken)
 // 			{
 // 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
-// 				if (user.Id != request.dto.UserId) return Result<TicketUserDTO>.Failure("You can only buy ticket for yourself!");
 
 // 				var ticket = await _ticketService.GetByID(request.ticketId);
 // 				if (ticket == null) return Result<TicketUserDTO>.NotFound("Ticket Not Found!");
 
-// 				var userDst = await _userService.GetByID(request.dto.UserId);
+// 				var e = ticket.Event;
+// 				if (e.)
+				
+// 				var userDst = await _userService.GetByID(request.userId);
 // 				if (userDst == null) return Result<TicketUserDTO>.NotFound("User Not Found!");
 
-// 				var ticketUser = await _ticketUserService.GetByID(ticket.Id, request.dto.UserId);
-// 				if (ticketUser != null) return Result<TicketUserDTO>.Failure("You already buy this!");
+// 				var ticketUser = await _ticketUserService.GetByID(ticket.Id, user.Id);
+// 				if (ticketUser == null) return Result<TicketUserDTO>.NotFound("Ticket User Not Found!")
 
-// 				var ticketFind = await _ticketUserService.GetTicketUserInEvent((Guid)ticket.EventId, request.dto.UserId);
-// 				if (ticketFind != null) return Result<TicketUserDTO>.Failure("You already bought a ticket in this event!");
+// 				var eventUser = await _eventUserService.GetByID((Guid)ticket.EventId, user.Id);
+// 				if (eventUser == null) if (ticket == null) return Result<TicketUserDTO>.Failure("You are not in the event");
+
+// 				if (!eventUser.IsModerator())
+// 				{
+// 					return Result<TicketUserDTO>.Forbidden("You have no permission!");
+// 				}
+
+// 				TicketUsersStateMachine sm = new TicketUsersStateMachine(ticketUser);
+// 				try
+// 				{
+// 					ticketUser = sm.CheckIn();
+// 				}
+// 				catch (InvalidOperationException err)
+// 				{
+//  					return Result<TicketUserDTO>.Failure("Invalid State Change!");
+// 				}
+
 
 // 				var usersCount = (await _ticketUserService.Get(ticket.Id)).Count();
 // 				if (usersCount >= ticket.Quantity) return Result<TicketUserDTO>.Failure("Ticket is out of stock!");

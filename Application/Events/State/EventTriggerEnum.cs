@@ -2,14 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Stateless;
 
-namespace Domain.Enums
+namespace Application.Events
 {
-	public enum TicketUserStateEnum
+	public enum EventTriggerEnum
 	{
-		Idle,
-		CheckedIn,
-		CheckedOut,
-		Ended
+		Start, End
 	}
 }

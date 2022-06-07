@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Core;
 using Application.Events.DTOs;
 using Application.EventUsers.DTOs;
+using Application.Interfaces;
 using Application.Services;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -28,19 +29,33 @@ namespace Application.EventUsers
 		{
 			private readonly EventService _eventService;
 			private readonly EventUserService _eventUserService;
+			private readonly IUserAccessor _userAccessor;
+			private readonly UserService _userService;
 			private readonly IMapper _mapper;
 
-			public Handler(IMapper mapper, EventService eventService, EventUserService eventUserService)
+			public Handler(IMapper mapper,
+				  EventService eventService,
+				  EventUserService eventUserService,
+				  IUserAccessor userAccessor,
+				  UserService userService)
 			{
 				_mapper = mapper;
 				_eventService = eventService;
 				_eventUserService = eventUserService;
+				this._userAccessor = userAccessor;
+				this._userService = userService;
 			}
 
 			public async Task<Result<List<EventUserDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
+				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
+
 				var e = await _eventService.GetByID(request.eventId);
 				if (e == null) return Result<List<EventUserDTO>>.Failure("Events not found!");
+
+				var eventUser = await _eventUserService.GetByID(e.Id, user.Id);
+				if (eventUser == null) return Result<List<EventUserDTO>>.Failure("No Permission");
+				if (!eventUser.IsModerator()) return Result<List<EventUserDTO>>.Failure("No Permission");
 
 				var res = await _eventUserService.Get(e.Id, request.queryParams);
 				return Result<List<EventUserDTO>>.Success(_mapper.Map<List<EventUserDTO>>(res));

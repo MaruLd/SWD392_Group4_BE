@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.TicketUsers;
 using Application.TicketUsers.DTOs;
 using Domain;
@@ -13,11 +14,14 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
 {
+	/// <summary>
+	///	Ticker - User
+	/// </summary>
 	[Route("api/v{version:apiVersion}/tickets/{ticketid}/users")]
 	public class TicketUserController : BaseApiController
 	{
 		/// <summary>
-		/// Get Ticket Users
+		/// [Authorize] [>= Moderator] Get Ticket Users
 		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult<List<TicketUserDTO>>> GetTicketUsers(Guid ticketid, [FromQuery] TicketUserQueryParams queryParams)
@@ -26,9 +30,18 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// Get Ticket User
+		/// [Authorize] [>= Student] Get Self Ticket User
 		/// </summary>
-		[HttpGet("{id}")]
+		[HttpGet("me")]
+		public async Task<ActionResult<TicketUserDTO>> GetSelfTicketUser(Guid ticketid)
+		{
+			return HandleResult(await Mediator.Send(new Details.Query { ticketId = ticketid, userId = Guid.Parse(User.GetUserId()) }));
+		}
+
+		/// <summary>
+		/// [Authorize] [>= Moderator] Get Ticket User
+		/// </summary>
+		[HttpGet("{userid}")]
 		public async Task<ActionResult<TicketUserDTO>> GetTicketUser(Guid ticketid, Guid userid)
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { ticketId = ticketid, userId = userid }));

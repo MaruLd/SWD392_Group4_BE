@@ -17,7 +17,5 @@ namespace Application.Events.DTOs
 		public float MultiplierFactor { get; set; }
 
 		public int? EventCategoryId { get; set; }
-
-		public StatusEnum Status { get; set; }
 	}
 }

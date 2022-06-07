@@ -62,7 +62,6 @@ namespace Application.EventUsers
 				{
 					EventId = e.Id,
 					UserId = request.dto.UserId,
-					Status = request.dto.Status,
 					Type = request.dto.Type
 				};
 

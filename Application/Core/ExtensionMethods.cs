@@ -24,5 +24,6 @@ namespace Application.Core
 		{
 			return eu.Type == EventUserTypeEnum.Creator;
 		}
+
 	}
 }

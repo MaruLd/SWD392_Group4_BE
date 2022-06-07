@@ -1,18 +1,17 @@
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Domain;
-using Domain.Enums;
 
-namespace Application.EventUsers.DTOs
+namespace Application.TicketUsers.DTOs
 {
-	public class EditEventUserDTO
+	public class PatchTicketUserDTO
 	{
 		[Required]
 		public Guid UserId { get; set; }
 		[Required]
-		public EventUserTypeEnum Type { get; set; }
+		public TicketUserStateEnum ticketUserStateEnum { get; set; }
 	}
 }

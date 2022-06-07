@@ -9,7 +9,7 @@ namespace Domain.Enums
 {
 	public enum OrderByEnum
 	{
-		DateAscending = 1,
-		DateDescending = 2,
+		DateAscending,
+		DateDescending
 	}
 }

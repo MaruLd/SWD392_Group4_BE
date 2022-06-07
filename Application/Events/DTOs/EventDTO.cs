@@ -22,8 +22,6 @@ namespace Application.Events.DTOs
 
 		public float MultiplierFactor { get; set; }
 
-
-		public String Status { get; set; }
 		public DateTime CreatedDate { get; set; }
 		public EventStateEnum State { get; set; }
 
