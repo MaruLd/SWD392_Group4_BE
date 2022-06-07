@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.EventCategories.DTOs;
 using Application.Organizers.DTOs;
 using Application.Tickets.DTOs;
 using Domain;
+using Domain.Enums;
 
 namespace Application.Events.DTOs
 {
@@ -22,9 +24,10 @@ namespace Application.Events.DTOs
 
 		public String Status { get; set; }
 		public DateTime CreatedDate { get; set; }
-
+		public EventStateEnum State { get; set; }
+		
 		public List<OrganizerDTO> Organizers { get; set; }
 		public List<TicketDTO> Tickets { get; set; }
-		public EventCategory EventCategory { get; set; }
+		public EventCategoryDTO EventCategory { get; set; }
 	}
 }

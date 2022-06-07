@@ -51,6 +51,10 @@ namespace API.Extensions
 			services.AddScoped<TicketUserRepository>();
 			services.AddScoped<TicketUserService>();
 
+			services.AddScoped<EventOrganizerRepository>();
+			services.AddScoped<EventOrganizerService>();
+
+
 			services.AddScoped<TokenService>();
 			services.AddSingleton<FirebaseService>();
 			services.AddSingleton<AWSService>();

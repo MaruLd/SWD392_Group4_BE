@@ -12,7 +12,7 @@ namespace Application.EventUsers.DTOs
 		[Required]
 		public Guid UserId { get; set; }
 		[Required]
-		public EventUserStatusEnum Status { get; set; }
+		public StatusEnum Status { get; set; }
 		[Required]
 		public EventUserTypeEnum Type { get; set; }
 	}

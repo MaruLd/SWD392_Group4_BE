@@ -16,23 +16,23 @@ namespace API.Controllers
 	[Route("api/v{version:apiVersion}/tickets/{ticketid}/users")]
 	public class TicketUserController : BaseApiController
 	{
-		// /// <summary>
-		// /// Get Ticket Users
-		// /// </summary>
-		// [HttpGet]
-		// public async Task<ActionResult<List<TicketUserDTO>>> GetTicketUsers(Guid eventid, [FromQuery] TicketUserQueryParams queryParams)
-		// {
-		// 	return HandleResult(await Mediator.Send(new List.Query() { eventId = eventid, queryParams = queryParams }));
-		// }
+		/// <summary>
+		/// Get Ticket Users
+		/// </summary>
+		[HttpGet]
+		public async Task<ActionResult<List<TicketUserDTO>>> GetTicketUsers(Guid ticketid, [FromQuery] TicketUserQueryParams queryParams)
+		{
+			return HandleResult(await Mediator.Send(new List.Query() { ticketId = ticketid, queryParams = queryParams }));
+		}
 
-		// /// <summary>
-		// /// Get Ticket User
-		// /// </summary>
-		// [HttpGet("{id}")]
-		// public async Task<ActionResult<TicketUserDTO>> GetTicketUser(Guid eventid, Guid userid)
-		// {
-		// 	return HandleResult(await Mediator.Send(new Details.Query { eventId = eventid, userId = userid }));
-		// }
+		/// <summary>
+		/// Get Ticket User
+		/// </summary>
+		[HttpGet("{id}")]
+		public async Task<ActionResult<TicketUserDTO>> GetTicketUser(Guid ticketid, Guid userid)
+		{
+			return HandleResult(await Mediator.Send(new Details.Query { ticketId = ticketid, userId = userid }));
+		}
 
 		/// <summary>
 		/// [Authorize] [> Student] Create Ticket User (Buy a ticket, 1 ticket/event)

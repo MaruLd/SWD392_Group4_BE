@@ -27,19 +27,22 @@ public class Event
 	public virtual EventCategory? EventCategory { get; set; }
 	public int? EventCategoryId { get; set; }
 
-	[JsonIgnore]
-	public virtual ICollection<Organizer> Organizers { get; set; }
-	[JsonIgnore]
-	public virtual ICollection<EventUser> EventUser { get; set; }
+
 	[JsonIgnore]
 	public virtual ICollection<Ticket> Tickets { get; set; }
 	[JsonIgnore]
 	public virtual ICollection<Post> Posts { get; set; }
+
+	[JsonIgnore]
+	public virtual ICollection<EventOrganizer> EventOrganizers { get; set; }
+	[JsonIgnore]
+	public virtual ICollection<EventUser> EventUser { get; set; }
 	[JsonIgnore]
 	public virtual ICollection<EventAgenda> EventAgenda { get; set; }
 
 	public StatusEnum Status { get; set; }
-
+	public EventStateEnum State { get; set; }
+	
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 
 }

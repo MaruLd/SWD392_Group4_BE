@@ -15,5 +15,9 @@ namespace Application.TicketUsers.DTOs
 		public TicketDTO Ticket { get; set; }
 		public UserDTO User { get; set; }
 		public DateTime CreatedDate { get; set; }
+
+		public DateTime? CheckedInDate { get; set; }
+		public DateTime? CheckedOutDate { get; set; }
+		public TicketUserStateEnum State { get; set; }
 	}
 }

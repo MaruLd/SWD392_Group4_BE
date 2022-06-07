@@ -6,6 +6,7 @@ using Application.Core;
 using Application.Events.DTOs;
 using Application.EventUsers.DTOs;
 using Application.Services;
+using Application.TicketUsers.DTOs;
 using AutoMapper;
 using Domain;
 using MediatR;
@@ -15,34 +16,36 @@ namespace Application.TicketUsers
 {
 	public class Details
 	{
-		public class Query : IRequest<Result<EventUserDTO>>
+		public class Query : IRequest<Result<TicketUserDTO>>
 		{
-			public Guid eventId { get; set; }
+			public Guid ticketId { get; set; }
 			public Guid userId { get; set; }
 		}
 
-		public class Handler : IRequestHandler<Query, Result<EventUserDTO>>
+		public class Handler : IRequestHandler<Query, Result<TicketUserDTO>>
 		{
 			private readonly EventService _eventService;
 			private readonly EventUserService _eventUserService;
 			private readonly IMapper _mapper;
+			private readonly TicketService _ticketService;
+			private readonly TicketUserService _ticketUserService;
 
-			public Handler(IMapper mapper, EventService eventService, EventUserService eventUserService)
+			public Handler(IMapper mapper, TicketService ticketService, TicketUserService ticketUserService)
 			{
 				_mapper = mapper;
-				_eventService = eventService;
-				_eventUserService = eventUserService;
+				this._ticketService = ticketService;
+				this._ticketUserService = ticketUserService;
 			}
 
-			public async Task<Result<EventUserDTO>> Handle(Query request, CancellationToken cancellationToken)
+			public async Task<Result<TicketUserDTO>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				var e = await _eventService.GetByID(request.eventId);
-				if (e == null) return Result<EventUserDTO>.Failure("Events not found!");
+				var t = await _ticketService.GetByID(request.ticketId);
+				if (t == null) return Result<TicketUserDTO>.Failure("Ticket not found!");
 
-				var result = await _eventUserService.GetByID(e.Id, request.userId);
-				if (result == null) return Result<EventUserDTO>.NotFound("Event user not found!");
+				var result = await _ticketUserService.GetByID(t.Id, request.userId);
+				if (result == null) return Result<TicketUserDTO>.NotFound("Ticket user not found!");
 
-				return Result<EventUserDTO>.Success(_mapper.Map<EventUserDTO>(result));
+				return Result<TicketUserDTO>.Success(_mapper.Map<TicketUserDTO>(result));
 			}
 		}
 	}

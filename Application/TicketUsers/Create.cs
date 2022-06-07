@@ -54,6 +54,9 @@ namespace Application.TicketUsers
 				var ticket = await _ticketService.GetByID(request.ticketId);
 				if (ticket == null) return Result<TicketUserDTO>.NotFound("Ticket Not Found!");
 
+				var userDst = await _userService.GetByID(request.dto.UserId);
+				if (userDst == null) return Result<TicketUserDTO>.NotFound("User Not Found!");
+
 				var ticketUser = await _ticketUserService.GetByID(ticket.Id, request.dto.UserId);
 				if (ticketUser != null) return Result<TicketUserDTO>.Failure("You already buy this!");
 
@@ -63,7 +66,7 @@ namespace Application.TicketUsers
 				var usersCount = (await _ticketUserService.Get(ticket.Id)).Count();
 				if (usersCount >= ticket.Quantity) return Result<TicketUserDTO>.Failure("Ticket is out of stock!");
 
-				var newTicketUser = new TicketUser() { TicketId = ticket.Id, UserId = request.dto.UserId };
+				var newTicketUser = new TicketUser() { TicketId = ticket.Id, UserId = userDst.Id };
 				var result = await _ticketUserService.Insert(newTicketUser);
 
 				if (!result) return Result<TicketUserDTO>.Failure("Failed to create ticket user");

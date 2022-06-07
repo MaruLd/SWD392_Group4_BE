@@ -9,8 +9,6 @@ namespace Application.EventUsers.DTOs
 {
 	public class EventUserQueryParams : PaginationParams
 	{
-		[FromQuery(Name = "status")]
-		public EventUserStatusEnum Status { get; set; }
 		[FromQuery(Name = "type")]
 		public EventUserTypeEnum Type { get; set; }
 

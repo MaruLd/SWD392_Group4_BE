@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Comments.DTOs;
 using Application.EventAgendas.DTOs;
 using Application.EventCategories.DTOs;
+using Application.EventOrganizers.DTOs;
 using Application.Events.DTOs;
 using Application.EventUsers.DTOs;
 using Application.Organizers.DTOs;
@@ -27,11 +28,12 @@ namespace Application.Core
 			CreateMap<EditEventDTO, Event>();
 			CreateMap<EventDTO, Event>();
 			CreateMap<Event, EventDTO>()
-				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.Organizers))
+				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.EventOrganizers.Select(eo => eo.Organizer).ToList()))
 				.ForMember(dst => dst.EventCategory, src => src.MapFrom(o => o.EventCategory));
+
 			CreateMap<Event, DetailEventDTO>()
 				.ForMember(dst => dst.Tickets, src => src.MapFrom(t => t.Tickets))
-				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.Organizers))
+				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.EventOrganizers.Select(eo => eo.Organizer).ToList()))
 				.ForMember(dst => dst.EventCategory, src => src.MapFrom(o => o.EventCategory));
 
 			CreateMap<CreateTicketDTO, Ticket>();
@@ -77,6 +79,11 @@ namespace Application.Core
 			// CreateMap<EditTicketUserDTO, TicketUser>();
 			CreateMap<TicketUser, TicketUserDTO>();
 			CreateMap<TicketUserDTO, TicketUser>();
+
+			CreateMap<CreateEventOrganizerDTO, EventOrganizer>();
+			// CreateMap<EditTicketUserDTO, TicketUser>();
+			CreateMap<EventOrganizer, EventOrganizerDTO>();
+			CreateMap<EventOrganizerDTO, EventOrganizer>();
 		}
 
 	}

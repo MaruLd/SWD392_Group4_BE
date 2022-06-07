@@ -6,6 +6,7 @@ using Application.Core;
 using Application.Events.DTOs;
 using Application.EventUsers.DTOs;
 using Application.Services;
+using Application.TicketUsers.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
@@ -18,32 +19,33 @@ namespace Application.TicketUsers
 {
 	public class List
 	{
-		public class Query : IRequest<Result<List<EventUserDTO>>>
+		public class Query : IRequest<Result<List<TicketUserDTO>>>
 		{
-			public Guid eventId { get; set; }
-			public EventUserQueryParams queryParams { get; set; }
+			public Guid ticketId { get; set; }
+			public TicketUserQueryParams queryParams { get; set; }
 		}
 
-		public class Handler : IRequestHandler<Query, Result<List<EventUserDTO>>>
+		public class Handler : IRequestHandler<Query, Result<List<TicketUserDTO>>>
 		{
-			private readonly EventService _eventService;
-			private readonly EventUserService _eventUserService;
-			private readonly IMapper _mapper;
 
-			public Handler(IMapper mapper, EventService eventService, EventUserService eventUserService)
+			private readonly IMapper _mapper;
+			private readonly TicketService _ticketService;
+			private readonly TicketUserService _ticketUserService;
+
+			public Handler(IMapper mapper, TicketService ticketService, TicketUserService ticketUserService)
 			{
 				_mapper = mapper;
-				_eventService = eventService;
-				_eventUserService = eventUserService;
+				this._ticketService = ticketService;
+				this._ticketUserService = ticketUserService;
 			}
 
-			public async Task<Result<List<EventUserDTO>>> Handle(Query request, CancellationToken cancellationToken)
+			public async Task<Result<List<TicketUserDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				var e = await _eventService.GetByID(request.eventId);
-				if (e == null) return Result<List<EventUserDTO>>.Failure("Events not found!");
+				var t = await _ticketService.GetByID(request.ticketId);
+				if (t == null) return Result<List<TicketUserDTO>>.Failure("Ticket not found!");
 
-				var res = await _eventUserService.Get(e.Id, request.queryParams);
-				return Result<List<EventUserDTO>>.Success(_mapper.Map<List<EventUserDTO>>(res));
+				var res = await _ticketUserService.Get(t.Id, request.queryParams);
+				return Result<List<TicketUserDTO>>.Success(_mapper.Map<List<TicketUserDTO>>(res));
 			}
 		}
 	}

@@ -57,6 +57,8 @@ namespace Persistence
 
 		public DbSet<CommentLike> CommentLikes { get; set; }
 
+		public DbSet<EventOrganizer> EventOrganizers { get; set; }
+
 
 	}
 }

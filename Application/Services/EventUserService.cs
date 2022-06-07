@@ -32,8 +32,7 @@ namespace Application.Services
 			var query = _eventUserRepository.GetQuery();
 			query = query.Include(e => e.Event).Include(e => e.User);
 			query = query.Where(e => e.EventId == eventId);
-
-			if (queryParams.Status != 0) query = query.Where(u => u.Status == queryParams.Status);
+			
 			if (queryParams.Type != 0) query = query.Where(u => u.Type == queryParams.Type);
 			if (queryParams.DisplayName != null) query = query.Where(u => u.User.DisplayName.ToLower().Contains(queryParams.DisplayName.ToLower()));
 			if (queryParams.Email != null) query = query.Where(u => u.User.Email.ToLower().Contains(queryParams.Email.ToLower()));
@@ -59,6 +58,12 @@ namespace Application.Services
 		public async Task<bool> Update(EventUser e)
 		{
 			_eventUserRepository.Update(e);
+			return await _eventUserRepository.Save();
+		}
+
+		public async Task<bool> Delete(EventUser e)
+		{
+			_eventUserRepository.Delete(e);
 			return await _eventUserRepository.Save();
 		}
 		public async Task<bool> Save()

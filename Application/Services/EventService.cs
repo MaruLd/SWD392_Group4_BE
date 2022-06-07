@@ -19,12 +19,12 @@ namespace Application.Services
 		// private EventRepository _eventRepository;
 		private EventRepository _eventRepository;
 		private EventUserRepository _eventUserRepository;
-
 		private IMapper _mapper;
 
 		public EventService(
 			EventRepository eventRepository,
 			EventUserRepository eventUserRepository,
+			EventOrganizerRepository eventOrganizerRepository,
 			IMapper mapper)
 		{
 			_eventRepository = eventRepository;
@@ -54,10 +54,18 @@ namespace Application.Services
 			}
 
 			query = query
-				.Include(e => e.Organizers)
+				.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
 				.Include(e => e.EventCategory);
 
-			if (eventParams.OrganizerId != Guid.Empty) query = query.Where(e => e.Organizers.Any(o => o.Id == eventParams.OrganizerId));
+			if (eventParams.OrganizerId != Guid.Empty)
+			{
+				query = query.Where(e => e.EventOrganizers
+					.Any(o =>
+						o.OrganizerId == eventParams.OrganizerId &&
+						o.EventId == e.Id)
+					);
+			};
+
 			if (eventParams.CategoryId != 0) query = query.Where(e => e.EventCategoryId == eventParams.CategoryId);
 
 			var list = await PagedList<Event>.CreateAsync(query, eventParams.PageNumber, eventParams.PageSize);
@@ -70,7 +78,7 @@ namespace Application.Services
 				.Where(entity => entity.Status != StatusEnum.Unavailable)
 				.Where(e => e.Id == id)
 				.Include(e => e.EventCategory)
-				.Include(e => e.Organizers)
+				.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
 				.Include(e => e.Tickets).FirstOrDefaultAsync();
 			return e;
 		}
@@ -87,7 +95,7 @@ namespace Application.Services
 				EventId = eventEntity.Id,
 				UserId = userId,
 				Type = EventUserTypeEnum.Moderator,
-				Status = EventUserStatusEnum.Attended,
+				Status = StatusEnum.Available,
 			});
 
 
