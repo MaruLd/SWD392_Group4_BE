@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Organizers.DTOs;
 using Application.Tickets.DTOs;
 using Domain;

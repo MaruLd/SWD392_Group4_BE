@@ -16,6 +16,7 @@ namespace Application.Tickets.DTOs
 		public String Type { get; set; }
 		public int Cost { get; set; }
 		public int Quantity { get; set; }
+		public int QuantityLeft { get; set; }
 
 		public List<UserDTO> Users { get; set; }
 		public DateTime CreatedDate { get; set; }

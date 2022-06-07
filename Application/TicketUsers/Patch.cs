@@ -73,7 +73,7 @@
 // 				if (ticketUser == null) return Result<TicketUserDTO>.NotFound("Ticket User Not Found!")
 
 // 				var eventUser = await _eventUserService.GetByID((Guid)ticket.EventId, user.Id);
-// 				if (eventUser == null) if (ticket == null) return Result<TicketUserDTO>.Failure("You are not in the event");
+// 				if (eventUser == null)  return Result<TicketUserDTO>.Failure("You are not in the event");
 
 // 				if (!eventUser.IsModerator())
 // 				{

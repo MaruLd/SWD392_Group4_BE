@@ -9,6 +9,8 @@ namespace Application.Tickets.DTOs
 	public class EditTicketDTO
 	{
 		[Required]
+		public Guid ticketId { get; set; }
+		[Required]
 		public String Name { get; set; }
 		[Required]
 		public String Description { get; set; }

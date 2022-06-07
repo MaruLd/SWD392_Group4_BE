@@ -67,6 +67,7 @@ namespace Application.TicketUsers
 				if (usersCount >= ticket.Quantity) return Result<TicketUserDTO>.Failure("Ticket is out of stock!");
 
 				var newTicketUser = new TicketUser() { TicketId = ticket.Id, UserId = userDst.Id };
+				var newEventUser = new EventUser() { EventId = ticket.EventId, UserId = userDst.Id, Type = EventUserTypeEnum.Student };
 				var result = await _ticketUserService.Insert(newTicketUser);
 
 				if (!result) return Result<TicketUserDTO>.Failure("Failed to create ticket user");

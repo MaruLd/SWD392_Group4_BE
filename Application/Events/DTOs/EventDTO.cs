@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.EventCategories.DTOs;
 using Application.Organizers.DTOs;
 using Application.Tickets.DTOs;
@@ -16,6 +17,7 @@ namespace Application.Events.DTOs
 
 		public String? Title { get; set; }
 		public String? Description { get; set; }
+		public String? Location { get; set; }
 
 		public DateTime StartTime { get; set; }
 		public DateTime EndTime { get; set; }

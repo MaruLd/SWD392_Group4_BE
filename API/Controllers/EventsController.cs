@@ -56,7 +56,7 @@ namespace API.Controllers
 
 
 		/// <summary>
-		/// [Authorize] [> Moderator] Delete Event
+		/// [Authorize] [Creator] Delete Event
 		/// </summary>
 		[Authorize]
 		[HttpDelete]
@@ -64,5 +64,16 @@ namespace API.Controllers
 		{
 			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
 		}
+
+		/// <summary>
+		/// [Authorize] [>= Moderator] Patch Event State
+		/// </summary>
+		[Authorize]
+		[HttpPatch]
+		public async Task<ActionResult> PatchEventState([FromBody] Guid eventId, EventTriggerEnum eventTriggerEnum)
+		{
+			return HandleResult(await Mediator.Send(new Patch.Command { eventTriggerEnum = eventTriggerEnum, eventId = eventId }));
+		}
+
 	}
 }

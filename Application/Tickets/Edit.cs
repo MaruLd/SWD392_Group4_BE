@@ -19,7 +19,6 @@ namespace Application.Tickets
 	{
 		public class Command : IRequest<Result<Unit>>
 		{
-			public Guid ticketId { get; set; }
 			public EditTicketDTO dto { get; set; }
 
 		}
@@ -45,7 +44,7 @@ namespace Application.Tickets
 			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
 			{
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
-				var ticket = await _ticketService.GetByID(request.ticketId);
+				var ticket = await _ticketService.GetByID(request.dto.ticketId);
 
 				if (ticket == null) return Result<Unit>.Failure("Ticket not found!");
 

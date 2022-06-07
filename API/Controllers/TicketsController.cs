@@ -33,11 +33,6 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 
-		// [HttpGet("{id}/buy")]
-		// public async Task<ActionResult<Ticket>> BuyTicket(Guid id)
-		// {
-		// 	return HandleResult(await Mediator.Send(new Create.Command { dto = Ticket }));
-		// }
 
 		/// <summary>
 		/// [Authorize] [> Moderator] Create Ticket

@@ -25,7 +25,8 @@ namespace Application.Services
 		{
 			var query = _ticketRepository.GetQuery();
 			query = query.Where(e => e.Status != StatusEnum.Unavailable);
-
+			query = query.Include(t => t.TicketUsers).ThenInclude(tu => tu.User);
+			
 			if (ticketParams.EventId != null)
 			{
 				query = query.Where(t => t.EventId == ticketParams.EventId);

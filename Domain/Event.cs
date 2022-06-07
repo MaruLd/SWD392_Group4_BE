@@ -6,8 +6,14 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Domain.Enums;
+using Stateless;
 
 namespace Domain;
+
+public enum EventTriggerEnum
+{
+	Start, End
+}
 
 public class Event
 {
@@ -23,6 +29,7 @@ public class Event
 	public DateTime EndTime { get; set; }
 
 	public float MultiplierFactor { get; set; }
+	public String? Location { get; set; }
 
 	public virtual EventCategory? EventCategory { get; set; }
 	public int? EventCategoryId { get; set; }
@@ -42,7 +49,40 @@ public class Event
 
 	public StatusEnum Status { get; set; }
 	public EventStateEnum State { get; set; }
-	
+
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+	// State Machine
+	private StateMachine<int, int> _machine;
+
+	public Event()
+	{
+		_machine = new StateMachine<int, int>((int)this.State);
+
+		_machine.Configure((int)EventStateEnum.Idle)
+			.Permit((int)EventTriggerEnum.Start, (int)EventStateEnum.Started);
+
+		_machine.Configure((int)EventStateEnum.Started)
+			.OnEntry(data => OnStart())
+			.Permit((int)EventTriggerEnum.End, (int)EventStateEnum.Ended);
+
+		_machine.Configure((int)EventStateEnum.Ended)
+			.OnEntry(data => OnEnd());
+
+		void OnStart()
+		{
+			this.State = EventStateEnum.Started;
+		}
+
+		void OnEnd()
+		{
+			this.State = EventStateEnum.Ended;
+		}
+	}
+
+	public void TriggerState(EventTriggerEnum eventTriggerEnum)
+	{
+		_machine.Fire((int)eventTriggerEnum);
+	}
 
 }

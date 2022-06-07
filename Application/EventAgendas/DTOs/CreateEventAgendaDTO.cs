@@ -1,3 +1,4 @@
+using Application.Core;
 using Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,9 @@ namespace Application.EventAgendas.DTOs
 		public String? Title { get; set; }
 		public String? Description { get; set; }
 
+		[CheckDateRangeAttribute]
 		public DateTime StartTime { get; set; }
+		[CheckDateRangeAttribute]
 		public DateTime EndTime { get; set; }
 	}
 }
