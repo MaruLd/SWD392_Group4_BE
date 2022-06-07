@@ -58,7 +58,7 @@ namespace API.Controllers
 		}
 
 		// /// <summary>
-		// /// [Authorize] [> Moderator] Edit Event User (Edit user with role below them)
+		// /// [Authorize] [>= Moderator] Edit Event User (Edit user with role below them)
 		// /// </summary>
 		// [Authorize]
 		// [HttpPut]

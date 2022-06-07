@@ -39,7 +39,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [> Moderator] Create Event Agenda
+		/// [Authorize] [>= Moderator] Create Event Agenda
 		/// </summary>
 		[Authorize]
 		[HttpPost]
@@ -52,7 +52,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [> Moderator] Edit Event Agenda
+		/// [Authorize] [>= Moderator] Edit Event Agenda
 		/// </summary>
 		[Authorize]
 		[HttpPut]
@@ -62,7 +62,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [> Moderator] Delete Event Agenda
+		/// [Authorize] [>= Moderator] Delete Event Agenda
 		/// </summary>
 		[Authorize]
 		[HttpDelete]

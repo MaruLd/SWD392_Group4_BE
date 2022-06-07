@@ -35,7 +35,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [> Moderator] Create Event Organizer
+		/// [Authorize] [>= Moderator] Create Event Organizer
 		/// </summary>
 		[Authorize]
 		[HttpPost]
@@ -45,7 +45,7 @@ namespace API.Controllers
 		}
 
 		// /// <summary>
-		// /// [Authorize] [> Moderator] Edit Event User (Edit user with role below them)
+		// /// [Authorize] [>= Moderator] Edit Event User (Edit user with role below them)
 		// /// </summary>
 		// [Authorize]
 		// [HttpPut]
@@ -56,7 +56,7 @@ namespace API.Controllers
 
 
 		/// <summary>
-		/// [Authorize] [> Moderator] Delete Event Organizer
+		/// [Authorize] [>= Moderator] Delete Event Organizer
 		/// </summary>
 		[Authorize]
 		[HttpDelete]

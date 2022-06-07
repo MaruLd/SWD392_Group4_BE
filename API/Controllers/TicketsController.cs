@@ -35,7 +35,7 @@ namespace API.Controllers
 
 
 		/// <summary>
-		/// [Authorize] [> Moderator] Create Ticket
+		/// [Authorize] [>= Moderator] Create Ticket
 		/// </summary>
 		[Authorize]
 		[HttpPost]
@@ -46,7 +46,7 @@ namespace API.Controllers
 
 
 		/// <summary>
-		/// [Authorize] [> Moderator] Edit Ticket
+		/// [Authorize] [>= Moderator] Edit Ticket
 		/// </summary>
 		[Authorize]
 		[HttpPut]
@@ -56,7 +56,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [> Moderator] Delete Ticket
+		/// [Authorize] [>= Moderator] Delete Ticket
 		/// </summary>
 		[Authorize]
 		[HttpDelete]
