@@ -45,6 +45,8 @@ namespace Application.EventUsers
 			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
 			{
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
+				if (user.Id == request.dto.UserId) return Result<Unit>.Failure("You cannot edit yourself!");
+
 				var e = await _eventService.GetByID(request.eventId);
 				if (e == null) return Result<Unit>.NotFound("Event Not Found!");
 
@@ -54,7 +56,7 @@ namespace Application.EventUsers
 
 				var dstUser = await _eventUserService.GetByID(e.Id, request.dto.UserId);
 				if (dstUser == null) return Result<Unit>.Failure("User is not in the event");
-
+				if (dstUser.Type == eUserCur.Type) return Result<Unit>.Failure("User current role is as same as you!");
 				if (request.dto.Type > eUserCur.Type) return Result<Unit>.Failure("User's new type is higher than you!");
 
 				_mapper.Map<EditEventUserDTO, EventUser>(request.dto, dstUser);

@@ -54,13 +54,13 @@ namespace Application.EventAgendas
 				var eventUser = await _eventUserService.GetByID(e.Id, user.Id);
 				if (eventUser == null) return Result<EventAgendaDTO>.Forbidden("You aren't in the event!");
 
-
 				if (!eventUser.IsModerator())
 				{
 					return Result<EventAgendaDTO>.Forbidden("You have no permission!");
 				}
+				var ea = new EventAgenda() { EventId = request.eventId };
+				_mapper.Map<CreateEventAgendaDTO, EventAgenda>(request.dto, ea);
 
-				var ea = _mapper.Map<EventAgenda>(request.dto);
 				var result = await _eventAgendaService.Insert(ea);
 				if (result == null) return Result<EventAgendaDTO>.Failure("Failed to create event agenda!");
 

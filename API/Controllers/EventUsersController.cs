@@ -21,6 +21,7 @@ namespace API.Controllers
 		/// [Authorize] [> Moderator] Get Event Users
 		/// </summary>
 		[HttpGet]
+		[Authorize]
 		public async Task<ActionResult<List<EventUserDTO>>> GetEventUsers(Guid eventid, [FromQuery] EventUserQueryParams queryParams)
 		{
 			return HandleResult(await Mediator.Send(new List.Query() { eventId = eventid, queryParams = queryParams }));
@@ -30,6 +31,7 @@ namespace API.Controllers
 		///[Authorize] [>= Student] Get Self Event Users
 		/// </summary>
 		[HttpGet("me")]
+		[Authorize]
 		public async Task<ActionResult<EventUserDTO>> GetEventUser(Guid eventid)
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { eventId = eventid, userId = Guid.Parse(User.GetUserId()) }));
@@ -39,6 +41,7 @@ namespace API.Controllers
 		///[Authorize] [>= Moderator] Get Event Users
 		/// </summary>
 		[HttpGet("{id}")]
+		[Authorize]
 		public async Task<ActionResult<EventUserDTO>> GetEventUser(Guid eventid, Guid userid)
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { eventId = eventid, userId = userid }));
