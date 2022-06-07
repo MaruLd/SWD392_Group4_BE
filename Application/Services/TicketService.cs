@@ -24,8 +24,9 @@ namespace Application.Services
 		public async Task<List<Ticket>> Get(TicketQueryParams ticketParams)
 		{
 			var query = _ticketRepository.GetQuery();
-			query = query.Where(e => e.Status == StatusEnum.Available);
-
+			query = query.Where(e => e.Status != StatusEnum.Unavailable);
+			query = query.Include(t => t.TicketUsers).ThenInclude(tu => tu.User);
+			
 			if (ticketParams.EventId != null)
 			{
 				query = query.Where(t => t.EventId == ticketParams.EventId);
@@ -49,18 +50,16 @@ namespace Application.Services
 		public async Task<List<Ticket>> GetAllFromEvent(Guid eventId)
 		{
 			var query = _ticketRepository.GetQuery();
-			return await query.Where(t => t.EventId == eventId).OrderBy(e => e.CreatedDate).ToListAsync();
+			return await query.Where(t => t.EventId == eventId)
+			.OrderBy(e => e.CreatedDate).ToListAsync();
 		}
 
-		public async Task<List<User>> GetAllUserByTicketId(Guid id)
+		public async Task<Ticket> GetByID(Guid id)
 		{
 			var query = _ticketRepository.GetQuery();
-			var t = await query.Where(t => t.Id == id).Include(t => t.Users).FirstOrDefaultAsync();
-
-			return (List<User>)t.Users;
+			return await query.Where(t => t.Id == id).Include(t => t.TicketUsers).ThenInclude(tu => tu.User).FirstOrDefaultAsync();
 		}
 
-		public async Task<Ticket> GetByID(Guid id) => await _ticketRepository.GetByID(id);
 		public async Task<bool> Insert(Ticket e) { _ticketRepository.Insert(e); return await _ticketRepository.Save(); }
 		public async Task<bool> Update(Ticket e) { _ticketRepository.Update(e); return await _ticketRepository.Save(); }
 		public async Task<bool> Save() { return await _ticketRepository.Save(); }

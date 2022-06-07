@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Events.DTOs;
+using Application.EventUsers.DTOs;
 using AutoMapper;
 using Domain;
 using Microsoft.EntityFrameworkCore;
@@ -26,12 +27,27 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<List<EventUser>> Get()
+		public async Task<List<EventUser>> Get(Guid eventId, EventUserQueryParams queryParams)
 		{
-			return await _eventUserRepository.GetAll();
+			var query = _eventUserRepository.GetQuery();
+			query = query.Include(e => e.Event).Include(e => e.User);
+			query = query.Where(e => e.EventId == eventId);
+			
+			if (queryParams.Type != 0) query = query.Where(u => u.Type == queryParams.Type);
+			if (queryParams.DisplayName != null) query = query.Where(u => u.User.DisplayName.ToLower().Contains(queryParams.DisplayName.ToLower()));
+			if (queryParams.Email != null) query = query.Where(u => u.User.Email.ToLower().Contains(queryParams.Email.ToLower()));
+
+			return await query.ToListAsync();
 		}
 
-		public async Task<EventUser> GetByID(Guid eventId, Guid userId) => await _eventUserRepository.GetByID(eventId, userId);
+		public async Task<EventUser> GetByID(Guid eventId, Guid userId)
+		{
+			var query = _eventUserRepository.GetQuery();
+			query = query.Where(e => e.UserId == userId && e.EventId == eventId);
+			query = query.Include(e => e.Event).Include(e => e.User);
+
+			return await query.FirstOrDefaultAsync();
+		}
 
 		public async Task<bool> Insert(EventUser e)
 		{
@@ -42,6 +58,16 @@ namespace Application.Services
 		public async Task<bool> Update(EventUser e)
 		{
 			_eventUserRepository.Update(e);
+			return await _eventUserRepository.Save();
+		}
+
+		public async Task<bool> Delete(EventUser e)
+		{
+			_eventUserRepository.Delete(e);
+			return await _eventUserRepository.Save();
+		}
+		public async Task<bool> Save()
+		{
 			return await _eventUserRepository.Save();
 		}
 	}

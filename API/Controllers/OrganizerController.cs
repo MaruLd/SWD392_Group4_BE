@@ -55,7 +55,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] Delete Organnizer
+		/// [Admin Only] Delete Organizer
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpDelete]

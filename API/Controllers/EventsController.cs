@@ -28,7 +28,7 @@ namespace API.Controllers
 		/// Get Event
 		/// </summary>
 		[HttpGet("{id}")]
-		public async Task<ActionResult<EventDTO>> GetEvent(Guid id)
+		public async Task<ActionResult<DetailEventDTO>> GetEvent(Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
@@ -45,7 +45,7 @@ namespace API.Controllers
 
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Edit Event
+		/// [Authorize] [>= Moderator] Edit Event
 		/// </summary>
 		[Authorize]
 		[HttpPut]
@@ -56,7 +56,7 @@ namespace API.Controllers
 
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Delete Event
+		/// [Authorize] [Creator] Delete Event
 		/// </summary>
 		[Authorize]
 		[HttpDelete]
@@ -64,5 +64,16 @@ namespace API.Controllers
 		{
 			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
 		}
+
+		/// <summary>
+		/// [Authorize] [>= Moderator] Patch Event State
+		/// </summary>
+		[Authorize]
+		[HttpPatch]
+		public async Task<ActionResult> PatchEventState([FromBody] Guid eventId, EventTriggerEnum eventTriggerEnum)
+		{
+			return HandleResult(await Mediator.Send(new Patch.Command { eventTriggerEnum = eventTriggerEnum, eventId = eventId }));
+		}
+
 	}
 }

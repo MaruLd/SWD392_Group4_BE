@@ -23,6 +23,6 @@ namespace Domain
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 
 		[JsonIgnore]
-		public virtual ICollection<Event> Events { get; set; }
+		public virtual ICollection<EventOrganizer> EventOrganizers { get; set; }
 	}
 }

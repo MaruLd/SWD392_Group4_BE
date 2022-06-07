@@ -13,7 +13,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
 {
-	[Route("api/v{version:apiVersion}/event/{eventId}/agenda")]
+	[Route("api/v{version:apiVersion}/events/{eventId}/agenda")]
 	public class EventAgendasController : BaseApiController
 	{
 		/// <summary>
@@ -39,7 +39,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Create Event Agenda
+		/// [Authorize] [>= Moderator] Create Event Agenda
 		/// </summary>
 		[Authorize]
 		[HttpPost]
@@ -52,7 +52,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Edit Event Agenda
+		/// [Authorize] [>= Moderator] Edit Event Agenda
 		/// </summary>
 		[Authorize]
 		[HttpPut]
@@ -62,7 +62,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Delete Event Agenda
+		/// [Authorize] [>= Moderator] Delete Event Agenda
 		/// </summary>
 		[Authorize]
 		[HttpDelete]

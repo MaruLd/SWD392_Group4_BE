@@ -25,7 +25,7 @@ namespace Application.Services
 		public async Task<PagedList<Organizer>> Get(OrganizerQueryParams dto)
 		{
 			var query = _organizerRepository.GetQuery();
-			query = query.Where(e => e.Status == StatusEnum.Available);
+			query = query.Where(e => e.Status != StatusEnum.Unavailable);
 
 			if (dto.Name != null)
 			{
@@ -56,7 +56,7 @@ namespace Application.Services
 
 		public async Task<Organizer> GetByID(Guid id)
 		{
-			return await _organizerRepository.GetQuery().Where(entity => entity.Status == StatusEnum.Available).Where(o => o.Id == id).FirstOrDefaultAsync();
+			return await _organizerRepository.GetQuery().Where(entity => entity.Status != StatusEnum.Unavailable).Where(o => o.Id == id).FirstOrDefaultAsync();
 		}
 		public async Task<bool> Insert(Organizer e) { _organizerRepository.Insert(e); return await _organizerRepository.Save(); }
 		public async Task<bool> Update(Organizer e) { _organizerRepository.Update(e); return await _organizerRepository.Save(); }

@@ -31,7 +31,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] 
+		/// [Authorize] Get User List
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpGet]
@@ -41,7 +41,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] Get Current User
 		/// </summary>
 		[Authorize]
 		[HttpGet("me")]
@@ -51,9 +51,9 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] Edit User information
 		/// </summary>
-		[Authorize(Roles = "Admin")]
+		[Authorize]
 		[HttpPut]
 		public async Task<ActionResult<UserDTO>> EditUser(EditUserDTO dto)
 		{

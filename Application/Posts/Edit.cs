@@ -49,10 +49,10 @@ namespace Application.Posts
 				if (post == null) return Result<Unit>.Failure("Post not found!");
 
 				var eventUser = await _eventUserService.GetByID(post.EventId.Value, user.Id);
-				if (eventUser == null) return Result<Unit>.Unauthorized("You aren't in the event!");
+				if (eventUser == null) return Result<Unit>.Forbidden("You aren't in the event!");
 
 
-				if (eventUser.Type >= EventUserTypeEnum.Moderator)
+				if (!eventUser.IsModerator())
 				{
 					return Result<Unit>.Failure("You have no permission!");
 				}

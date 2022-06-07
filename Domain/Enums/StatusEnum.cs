@@ -8,6 +8,7 @@ namespace Domain.Enums
 {
 	public enum StatusEnum
 	{
-		Available, Unavailable
+		Available,
+		Unavailable
 	}
 }
