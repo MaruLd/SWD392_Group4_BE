@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220607025200_ChangeManyToManyTables")]
-    partial class ChangeManyToManyTables
+    [Migration("20220608115039_inital")]
+    partial class inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -102,11 +102,17 @@ namespace Persistence.Migrations
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("MultiplierFactor")
                         .HasColumnType("real");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -333,8 +339,17 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("CheckedInDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("CheckedOutDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("TicketId")
                         .HasColumnType("uniqueidentifier");
@@ -608,7 +623,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.EventAgenda", b =>
                 {
                     b.HasOne("Domain.Event", "Event")
-                        .WithMany("EventAgenda")
+                        .WithMany("EventAgendas")
                         .HasForeignKey("EventId");
 
                     b.Navigation("Event");
@@ -632,7 +647,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.EventUser", b =>
                 {
                     b.HasOne("Domain.Event", "Event")
-                        .WithMany("EventUser")
+                        .WithMany("EventUsers")
                         .HasForeignKey("EventId");
 
                     b.HasOne("Domain.User", "User")
@@ -741,11 +756,11 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Event", b =>
                 {
-                    b.Navigation("EventAgenda");
+                    b.Navigation("EventAgendas");
 
                     b.Navigation("EventOrganizers");
 
-                    b.Navigation("EventUser");
+                    b.Navigation("EventUsers");
 
                     b.Navigation("Posts");
 

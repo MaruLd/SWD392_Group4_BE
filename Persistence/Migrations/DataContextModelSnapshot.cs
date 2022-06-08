@@ -621,7 +621,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.EventAgenda", b =>
                 {
                     b.HasOne("Domain.Event", "Event")
-                        .WithMany("EventAgenda")
+                        .WithMany("EventAgendas")
                         .HasForeignKey("EventId");
 
                     b.Navigation("Event");
@@ -645,7 +645,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.EventUser", b =>
                 {
                     b.HasOne("Domain.Event", "Event")
-                        .WithMany("EventUser")
+                        .WithMany("EventUsers")
                         .HasForeignKey("EventId");
 
                     b.HasOne("Domain.User", "User")
@@ -754,11 +754,11 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Event", b =>
                 {
-                    b.Navigation("EventAgenda");
+                    b.Navigation("EventAgendas");
 
                     b.Navigation("EventOrganizers");
 
-                    b.Navigation("EventUser");
+                    b.Navigation("EventUsers");
 
                     b.Navigation("Posts");
 

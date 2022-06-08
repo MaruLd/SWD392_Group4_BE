@@ -14,7 +14,7 @@ namespace Persistence
         {
             System.Console.WriteLine("----------------- Seed Confirmation ----------------- \n\n\n Are you sure you want to generate the Seed Data? \n\n\n ----------------- Seed Confirmation -----------------");
             System.Console.Write("\n Input [y] to confirm: ");
-            String seedConfirm = Console.ReadLine();
+            String seedConfirm =  Console.ReadLine();
             
 			if (seedConfirm != "y") return;
             try{
@@ -44,6 +44,11 @@ namespace Persistence
 			foreach(var user in users){
 				await userManager.CreateAsync(user);
 			}
+            
+            // ---------------- EventCategory Seed ----------------------
+
+            await context.EventCategories.AddRangeAsync(new EventCategory() { Name = "General" });
+			await context.SaveChangesAsync();
 
             // ---------------- Event Seed ----------------------
 
@@ -125,7 +130,24 @@ namespace Persistence
             };
             await context.Comments.AddRangeAsync(comments);
             await context.SaveChangesAsync();
-            
+
+            }catch(Exception ex){
+                System.Console.WriteLine(ex);
+            }
+        }
+
+        public static async Task ClearSeedData(DataContext context, UserManager<User> userManager)
+        {
+            try{
+                foreach(var user in userManager.Users){
+                    userManager.DeleteAsync(user);
+                }
+                
+                context.EventCategories.RemoveRange(context.EventCategories);
+                context.Events.RemoveRange(context.Events);
+                context.Posts.RemoveRange(context.Posts);
+                context.Comments.RemoveRange(context.Comments);
+                context.SaveChangesAsync();
             }catch(Exception ex){
                 System.Console.WriteLine(ex);
             }
