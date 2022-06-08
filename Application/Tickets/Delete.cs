@@ -51,7 +51,7 @@ namespace Application.Tickets
 			var eventUser = await _eventUserService.GetByID(eventInDb.Id, user.Id);
 
 			if (eventUser == null) return Result<Unit>.Forbidden("You have no permission!");
-			if (!eventUser.IsModerator())
+			if (!eventUser.IsCreator())
 			{
 				return Result<Unit>.Forbidden("You have no permission!");
 			}

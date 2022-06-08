@@ -19,16 +19,24 @@ namespace Application.Services
 		// private EventRepository _eventRepository;
 		private EventRepository _eventRepository;
 		private EventUserRepository _eventUserRepository;
+		private readonly EventOrganizerRepository _eventOrganizerRepository;
+		private readonly UserRepository _userRepository;
+		private readonly IUserAccessor _userAccessor;
 		private IMapper _mapper;
 
 		public EventService(
 			EventRepository eventRepository,
 			EventUserRepository eventUserRepository,
 			EventOrganizerRepository eventOrganizerRepository,
+			UserRepository userRepository,
+			IUserAccessor userAccessor,
 			IMapper mapper)
 		{
 			_eventRepository = eventRepository;
 			_eventUserRepository = eventUserRepository;
+			this._eventOrganizerRepository = eventOrganizerRepository;
+			this._userRepository = userRepository;
+			_userAccessor = userAccessor;
 			_mapper = mapper;
 		}
 
@@ -51,6 +59,13 @@ namespace Application.Services
 					break;
 				default:
 					break;
+			}
+
+			if (eventParams.IsJoined)
+			{
+				var currentUserEmail = _userAccessor.GetEmail();
+				var user = await _userRepository.GetQuery().Where(u => u.Email == currentUserEmail).FirstOrDefaultAsync();
+				if (user != null) query = query.Where(e => e.EventUser.Any(eu => eu.UserId == user.Id));
 			}
 
 			query = query

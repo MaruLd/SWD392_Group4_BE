@@ -4,9 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using API.DTOs;
+using Application.Core;
 using Application.Services;
 using AutoMapper;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -54,7 +56,7 @@ namespace API.Controllers
 
 			var email = claims.Claims.FirstOrDefault(c => c.Key == "email").Value.ToString();
 
-			if (email.Split("@").Last() != "fpt.edu.vn") return StatusCode(418, "The system currently only accepted [fpt.edu.vn] email!");
+			// if (email.Split("@").Last() != "fpt.edu.vn") return StatusCode(418, "The system currently only accepted [fpt.edu.vn] email!");
 			var name = claims.Claims.FirstOrDefault(c => c.Key == "name").Value.ToString();
 
 			var user = await _userService.GetByEmail(email);
@@ -94,5 +96,28 @@ namespace API.Controllers
 				Image = user.ImageURL
 			};
 		}
+
+		[Authorize]
+		[HttpPost("change-role")]
+		public async Task<ActionResult> ChangeRole([FromQuery] string roleName)
+		{
+			var user = await _userService.GetByID(Guid.Parse(User.GetUserId()));
+			var currentRole = await _userManager.GetRolesAsync(user);
+
+			var role = await _roleManager.FindByNameAsync(roleName);
+			if (role == null) return NotFound();
+			
+			await _userManager.RemoveFromRoleAsync(user, currentRole.First());
+			await _userManager.AddToRoleAsync(user, role.Name);
+			return Ok(user);
+		}
+
+		[HttpGet("test-message")]
+		public async Task<ActionResult> SendTestMessage([FromQuery] string message)
+		{
+			return Ok(await _firebaseService.SendMessage(message));
+		}
 	}
+
+
 }

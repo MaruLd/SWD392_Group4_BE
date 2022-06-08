@@ -24,5 +24,8 @@ namespace Application.Events.DTOs
 		[FromQuery(Name = "end-time")]
 		public DateTime? EndTime { get; set; }
 
+		[FromQuery(Name = "is-joined")]
+		public bool IsJoined { get; set; }
+
 	}
 }

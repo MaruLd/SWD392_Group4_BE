@@ -60,9 +60,9 @@ public class Event
 		_machine = new StateMachine<int, int>((int)this.State);
 
 		_machine.Configure((int)EventStateEnum.Idle)
-			.Permit((int)EventTriggerEnum.Start, (int)EventStateEnum.Started);
+			.Permit((int)EventTriggerEnum.Start, (int)EventStateEnum.Ongoing);
 
-		_machine.Configure((int)EventStateEnum.Started)
+		_machine.Configure((int)EventStateEnum.Ongoing)
 			.OnEntry(data => OnStart())
 			.Permit((int)EventTriggerEnum.End, (int)EventStateEnum.Ended);
 
@@ -71,7 +71,7 @@ public class Event
 
 		void OnStart()
 		{
-			this.State = EventStateEnum.Started;
+			this.State = EventStateEnum.Ongoing;
 		}
 
 		void OnEnd()

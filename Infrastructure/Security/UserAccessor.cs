@@ -14,17 +14,17 @@ namespace Infrastructure
 
 		public string GetUsername()
 		{
-			return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+			return _httpContextAccessor.HttpContext.User.FindFirstValue("name");
 		}
 
 		public string GetEmail()
 		{
-			return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
+			return _httpContextAccessor.HttpContext.User.FindFirstValue("email");
 		}
 
 		public string GetRole()
 		{
-			return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+			return _httpContextAccessor.HttpContext.User.FindFirstValue("role");
 		}
 	}
 }
