@@ -54,7 +54,7 @@ namespace Application.EventAgendas
 				if (eventUser == null) return Result<Unit>.Forbidden("You aren't in the event!");
 
 
-				if (!eventUser.IsModerator())
+				if (!eventUser.IsCreator())
 				{
 					return Result<Unit>.Forbidden("You have no permission!");
 				}

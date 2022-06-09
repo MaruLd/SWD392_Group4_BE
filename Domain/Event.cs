@@ -59,7 +59,7 @@ public class Event
 	{
 		_machine = new StateMachine<int, int>((int)this.State);
 
-		_machine.Configure((int)EventStateEnum.Idle)
+		_machine.Configure((int)EventStateEnum.Draft)
 			.Permit((int)EventTriggerEnum.Start, (int)EventStateEnum.Ongoing);
 
 		_machine.Configure((int)EventStateEnum.Ongoing)
