@@ -43,9 +43,9 @@ public class Event
 	[JsonIgnore]
 	public virtual ICollection<EventOrganizer> EventOrganizers { get; set; }
 	[JsonIgnore]
-	public virtual ICollection<EventUser> EventUser { get; set; }
+	public virtual ICollection<EventUser> EventUsers { get; set; }
 	[JsonIgnore]
-	public virtual ICollection<EventAgenda> EventAgenda { get; set; }
+	public virtual ICollection<EventAgenda> EventAgendas { get; set; }
 
 	public StatusEnum Status { get; set; }
 	public EventStateEnum State { get; set; }
@@ -59,7 +59,7 @@ public class Event
 	{
 		_machine = new StateMachine<int, int>((int)this.State);
 
-		_machine.Configure((int)EventStateEnum.Idle)
+		_machine.Configure((int)EventStateEnum.Draft)
 			.Permit((int)EventTriggerEnum.Start, (int)EventStateEnum.Ongoing);
 
 		_machine.Configure((int)EventStateEnum.Ongoing)

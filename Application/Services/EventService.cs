@@ -65,7 +65,7 @@ namespace Application.Services
 			{
 				var currentUserEmail = _userAccessor.GetEmail();
 				var user = await _userRepository.GetQuery().Where(u => u.Email == currentUserEmail).FirstOrDefaultAsync();
-				if (user != null) query = query.Where(e => e.EventUser.Any(eu => eu.UserId == user.Id));
+				if (user != null) query = query.Where(e => e.EventUsers.Any(eu => eu.UserId == user.Id));
 			}
 
 			query = query

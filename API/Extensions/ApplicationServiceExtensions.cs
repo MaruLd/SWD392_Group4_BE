@@ -54,6 +54,9 @@ namespace API.Extensions
 			services.AddScoped<EventOrganizerRepository>();
 			services.AddScoped<EventOrganizerService>();
 
+			services.AddScoped<UserImageRepository>();
+			services.AddScoped<UserImageService>();
+
 
 			services.AddScoped<TokenService>();
 			services.AddSingleton<FirebaseService>();

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +28,7 @@ namespace API
 			try
 			{
 				var context = services.GetRequiredService<DataContext>();
+				var userManager = services.GetRequiredService<UserManager<User>>();
 				var config = services.GetRequiredService<IConfiguration>();
 				var rm = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
@@ -44,10 +46,9 @@ namespace API
 					await rm.CreateAsync(new IdentityRole<Guid>("Admin"));
 				}
 
-				// context.Database.Migrate();
-				// await EventCategorySeed.SeedData(context);
-				// await EventSeed.SeedData(context);
-				// await TicketSeed.SeedData(context);
+				// await context.Database.MigrateAsync();
+				// await Seed.SeedData(context, userManager);
+				// await Seed.ClearSeedData(context, userManager);
 			}
 			catch (Exception ex)
 			{

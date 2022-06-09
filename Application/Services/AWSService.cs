@@ -29,7 +29,7 @@ namespace Application.Services
 
 		}
 
-		public async Task<String> UploadImage(IFormFile files)
+		public async Task<String> UploadImage(IFormFile file, Guid key)
 		{
 			TransferUtility utility = new TransferUtility(client);
 			TransferUtilityUploadRequest request = new TransferUtilityUploadRequest();
@@ -37,16 +37,14 @@ namespace Application.Services
 			var listBucketResponse = await client.ListBucketsAsync();
 			var bucket = listBucketResponse.Buckets[0];
 
-			var key = Guid.NewGuid().ToString();
-
 			request.BucketName = bucket.BucketName;
-			request.Key = key;
-			request.InputStream = files.OpenReadStream();
+			request.Key = key.ToString();
+			request.InputStream = file.OpenReadStream();
 			// request.CannedACL = S3CannedACL.PublicRead;
 
 			await utility.UploadAsync(request);
 
-			return key;
+			return key.ToString();
 		}
 
 		public async Task<String> GetImage(string key)
