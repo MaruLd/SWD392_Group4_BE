@@ -24,13 +24,10 @@ namespace Persistence
 
             string[] eventTitle = new string[2];
             eventTitle[0] = "The Event 1 Title Go Here";
-            eventTitle[1] = "The Event 2 Title Go Here";
 
             string[] postTitle = new string[3];
             postTitle[0] = "The Post 1 Title of Event 1";
             postTitle[1] = "The Post 2 Title of Event 1";
-            postTitle[2] = "The Post 1 Title of Event 2";
-
             // ---------------- User Seed ----------------------
 
             var users = new List<User>
@@ -64,16 +61,16 @@ namespace Persistence
                     MultiplierFactor = 1,
                     Status = StatusEnum.Available
                 },
-                new Event
-                {
-                    Title = eventTitle[1],
-                    StartTime = DateTime.Now.AddMonths(1),
-                    EndTime = DateTime.Now.AddMonths(1).AddHours(2),
-                    Description = "Description about the event here",
-                    EventCategoryId = 1,
-                    MultiplierFactor = 1,
-                    Status = StatusEnum.Available
-                }
+                // new Event
+                // {
+                //     Title = eventTitle[1],
+                //     StartTime = DateTime.Now.AddMonths(1),
+                //     EndTime = DateTime.Now.AddMonths(1).AddHours(2),
+                //     Description = "Description about the event here",
+                //     EventCategoryId = 1,
+                //     MultiplierFactor = 1,
+                //     Status = StatusEnum.Available
+                // }
             };
 
             await context.Events.AddRangeAsync(events);
@@ -98,13 +95,13 @@ namespace Persistence
                     Status = StatusEnum.Available,
                     UserId = userManager.Users.FirstOrDefault(x => x.Email == userEmail[0]).Id
                 },
-                new Post
-                {
-                    Title = postTitle[2],
-                    Content = "Content of the post here",
-                    Status = StatusEnum.Available,
-                    UserId = userManager.Users.FirstOrDefault(x => x.Email == userEmail[0]).Id
-                },
+                // new Post
+                // {
+                //     Title = postTitle[2],
+                //     Content = "Content of the post here",
+                //     Status = StatusEnum.Available,
+                //     UserId = userManager.Users.FirstOrDefault(x => x.Email == userEmail[0]).Id
+                // },
             };
 
 
@@ -123,12 +120,62 @@ namespace Persistence
                     Body = "I love this event!!!!!",
                     PostId = context.Posts.FirstOrDefault(x => x.Title == postTitle[1]).Id
                 },
-                new Comment {
-                    Body = "I love this event!!!!!!!!!!!!!",
-                    PostId = context.Posts.FirstOrDefault(x => x.Title == postTitle[3]).Id
-                }
+                // new Comment {
+                //     Body = "I love this event!!!!!!!!!!!!!",
+                //     PostId = context.Posts.FirstOrDefault(x => x.Title == postTitle[3]).Id
+                // }
             };
             await context.Comments.AddRangeAsync(comments);
+            await context.SaveChangesAsync();
+
+            // ---------------- Organizer Seed ---------------------- 
+
+            var organizers = new List<Organizer>{
+                new Organizer {
+                    Name = "FPT University",
+                    Description = "Chính thức thành lập ngày 8/9/2006 theo Quyết định của Thủ tướng Chính phủ, Trường Đại học FPT trở thành trường đại học đầu tiên của Việt Nam do một doanh nghiệp đứng ra thành lập với 100% vốn đầu tư từ Tập đoàn FPT.",
+                    Status = StatusEnum.Available
+                },
+            };
+            await context.Organizers.AddRangeAsync(organizers);
+            await context.SaveChangesAsync();
+
+            // ---------------- Ticket Seed ---------------------- 
+
+            var tickets = new List<Ticket>{
+                new Ticket
+				{
+					Type = "Casual",
+					Name = "Ticket 1",
+					Description = "Description For Ticket",
+					Cost = 0,
+					EventId = context.Events.FirstOrDefault(x => x.Title == eventTitle[0]).Id,
+					Quantity = 50
+				},
+				new Ticket
+				{
+					Type = "VIP",
+					Name = "Ticket 2",
+					Description = "Description For Ticket",
+					Cost = 0,
+					EventId = context.Events.FirstOrDefault(x => x.Title == eventTitle[0]).Id,
+					Quantity = 10
+				},
+            };
+            await context.Tickets.AddRangeAsync(tickets);
+            await context.SaveChangesAsync();
+
+            // ---------------- EventAgenda Seed ---------------------- 
+
+            var eventAgendas = new List<EventAgenda>{
+                new EventAgenda
+				{
+
+					Description = "Description For Ticket",
+					EventId = context.Events.FirstOrDefault(x => x.Title == eventTitle[0]).Id,
+				},
+            };
+            await context.Tickets.AddRangeAsync(tickets);
             await context.SaveChangesAsync();
 
             }catch(Exception ex){
@@ -147,7 +194,7 @@ namespace Persistence
                 context.Events.RemoveRange(context.Events);
                 context.Posts.RemoveRange(context.Posts);
                 context.Comments.RemoveRange(context.Comments);
-                 context.EventUsers.RemoveRange(context.EventUsers);
+                context.EventUsers.RemoveRange(context.EventUsers);
                 context.Tickets.RemoveRange(context.Tickets);
                 context.EventAgendas.RemoveRange(context.EventAgendas);
                 context.TicketUsers.RemoveRange(context.TicketUsers);
