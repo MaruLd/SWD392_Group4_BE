@@ -38,9 +38,9 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
-		public async Task<ActionResult> CreateEvent(CreateEventDTO Event)
+		public async Task<ActionResult> CreateEvent(CreateEventDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Create.Command { Event = Event }));
+			return HandleResult(await Mediator.Send(new Create.Command { dto = dto }));
 		}
 
 

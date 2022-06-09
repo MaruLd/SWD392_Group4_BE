@@ -19,7 +19,7 @@ namespace Infrastructure
 
 		public string GetEmail()
 		{
-			return _httpContextAccessor.HttpContext.User.FindFirstValue("email");
+			return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
 		}
 
 		public string GetRole()

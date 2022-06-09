@@ -38,6 +38,7 @@ namespace Application.Services
 			var bucket = listBucketResponse.Buckets[0];
 
 			request.BucketName = bucket.BucketName;
+			// request.ContentType = file.ContentType;
 			request.Key = key.ToString();
 			request.InputStream = file.OpenReadStream();
 			// request.CannedACL = S3CannedACL.PublicRead;

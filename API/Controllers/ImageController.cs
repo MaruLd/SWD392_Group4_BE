@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon;
@@ -30,8 +31,12 @@ namespace API.Controllers
 		/// </summary>
 		[HttpPost]
 		[Authorize]
-		public async Task<ActionResult> UploadImage(IFormFile file)
+		public async Task<ActionResult> UploadImage([Required] IFormFile file)
 		{
+
+			if (file.Length > 10 * 1024 * 1024) return BadRequest("File size limit is 10 MB!");
+			if (!file.ContentType.Contains("image")) return BadRequest("File is not a valid image!");
+
 			var image = new UserImage() { UserId = Guid.Parse(User.GetUserId()) };
 			var result = await _imageService.Insert(image);
 
