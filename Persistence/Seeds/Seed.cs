@@ -170,13 +170,32 @@ namespace Persistence
             var eventAgendas = new List<EventAgenda>{
                 new EventAgenda
 				{
-
-					Description = "Description For Ticket",
+                    Title = "The Opening",
+					Description = "Description For agenda",
 					EventId = context.Events.FirstOrDefault(x => x.Title == eventTitle[0]).Id,
-				},
+                    StartTime = DateTime.Now.AddMonths(1).AddMinutes(15),
+                    EndTime = DateTime.Now.AddMonths(1).AddMinutes(45),
+                },
+                new EventAgenda
+				{
+                    Title = "The Middle",
+					Description = "Description For agenda",
+					EventId = context.Events.FirstOrDefault(x => x.Title == eventTitle[0]).Id,
+                    StartTime = DateTime.Now.AddMonths(1).AddMinutes(50),
+                    EndTime = DateTime.Now.AddMonths(1).AddMinutes(90),
+                },
+                new EventAgenda
+				{
+                    Title = "The Ending",
+					Description = "Description For agenda",
+					EventId = context.Events.FirstOrDefault(x => x.Title == eventTitle[0]).Id,
+                    StartTime = DateTime.Now.AddMonths(1).AddMinutes(95),
+                    EndTime = DateTime.Now.AddMonths(1).AddMinutes(120),
+                },
             };
-            await context.Tickets.AddRangeAsync(tickets);
+            await context.EventAgendas.AddRangeAsync(eventAgendas);
             await context.SaveChangesAsync();
+            
 
             }catch(Exception ex){
                 System.Console.WriteLine(ex);
