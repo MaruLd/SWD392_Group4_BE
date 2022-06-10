@@ -44,16 +44,16 @@ namespace API.Controllers
 		/// <summary>
 		/// [Authorize] [Student] Write Comment
 		/// </summary>
-		[Authorize]
-		[HttpPut]
-		public async Task<ActionResult> EditComment(Guid postid, EditCommentDTO dto)
-		{
-			dto.PostId = postid;
-			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
-		}
+		// [Authorize]
+		// [HttpPut]
+		// public async Task<ActionResult> EditComment(Guid postid, EditCommentDTO dto)
+		// {
+		// 	dto.PostId = postid;
+		// 	return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
+		// }
 
 		/// <summary>
-		/// [Authorize] [Student delete own / Admin delete others] Delete Comment
+		/// [Authorize] [>= Moderator] Delete Comment
 		/// </summary>
 		[Authorize]
 		[HttpDelete]

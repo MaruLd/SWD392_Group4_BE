@@ -44,15 +44,13 @@ namespace Application.Comments
 				if (comment == null) return Result<Unit>.NotFound("Comment not found!");
 
 				var eventUser = await _eventUserService.GetByID(comment.Post.Event.Id, user.Id);
-				if (eventUser == null) return Result<Unit>.Failure("It's not your comment");
+				if (eventUser == null) return Result<Unit>.Failure("You not in the event!");
 
-				if (comment.UserId != user.Id)
+				if (!eventUser.IsModerator())
 				{
-					if (!(_userAccessor.GetRole() == "Admin")
-					 && eventUser.Type < EventUserTypeEnum.Moderator
-					)
-						return Result<Unit>.Failure("It's not your comment");
+					return Result<Unit>.Failure("No Permission");
 				}
+
 				comment.Status = StatusEnum.Unavailable;
 				var result = await _commentService.Save();
 
