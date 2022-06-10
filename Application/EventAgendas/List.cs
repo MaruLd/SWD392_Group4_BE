@@ -20,6 +20,7 @@ namespace Application.EventAgendas
 	{
 		public class Query : IRequest<Result<List<EventAgendaDTO>>>
 		{
+			public Guid eventid { get; set; }
 			public EventAgendaQueryParams queryParams { get; set; }
 		}
 
@@ -38,10 +39,10 @@ namespace Application.EventAgendas
 
 			public async Task<Result<List<EventAgendaDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				var e = await _eventService.GetByID(request.queryParams.EventId);
+				var e = await _eventService.GetByID(request.eventid);
 				if (e == null) return Result<List<EventAgendaDTO>>.Failure("Event not found!");
 
-				var eventAgendasDto = await _eventAgendaService.Get(request.queryParams);
+				var eventAgendasDto = await _eventAgendaService.Get(e.Id, request.queryParams);
 				return Result<List<EventAgendaDTO>>.Success(_mapper.Map<List<EventAgendaDTO>>(eventAgendasDto));
 			}
 		}

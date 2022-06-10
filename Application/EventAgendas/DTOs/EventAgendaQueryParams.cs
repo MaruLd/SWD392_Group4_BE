@@ -9,8 +9,6 @@ namespace Application.EventAgendas.DTOs
 {
 	public class EventAgendaQueryParams : PaginationParams
 	{
-		[FromQuery(Name = "event-id")]
-		public Guid EventId { get; set; }
 		[FromQuery(Name = "order-by")]
 		public OrderByEnum OrderBy { get; set; } = OrderByEnum.DateDescending;
 

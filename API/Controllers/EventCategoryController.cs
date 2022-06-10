@@ -63,12 +63,12 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPut]
-		public async Task<ActionResult> EditCategory([FromBody] int id, string categoryName)
+		public async Task<ActionResult> EditCategory([FromBody] EventCategory eventCategory)
 		{
-			var cat = await _eventCategoryService.GetByID(id);
+			var cat = await _eventCategoryService.GetByID(eventCategory.Id);
 			if (cat == null) return NotFound("Category not found!");
 
-			cat.Name = categoryName;
+			cat.Name = eventCategory.Name;
 			return await _eventCategoryService.Update(_mapper.Map<EventCategory>(cat)) ? NoContent() : BadRequest();
 		}
 

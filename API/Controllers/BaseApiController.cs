@@ -23,6 +23,7 @@ namespace API.Controllers
 		protected ActionResult HandleResult<T>(Result<T> result)
 		{
 			if (result == null) return NotFound();
+			else if (result.IsSuccess && result.StatusCode == StatusCodes.Status204NoContent) return StatusCode(result.StatusCode);
 			else if (result.IsSuccess && result.Value != null) return StatusCode(result.StatusCode, result.Value);
 			else if (result.IsSuccess && result.Value == null) return NotFound(result.Error);
 			return BadRequest(result.Error);

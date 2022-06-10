@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.Events.DTOs;
+using Application.Events.StateMachine;
 using Application.EventUsers.DTOs;
 using Application.Interfaces;
 using Application.Services;
@@ -65,14 +66,15 @@ namespace Application.Events
 				var eventUser = await _eventUserService.GetByID((Guid)e.Id, user.Id);
 				if (eventUser == null) return Result<Unit>.Failure("You are not in the event");
 
-				if (!eventUser.IsModerator())
+				if (!eventUser.IsCreator())
 				{
 					return Result<Unit>.Failure("You have no permission!");
 				}
 
 				try
 				{
-					e.TriggerState((Domain.EventTriggerEnum)request.eventTriggerEnum);
+					EventStateMachine esm = new EventStateMachine(e);
+					e = esm.TriggerState((EventTriggerEnum)request.eventTriggerEnum);
 				}
 				catch
 				{

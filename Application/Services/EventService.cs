@@ -61,16 +61,20 @@ namespace Application.Services
 					break;
 			}
 
-			if (eventParams.IsJoined)
-			{
-				var currentUserEmail = _userAccessor.GetEmail();
-				var user = await _userRepository.GetQuery().Where(u => u.Email == currentUserEmail).FirstOrDefaultAsync();
-				if (user != null) query = query.Where(e => e.EventUsers.Any(eu => eu.UserId == user.Id));
-			}
-
 			query = query
 				.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
 				.Include(e => e.EventCategory);
+
+			var currentUserEmail = _userAccessor.GetEmail();
+
+			if (currentUserEmail != null)
+			{
+				var user = await _userRepository.GetQuery().Where(u => u.Email == currentUserEmail).FirstOrDefaultAsync();
+				if (user != null)
+				{
+					if (eventParams.IsJoined) query = query.Where(e => e.EventUsers.Any(eu => eu.UserId == user.Id));
+				}
+			}
 
 			if (eventParams.OrganizerId != Guid.Empty)
 			{
@@ -94,7 +98,8 @@ namespace Application.Services
 				.Where(e => e.Id == id)
 				.Include(e => e.EventCategory)
 				.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
-				.Include(e => e.Tickets).FirstOrDefaultAsync();
+				.Include(e => e.Tickets)
+				.FirstOrDefaultAsync();
 			return e;
 		}
 
