@@ -36,9 +36,9 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize]
 		[HttpPost]
-		public async Task<ActionResult> CreateComment(CreateCommentDTO dto)
+		public async Task<ActionResult> CreateComment(Guid postid, [FromBody] CreateCommentDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Create.Command { dto = dto }));
+			return HandleResult(await Mediator.Send(new Create.Command { postid = postid, dto = dto }));
 		}
 
 		/// <summary>
