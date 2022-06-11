@@ -14,15 +14,15 @@ using Persistence.Repositories;
 using Application.Users.DTOs;
 using Application.Tickets.DTOs;
 
-namespace Application.TicketUsers
+namespace Application.Users
 {
-	public class ListSelf
+	public class ListSelfTickets
 	{
 
 		public class Query : IRequest<Result<List<TicketDTO>>>
 		{
 			public Guid userId { get; set; }
-			public PaginationParams queryParams { get; set; }
+			public TickerUserSelfQueryParams queryParams { get; set; }
 		}
 
 		public class Handler : IRequestHandler<Query, Result<List<TicketDTO>>>

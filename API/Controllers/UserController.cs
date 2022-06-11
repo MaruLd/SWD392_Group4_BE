@@ -42,7 +42,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] Get Current User
+		/// [Authorize] Get Current User Info
 		/// </summary>
 		[Authorize]
 		[HttpGet("me")]
@@ -52,13 +52,13 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] Get Current User
+		/// [Authorize] Get Current Bought Ticket
 		/// </summary>
 		[Authorize]
 		[HttpGet("me/tickets")]
-		public async Task<ActionResult<UserDTO>> GetYourTickets([FromQuery] PaginationParams queryParams)
+		public async Task<ActionResult<UserDTO>> GetYourTickets([FromQuery] TickerUserSelfQueryParams queryParams)
 		{
-			return HandleResult(await Mediator.Send(new Application.TicketUsers.ListSelf.Query { userId = Guid.Parse(User.GetUserId()), queryParams = queryParams }));
+			return HandleResult(await Mediator.Send(new ListSelfTickets.Query { userId = Guid.Parse(User.GetUserId()), queryParams = queryParams }));
 		}
 
 		/// <summary>

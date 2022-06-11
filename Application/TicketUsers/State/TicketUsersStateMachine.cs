@@ -21,21 +21,17 @@ namespace Application.TicketUsers
 
 			_machine = new StateMachine<int, int>((int)this._ticketUser.State);
 
-			var triggerWithParam_CheckIn = _machine.SetTriggerParameters<TicketUser>((int)TicketUserTriggerEnum.CheckIn);
-			var triggerWithParam_CheckOut = _machine.SetTriggerParameters<TicketUser>((int)TicketUserTriggerEnum.CheckOut);
-			var triggerWithParam_End = _machine.SetTriggerParameters<TicketUser>((int)TicketUserTriggerEnum.End);
-
 			_machine.Configure((int)TicketUserStateEnum.Idle)
-				.Permit((int)TicketUserTriggerEnum.CheckIn, (int)TicketUserStateEnum.CheckedIn)
-				.Permit((int)TicketUserTriggerEnum.End, (int)TicketUserStateEnum.Ended);
+				.Permit((int)TicketUserStateEnum.CheckedIn, (int)TicketUserStateEnum.CheckedIn)
+				.Permit((int)TicketUserStateEnum.Ended, (int)TicketUserStateEnum.Ended);
 
 			_machine.Configure((int)TicketUserStateEnum.CheckedIn)
-				.OnEntryFrom(triggerWithParam_CheckIn, data => OnCheckIn())
-				.Permit((int)TicketUserTriggerEnum.CheckOut, (int)TicketUserStateEnum.CheckedOut)
-				.Permit((int)TicketUserTriggerEnum.End, (int)TicketUserStateEnum.Ended);
+				.OnEntry(data => OnCheckIn())
+				.Permit((int)TicketUserStateEnum.CheckedOut, (int)TicketUserStateEnum.CheckedOut)
+				.Permit((int)TicketUserStateEnum.Ended, (int)TicketUserStateEnum.Ended);
 
 			_machine.Configure((int)TicketUserStateEnum.CheckedOut)
-				.Permit((int)TicketUserTriggerEnum.End, (int)TicketUserStateEnum.Ended);
+				.Permit((int)TicketUserStateEnum.Ended, (int)TicketUserStateEnum.Ended);
 		}
 
 		void OnCheckIn()
@@ -55,21 +51,9 @@ namespace Application.TicketUsers
 			_ticketUser.State = TicketUserStateEnum.Ended;
 		}
 
-		public TicketUser CheckIn()
+		public TicketUser TriggerState(TicketUserStateEnum ticketUserStateEnum)
 		{
-			_machine.Fire((int)TicketUserTriggerEnum.CheckIn);
-			return _ticketUser;
-		}
-
-		public TicketUser CheckOut()
-		{
-			_machine.Fire((int)TicketUserTriggerEnum.CheckOut);
-			return _ticketUser;
-		}
-
-		public TicketUser End()
-		{
-			_machine.Fire((int)TicketUserTriggerEnum.End);
+			_machine.Fire((int)ticketUserStateEnum);
 			return _ticketUser;
 		}
 	}
