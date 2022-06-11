@@ -11,8 +11,8 @@ namespace Application.Events.DTOs
 	{
 		[FromQuery(Name = "title")]
 		public String? Title { get; set; }
-		[FromQuery(Name = "organizer-id")]
-		public Guid OrganizerId { get; set; }
+		[FromQuery(Name = "organizer-name")]
+		public String? OrganizerName { get; set; }
 		[FromQuery(Name = "category-id")]
 		public int CategoryId { get; set; }
 		[FromQuery(Name = "own-event")]

@@ -82,11 +82,11 @@ namespace Application.Services
 					.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator));
 			}
 
-			if (eventParams.OrganizerId != Guid.Empty)
+			if (eventParams.OrganizerName != null)
 			{
 				query = query.Where(e => e.EventOrganizers
 					.Any(o =>
-						o.OrganizerId == eventParams.OrganizerId &&
+						o.Organizer.Name.ToLower().Contains(eventParams.OrganizerName) &&
 						o.EventId == e.Id)
 					);
 			};
