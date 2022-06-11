@@ -25,6 +25,7 @@ namespace Application.Events.StateMachine
 
 			_machine.Configure((int)EventStateEnum.Publish)
 				.OnEntry(data => OnPublish())
+				.Permit((int)EventStateEnum.Draft, (int)EventStateEnum.Draft)
 				.Permit((int)EventStateEnum.Delay, (int)EventStateEnum.Delay)
 				.Permit((int)EventStateEnum.CheckingIn, (int)EventStateEnum.CheckingIn)
 				.Permit((int)EventStateEnum.Cancelled, (int)EventStateEnum.Cancelled);

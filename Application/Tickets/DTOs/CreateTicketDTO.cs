@@ -16,9 +16,12 @@ namespace Application.Tickets.DTOs
 		public String Description { get; set; }
 		[Required]
 		public String Type { get; set; }
+
 		[Required]
+		[Range(0, 100)]
 		public int Cost { get; set; }
 		[Required]
+		[Range(0, 10000)]
 		public int Quantity { get; set; }
 	}
 }

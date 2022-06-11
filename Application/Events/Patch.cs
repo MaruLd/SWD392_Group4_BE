@@ -77,15 +77,15 @@ namespace Application.Events
 					e = esm.TriggerState((EventStateEnum)request.eventStateEnum);
 
 					// Remove All TicketUser If Event Is Draft Or Cancelled (Refund Implement Later)
-					if (e.State == EventStateEnum.Draft || e.State == EventStateEnum.Cancelled)
-					{
-						var tickets = await _ticketService.GetAllFromEvent(e.Id, true);
-						tickets.ForEach(t =>
-							t.TicketUsers.ToList().ForEach(async tu =>
-							{
-								await _ticketUserService.Remove(tu);
-							}));
-					}
+					// if (e.State == EventStateEnum.Draft || e.State == EventStateEnum.Cancelled)
+					// {
+					// 	var tickets = await _ticketService.GetAllFromEvent(e.Id, true);
+					// 	tickets.ForEach(t =>
+					// 		t.TicketUsers.ToList().ForEach(async tu =>
+					// 		{
+					// 			await _ticketUserService.Remove(tu);
+					// 		}));
+					// }
 				}
 				catch
 				{

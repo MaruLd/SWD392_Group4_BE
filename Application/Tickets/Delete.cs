@@ -56,7 +56,6 @@ namespace Application.Tickets
 				return Result<Unit>.Forbidden("You have no permission!");
 			}
 
-
 			var users = await _ticketUserService.Get(request.ticketId);
 			if (users.Count > 0) return Result<Unit>.Failure("Can't delete ticket that already been bought!");
 

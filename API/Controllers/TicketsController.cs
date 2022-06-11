@@ -28,7 +28,7 @@ namespace API.Controllers
 		/// Get Ticket
 		/// </summary>
 		[HttpGet("{id}")]
-		public async Task<ActionResult<DetailTicketDTO>> GetTicket(Guid id)
+		public async Task<ActionResult<TicketDTO>> GetTicket(Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}

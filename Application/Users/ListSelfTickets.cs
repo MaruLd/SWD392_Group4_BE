@@ -20,13 +20,13 @@ namespace Application.Users
 	public class ListSelfTickets
 	{
 
-		public class Query : IRequest<Result<List<TicketUserDTO>>>
+		public class Query : IRequest<Result<List<SelfTicketDTO>>>
 		{
 			public Guid userId { get; set; }
 			public TickerUserSelfQueryParams queryParams { get; set; }
 		}
 
-		public class Handler : IRequestHandler<Query, Result<List<TicketUserDTO>>>
+		public class Handler : IRequestHandler<Query, Result<List<SelfTicketDTO>>>
 		{
 			private readonly TicketUserService _ticketUserService;
 			private readonly IMapper _mapper;
@@ -37,10 +37,10 @@ namespace Application.Users
 				_mapper = mapper;
 			}
 
-			public async Task<Result<List<TicketUserDTO>>> Handle(Query request, CancellationToken cancellationToken)
+			public async Task<Result<List<SelfTicketDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
 				var res = await _ticketUserService.GetTicketsFromUser(request.userId, request.queryParams);
-				return Result<List<TicketUserDTO>>.Success(_mapper.Map<List<TicketUserDTO>>(res));
+				return Result<List<SelfTicketDTO>>.Success(_mapper.Map<List<SelfTicketDTO>>(res));
 			}
 		}
 	}

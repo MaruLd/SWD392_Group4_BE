@@ -8,16 +8,23 @@ using Application.Users.DTOs;
 using Domain;
 using Domain.Enums;
 
-namespace Application.TicketUsers.DTOs
+namespace Application.Users.DTOs
 {
-	public class TicketUserDTO
+	public class SelfTicketDTO
 	{
-		// public TicketDTO Ticket { get; set; }
-		public UserDTO? User { get; set; }
-		public DateTime CreatedDate { get; set; }
+		public Guid Id { get; set; }
+
+		public Guid EventId { get; set; }
+		public Guid TicketId { get; set; }
+
+		public String Name { get; set; }
+		public String Description { get; set; }
+		public String Type { get; set; }
 
 		public DateTime? CheckedInDate { get; set; }
 		public DateTime? CheckedOutDate { get; set; }
 		public TicketUserStateEnum State { get; set; }
+
+		public DateTime CreatedDate { get; set; }
 	}
 }

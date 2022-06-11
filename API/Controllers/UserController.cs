@@ -57,7 +57,7 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize]
 		[HttpGet("me/tickets")]
-		public async Task<ActionResult<List<TicketUserDTO>>> GetYourTickets([FromQuery] TickerUserSelfQueryParams queryParams)
+		public async Task<ActionResult<List<SelfTicketDTO>>> GetYourTickets([FromQuery] TickerUserSelfQueryParams queryParams)
 		{
 			return HandleResult(await Mediator.Send(new ListSelfTickets.Query { userId = Guid.Parse(User.GetUserId()), queryParams = queryParams }));
 		}

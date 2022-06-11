@@ -66,24 +66,20 @@ namespace Application.Services
 				.Include(e => e.EventCategory);
 
 			var currentUserId = _userAccessor.GetID();
-
-			// If user didn't login don't show draft
-
-			if (!eventParams.IsOwnEvent)
+			if (!eventParams.IsOwnEvent || currentUserId == null)
 			{
-				query = query.Where(e => e.State != EventStateEnum.Draft);
+				query = query.Include(e => e.EventUsers)
+				.Where(e => e.State != EventStateEnum.Draft
+				|| (
+					e.State == EventStateEnum.Draft && e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator)
+					)
+				);
 			}
 			else
 			{
-				if (currentUserId == null) query = query.Where(e => e.State != EventStateEnum.Draft);
 				query = query
-				.Include(e => e.EventUsers)
-				.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator));
-			}
-
-			if (currentUserId != Guid.Empty)
-			{
-				if (eventParams.IsJoined) query = query.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId));
+					.Include(e => e.EventUsers)
+					.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator));
 			}
 
 			if (eventParams.OrganizerId != Guid.Empty)
@@ -110,15 +106,18 @@ namespace Application.Services
 			var currentUserId = _userAccessor.GetID();
 			if (currentUserId != Guid.Empty)
 			{
-				query = query.Where(e =>
-					e.State == EventStateEnum.Draft &&
-					e.EventUsers.Any(eu => eu.IsCreator() && eu.Id == currentUserId));
+				query = query.Include(e => e.EventUsers)
+					.Where(e => e.State != EventStateEnum.Draft
+					|| (
+						e.State == EventStateEnum.Draft && e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator)
+						)
+					);
 			}
 
 			var e = await query
 				.Include(e => e.EventCategory)
 				.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
-				.Include(e => e.Tickets)
+				.Include(e => e.Tickets).ThenInclude(t => t.TicketUsers)
 				.FirstOrDefaultAsync();
 			return e;
 		}

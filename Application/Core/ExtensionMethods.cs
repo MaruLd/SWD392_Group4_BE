@@ -26,11 +26,13 @@ namespace Application.Core
 
 	public static class ExtensionMethods
 	{
+		// ClaimPrincipal
 		public static string GetUserId(this ClaimsPrincipal principal)
 		{
 			return principal.FindFirstValue("Id");
 		}
 
+		// Event User
 		public static bool IsModerator(this EventUser eu)
 		{
 			return eu.Type >= EventUserTypeEnum.Moderator;
@@ -41,12 +43,21 @@ namespace Application.Core
 			return eu.Type == EventUserTypeEnum.Creator;
 		}
 
+		// Event
 		public static bool IsAbleToBuyTicket(this Event e)
 		{
-			return e.State != EventStateEnum.Draft
-				&& e.State != EventStateEnum.Cancelled
-				&& e.State != EventStateEnum.Ended;
+			return e.State == EventStateEnum.Publish;
+			// return e.State != EventStateEnum.Draft
+			// 	&& e.State != EventStateEnum.Cancelled
+			// 	&& e.State != EventStateEnum.Ended;
 		}
 
+		public static bool IsAbleToCreateOrEditTicket(this Event e)
+		{
+			return e.State == EventStateEnum.Publish;
+			// return e.State != EventStateEnum.Draft
+			// 	&& e.State != EventStateEnum.Cancelled
+			// 	&& e.State != EventStateEnum.Ended;
+		}
 	}
 }
