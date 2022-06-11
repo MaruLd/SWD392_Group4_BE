@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Application.Users.DTOs;
 using Application.Users;
 using Application.Core;
+using Application.TicketUsers.DTOs;
 
 namespace API.Controllers
 {
@@ -48,6 +49,16 @@ namespace API.Controllers
 		public async Task<ActionResult<UserDTO>> GetYourself()
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { Id = Guid.Parse(User.GetUserId()) }));
+		}
+
+		/// <summary>
+		/// [Authorize] Get Current User
+		/// </summary>
+		[Authorize]
+		[HttpGet("me/tickets")]
+		public async Task<ActionResult<UserDTO>> GetYourTickets([FromQuery] PaginationParams queryParams)
+		{
+			return HandleResult(await Mediator.Send(new Application.TicketUsers.ListSelf.Query { userId = Guid.Parse(User.GetUserId()), queryParams = queryParams }));
 		}
 
 		/// <summary>

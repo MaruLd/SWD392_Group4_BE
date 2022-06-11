@@ -52,6 +52,11 @@ namespace Application.Events
 					return Result<Unit>.Forbidden("You have no permission!");
 				}
 
+				if (eventInDb.State != EventStateEnum.Draft)
+				{
+					return Result<Unit>.Forbidden("You can only remove event in draft state!");
+				}
+
 				eventInDb.Status = StatusEnum.Unavailable;
 				var result = await _eventService.Update(eventInDb);
 

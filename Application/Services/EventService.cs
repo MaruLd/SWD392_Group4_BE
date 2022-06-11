@@ -65,15 +65,25 @@ namespace Application.Services
 				.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
 				.Include(e => e.EventCategory);
 
-			var currentUserEmail = _userAccessor.GetEmail();
+			var currentUserId = _userAccessor.GetID();
 
-			if (currentUserEmail != null)
+			// If user didn't login don't show draft
+
+			if (!eventParams.IsOwnEvent)
 			{
-				var user = await _userRepository.GetQuery().Where(u => u.Email == currentUserEmail).FirstOrDefaultAsync();
-				if (user != null)
-				{
-					if (eventParams.IsJoined) query = query.Where(e => e.EventUsers.Any(eu => eu.UserId == user.Id));
-				}
+				query = query.Where(e => e.State != EventStateEnum.Draft);
+			}
+			else
+			{
+				if (currentUserId == null) query = query.Where(e => e.State != EventStateEnum.Draft);
+				query = query
+				.Include(e => e.EventUsers)
+				.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator));
+			}
+
+			if (currentUserId != Guid.Empty)
+			{
+				if (eventParams.IsJoined) query = query.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId));
 			}
 
 			if (eventParams.OrganizerId != Guid.Empty)
@@ -93,9 +103,19 @@ namespace Application.Services
 
 		public async Task<Event> GetByID(Guid id)
 		{
-			var e = await _eventRepository.GetQuery()
+			var query = _eventRepository.GetQuery()
 				.Where(entity => entity.Status != StatusEnum.Unavailable)
-				.Where(e => e.Id == id)
+				.Where(e => e.Id == id);
+
+			var currentUserId = _userAccessor.GetID();
+			if (currentUserId != Guid.Empty)
+			{
+				query = query.Where(e =>
+					e.State == EventStateEnum.Draft &&
+					e.EventUsers.Any(eu => eu.IsCreator() && eu.Id == currentUserId));
+			}
+
+			var e = await query
 				.Include(e => e.EventCategory)
 				.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
 				.Include(e => e.Tickets)

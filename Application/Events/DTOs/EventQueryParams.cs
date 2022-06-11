@@ -15,6 +15,8 @@ namespace Application.Events.DTOs
 		public Guid OrganizerId { get; set; }
 		[FromQuery(Name = "category-id")]
 		public int CategoryId { get; set; }
+		[FromQuery(Name = "own-event")]
+		public bool IsOwnEvent { get; set; } = false;
 
 		[FromQuery(Name = "order-by")]
 		public OrderByEnum OrderBy { get; set; } = OrderByEnum.DateDescending;

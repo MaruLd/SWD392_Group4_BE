@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Events.DTOs;
 using Application.EventUsers.DTOs;
 using Application.TicketUsers.DTOs;
@@ -43,7 +44,7 @@ namespace Application.Services
 			if (queryParams.DisplayName != null) query = query.Where(u => u.User.DisplayName.ToLower().Contains(queryParams.DisplayName.ToLower()));
 			if (queryParams.Email != null) query = query.Where(u => u.User.Email.ToLower().Contains(queryParams.Email.ToLower()));
 
-			return await query.ToListAsync();
+			return await PagedList<TicketUser>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);
 		}
 
 		public async Task<TicketUser> GetByID(Guid ticketId, Guid userId)
@@ -60,6 +61,15 @@ namespace Application.Services
 			.Include(tu => tu.User).Where(tu => tu.UserId == userId).FirstOrDefaultAsync();
 		}
 
+		public async Task<List<TicketUser>> GetTicketsFromUser(Guid userId, PaginationParams queryParams)
+		{
+			var query = _ticketUserRepository.GetQuery()
+			.Include(tu => tu.Ticket)
+			.Include(tu => tu.User).Where(tu => tu.UserId == userId);
+			return await PagedList<TicketUser>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);
+		}
+
+
 		public async Task<bool> Insert(TicketUser e)
 		{
 			_ticketUserRepository.Insert(e);
@@ -71,6 +81,12 @@ namespace Application.Services
 			_ticketUserRepository.Update(e);
 			return await _ticketUserRepository.Save();
 		}
+		public async Task<bool> Remove(TicketUser e)
+		{
+			_ticketUserRepository.Delete(e);
+			return await _ticketUserRepository.Save();
+		}
+
 		public async Task<bool> Save()
 		{
 			return await _ticketUserRepository.Save();

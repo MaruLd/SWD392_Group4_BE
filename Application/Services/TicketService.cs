@@ -26,7 +26,7 @@ namespace Application.Services
 			var query = _ticketRepository.GetQuery();
 			query = query.Where(e => e.Status != StatusEnum.Unavailable);
 			query = query.Include(t => t.TicketUsers).ThenInclude(tu => tu.User);
-			
+
 			if (ticketParams.EventId != null)
 			{
 				query = query.Where(t => t.EventId == ticketParams.EventId);
@@ -47,17 +47,25 @@ namespace Application.Services
 			return await PagedList<Ticket>.CreateAsync(query, ticketParams.PageNumber, ticketParams.PageSize);
 		}
 
-		public async Task<List<Ticket>> GetAllFromEvent(Guid eventId)
+		public async Task<List<Ticket>> GetAllFromEvent(Guid eventId, bool withUsers = false)
 		{
 			var query = _ticketRepository.GetQuery();
-			return await query.Where(t => t.EventId == eventId)
-			.OrderBy(e => e.CreatedDate).ToListAsync();
+			query = query.Where(t => t.EventId == eventId);
+			if (withUsers)
+			{
+				query = query.Include(t => t.TicketUsers).ThenInclude(tu => tu.User);
+			}
+
+			return await query.OrderBy(e => e.CreatedDate).ToListAsync();
 		}
 
 		public async Task<Ticket> GetByID(Guid id)
 		{
 			var query = _ticketRepository.GetQuery();
-			return await query.Where(t => t.Id == id).Include(t => t.TicketUsers).ThenInclude(tu => tu.User).FirstOrDefaultAsync();
+			return await query.Where(t => t.Id == id)
+			.Include(t => t.Event)
+			.Include(t => t.TicketUsers).ThenInclude(tu => tu.User)
+			.FirstOrDefaultAsync();
 		}
 
 		public async Task<bool> Insert(Ticket e) { _ticketRepository.Insert(e); return await _ticketRepository.Save(); }

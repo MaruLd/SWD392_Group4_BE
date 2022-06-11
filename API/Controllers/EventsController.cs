@@ -6,6 +6,7 @@ using Application.Events;
 using Application.Events.DTOs;
 using Application.Events.StateMachine;
 using Domain;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -71,9 +72,9 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize]
 		[HttpPatch]
-		public async Task<ActionResult> PatchEventState([FromBody] Guid eventId, EventTriggerEnum eventTriggerEnum)
+		public async Task<ActionResult> PatchEventState([FromBody] Guid eventId, EventStateEnum eventStateEnum)
 		{
-			return HandleResult(await Mediator.Send(new Patch.Command { eventTriggerEnum = eventTriggerEnum, eventId = eventId }));
+			return HandleResult(await Mediator.Send(new Patch.Command { eventStateEnum = eventStateEnum, eventId = eventId }));
 		}
 
 	}

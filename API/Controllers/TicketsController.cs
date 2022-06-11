@@ -33,7 +33,6 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 
-
 		/// <summary>
 		/// [Authorize] [>= Moderator] Create Ticket
 		/// </summary>

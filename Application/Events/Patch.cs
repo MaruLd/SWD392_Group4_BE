@@ -25,7 +25,7 @@ namespace Application.Events
 		public class Command : IRequest<Result<Unit>>
 		{
 			public Guid eventId { get; set; }
-			public EventTriggerEnum eventTriggerEnum { get; set; }
+			public EventStateEnum eventStateEnum { get; set; }
 		}
 
 		public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -74,7 +74,18 @@ namespace Application.Events
 				try
 				{
 					EventStateMachine esm = new EventStateMachine(e);
-					e = esm.TriggerState((EventTriggerEnum)request.eventTriggerEnum);
+					e = esm.TriggerState((EventStateEnum)request.eventStateEnum);
+
+					// Remove All TicketUser If Event Is Draft Or Cancelled (Refund Implement Later)
+					if (e.State == EventStateEnum.Draft || e.State == EventStateEnum.Cancelled)
+					{
+						var tickets = await _ticketService.GetAllFromEvent(e.Id, true);
+						tickets.ForEach(t =>
+							t.TicketUsers.ToList().ForEach(async tu =>
+							{
+								await _ticketUserService.Remove(tu);
+							}));
+					}
 				}
 				catch
 				{

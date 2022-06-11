@@ -23,7 +23,7 @@ namespace Application.Core
 		}
 
 	}
-	
+
 	public static class ExtensionMethods
 	{
 		public static string GetUserId(this ClaimsPrincipal principal)
@@ -39,6 +39,13 @@ namespace Application.Core
 		public static bool IsCreator(this EventUser eu)
 		{
 			return eu.Type == EventUserTypeEnum.Creator;
+		}
+
+		public static bool IsAbleToBuyTicket(this Event e)
+		{
+			return e.State != EventStateEnum.Draft
+				&& e.State != EventStateEnum.Cancelled
+				&& e.State != EventStateEnum.Ended;
 		}
 
 	}
