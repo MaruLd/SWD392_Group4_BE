@@ -13,7 +13,7 @@ namespace Application.TicketUsers.DTOs
 	public class TicketUserDTO
 	{
 		public TicketDTO Ticket { get; set; }
-		public UserDTO User { get; set; }
+		public UserDTO? User { get; set; }
 		public DateTime CreatedDate { get; set; }
 
 		public DateTime? CheckedInDate { get; set; }

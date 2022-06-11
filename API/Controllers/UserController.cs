@@ -16,6 +16,7 @@ using Application.Users.DTOs;
 using Application.Users;
 using Application.Core;
 using Application.TicketUsers.DTOs;
+using Application.Tickets.DTOs;
 
 namespace API.Controllers
 {
@@ -52,11 +53,11 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] Get Current Bought Ticket
+		/// [Authorize] Get Current User Tickets
 		/// </summary>
 		[Authorize]
 		[HttpGet("me/tickets")]
-		public async Task<ActionResult<UserDTO>> GetYourTickets([FromQuery] TickerUserSelfQueryParams queryParams)
+		public async Task<ActionResult<List<TicketUserDTO>>> GetYourTickets([FromQuery] TickerUserSelfQueryParams queryParams)
 		{
 			return HandleResult(await Mediator.Send(new ListSelfTickets.Query { userId = Guid.Parse(User.GetUserId()), queryParams = queryParams }));
 		}
