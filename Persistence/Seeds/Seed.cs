@@ -162,8 +162,8 @@ namespace Persistence
                 new Ticket
 				{
 					Type = "Casual",
-					Name = "Ticket 1",
-					Description = "Description For Ticket",
+					Name = "Casual",
+					Description = "Back Seat Row",
 					Cost = 0,
 					EventId = context.Events.FirstOrDefault(x => x.Title == eventTitle[0]).Id,
 					Quantity = 50
@@ -171,8 +171,8 @@ namespace Persistence
 				new Ticket
 				{
 					Type = "VIP",
-					Name = "Ticket 2",
-					Description = "Description For Ticket",
+					Name = "VIP",
+					Description = "Front Seat Row",
 					Cost = 0,
 					EventId = context.Events.FirstOrDefault(x => x.Title == eventTitle[0]).Id,
 					Quantity = 10
@@ -225,7 +225,34 @@ namespace Persistence
             await context.EventUsers.AddRangeAsync(eventUsers);
             await context.SaveChangesAsync();
             
+            // ---------------- TicketUser ----------------------
 
+            var ticketUser = new List<TicketUser>{
+                new TicketUser {
+                    TicketId = context.Tickets.FirstOrDefault(x => x.Event.Title == eventTitle[0] && x.Name == "Casual").Id,
+                    UserId = userManager.Users.FirstOrDefault(x => x.Email == userEmail[0]).Id,
+                    State = TicketUserStateEnum.Idle
+                },
+                new TicketUser {
+                    TicketId = context.Tickets.FirstOrDefault(x => x.Event.Title == eventTitle[0] && x.Name == "VIP").Id,
+                    UserId = userManager.Users.FirstOrDefault(x => x.Email == userEmail[0]).Id,
+                    State = TicketUserStateEnum.Idle
+                },
+            };
+            await context.TicketUsers.AddRangeAsync(ticketUser);
+            await context.SaveChangesAsync();
+
+            // ---------------- EventOrganizer ----------------------
+
+            var eventOrganizers = new List<EventOrganizer>{
+                new EventOrganizer {
+
+                    EventId = context.Events.FirstOrDefault(x => x.Title == eventTitle[0]).Id,
+                    OrganizerId = context.Organizers.FirstOrDefault(x => x.Name == "FPT University").Id,
+                }
+            };
+            await context.EventOrganizers.AddRangeAsync(eventOrganizers);
+            await context.SaveChangesAsync();
 
             }catch(Exception ex){
                 System.Console.WriteLine(ex);
@@ -235,12 +262,11 @@ namespace Persistence
         public static async Task ClearSeedData(DataContext context, UserManager<User> userManager)
         {
             try{
-
-               
                 foreach(var user in userManager.Users){
                     userManager.DeleteAsync(user);
                 }
 
+                // context.UserImages.RemoveRange(context.UserImages);
                 context.EventCategories.RemoveRange(context.EventCategories);
                 context.Events.RemoveRange(context.Events);
                 context.Posts.RemoveRange(context.Posts);
