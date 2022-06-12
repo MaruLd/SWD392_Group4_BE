@@ -48,8 +48,8 @@ namespace API
 
 
 				// await context.Database.MigrateAsync();
+				await Seed.ClearSeedData(context, userManager);
 				await Seed.SeedData(context, userManager);
-				// await Seed.ClearSeedData(context, userManager);
 			}
 			catch (Exception ex)
 			{
