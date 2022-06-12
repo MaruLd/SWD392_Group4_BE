@@ -29,7 +29,12 @@ namespace Application.Core
 		// ClaimPrincipal
 		public static string GetUserId(this ClaimsPrincipal principal)
 		{
-			return principal.FindFirstValue("Id");
+			return principal.FindFirstValue("id");
+		}
+
+		public static string GetEmail(this ClaimsPrincipal principal)
+		{
+			return principal.FindFirstValue(ClaimTypes.Email);
 		}
 
 		// Event User

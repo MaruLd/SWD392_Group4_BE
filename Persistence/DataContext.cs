@@ -59,6 +59,6 @@ namespace Persistence
 
 		public DbSet<EventOrganizer> EventOrganizers { get; set; }
 
-		public DbSet<UserImage> Images { get; set; }
+		public DbSet<UserImage> UserImages { get; set; }
 	}
 }
