@@ -46,8 +46,9 @@ namespace API
 					await rm.CreateAsync(new IdentityRole<Guid>("Admin"));
 				}
 
+
 				// await context.Database.MigrateAsync();
-				// await Seed.SeedData(context, userManager);
+				await Seed.SeedData(context, userManager);
 				// await Seed.ClearSeedData(context, userManager);
 			}
 			catch (Exception ex)

@@ -209,6 +209,7 @@ namespace Persistence
             await context.EventAgendas.AddRangeAsync(eventAgendas);
             await context.SaveChangesAsync();
 
+
             }catch(Exception ex){
                 System.Console.WriteLine(ex);
             }
@@ -217,10 +218,12 @@ namespace Persistence
         public static async Task ClearSeedData(DataContext context, UserManager<User> userManager)
         {
             try{
+
                
                 foreach(var user in userManager.Users){
                     userManager.DeleteAsync(user);
                 }
+
                 context.EventCategories.RemoveRange(context.EventCategories);
                 context.Events.RemoveRange(context.Events);
                 context.Posts.RemoveRange(context.Posts);
@@ -231,7 +234,7 @@ namespace Persistence
                 context.TicketUsers.RemoveRange(context.TicketUsers);
                 context.EventOrganizers.RemoveRange(context.EventOrganizers);
                 context.Organizers.RemoveRange(context.Organizers);
-                
+
                 context.SaveChangesAsync();
             }catch(Exception ex){
                 System.Console.WriteLine(ex);
