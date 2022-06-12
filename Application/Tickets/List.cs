@@ -10,6 +10,7 @@ using AutoMapper;
 using Domain;
 using Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Repositories;
@@ -31,14 +32,22 @@ namespace Application.Tickets
 			private readonly EventUserService _eventUserService;
 			private readonly IMapper _mapper;
 			private readonly IUserAccessor _userAccessor;
+			private readonly IHttpContextAccessor _httpContextAccessor;
 
-			public Handler(TicketService tickerService, EventService eventService, EventUserService eventUserService, IMapper mapper, IUserAccessor userAccessor)
+			public Handler(
+				TicketService tickerService,
+				EventService eventService,
+				EventUserService eventUserService,
+				IMapper mapper,
+				IUserAccessor userAccessor,
+				IHttpContextAccessor httpContextAccessor)
 			{
 				_ticketService = tickerService;
 				this._eventService = eventService;
 				this._eventUserService = eventUserService;
 				_mapper = mapper;
 				this._userAccessor = userAccessor;
+				this._httpContextAccessor = httpContextAccessor;
 			}
 
 			public async Task<Result<List<TicketDTO>>> Handle(Query request, CancellationToken cancellationToken)
@@ -59,6 +68,8 @@ namespace Application.Tickets
 
 				var res = await _ticketService.Get(request.queryParams);
 				var ticketDtos = _mapper.Map<List<TicketDTO>>(res);
+				_httpContextAccessor.HttpContext.Response.AddPaginationHeader<Ticket>(res);
+
 				return Result<List<TicketDTO>>.Success(ticketDtos);
 			}
 		}

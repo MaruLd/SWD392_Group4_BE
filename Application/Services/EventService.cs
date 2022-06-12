@@ -40,7 +40,7 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<List<Event>> Get(EventQueryParams eventParams)
+		public async Task<PagedList<Event>> Get(EventQueryParams eventParams)
 		{
 			var query = _eventRepository.GetQuery();
 			query = query.Where(e => e.Status != StatusEnum.Unavailable);
@@ -66,10 +66,16 @@ namespace Application.Services
 				.Include(e => e.EventCategory);
 
 			var currentUserId = _userAccessor.GetID();
-			if (eventParams.IsOwnEvent && currentUserId != Guid.Empty)
+			if (eventParams.IsOwn && currentUserId != Guid.Empty)
 			{
 				query = query.Include(e => e.EventUsers)
 				.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator));
+			}
+
+			if (eventParams.IsJoined && currentUserId != Guid.Empty)
+			{
+				query = query.Include(e => e.EventUsers)
+				.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId));
 			}
 
 			// Query Param [eventStateEnum]

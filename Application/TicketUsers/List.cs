@@ -12,6 +12,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Repositories;
@@ -35,6 +36,7 @@ namespace Application.TicketUsers
 			private readonly TicketUserService _ticketUserService;
 			private readonly UserService _userService;
 			private readonly IUserAccessor _userAccessor;
+			private readonly IHttpContextAccessor _httpContextAccessor;
 
 			public Handler(
 				IMapper mapper,
@@ -42,7 +44,8 @@ namespace Application.TicketUsers
 				EventUserService eventUserService,
 				TicketUserService ticketUserService,
 				UserService userService,
-				IUserAccessor userAccessor)
+				IUserAccessor userAccessor,
+				IHttpContextAccessor httpContextAccessor)
 			{
 				_mapper = mapper;
 				this._ticketService = ticketService;
@@ -50,6 +53,7 @@ namespace Application.TicketUsers
 				this._ticketUserService = ticketUserService;
 				this._userService = userService;
 				this._userAccessor = userAccessor;
+				this._httpContextAccessor = httpContextAccessor;
 			}
 
 			public async Task<Result<List<TicketUserDTO>>> Handle(Query request, CancellationToken cancellationToken)
@@ -74,6 +78,8 @@ namespace Application.TicketUsers
 				}
 
 				var res = await _ticketUserService.Get(t.Id, request.queryParams);
+				_httpContextAccessor.HttpContext.Response.AddPaginationHeader<TicketUser>(res);
+				
 				return Result<List<TicketUserDTO>>.Success(_mapper.Map<List<TicketUserDTO>>(res));
 			}
 		}

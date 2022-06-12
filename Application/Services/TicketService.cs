@@ -21,7 +21,7 @@ namespace Application.Services
 			_ticketRepository = ticketRepository;
 		}
 
-		public async Task<List<Ticket>> Get(TicketQueryParams ticketParams)
+		public async Task<PagedList<Ticket>> Get(TicketQueryParams ticketParams)
 		{
 			var query = _ticketRepository.GetQuery();
 			query = query.Where(e => e.Status != StatusEnum.Unavailable);

@@ -72,9 +72,9 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize]
 		[HttpPatch]
-		public async Task<ActionResult> PatchEventState([FromBody] Guid eventId, EventStateEnum eventStateEnum)
+		public async Task<ActionResult> PatchEventState([FromBody] PatchEventDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Patch.Command { eventStateEnum = eventStateEnum, eventId = eventId }));
+			return HandleResult(await Mediator.Send(new Patch.Command { dto = dto }));
 		}
 
 	}

@@ -59,7 +59,7 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize]
 		[HttpDelete]
-		public async Task<ActionResult> DeleteTicket(Guid id)
+		public async Task<ActionResult> DeleteTicket([FromBody] Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Delete.Command { ticketId = id }));
 		}

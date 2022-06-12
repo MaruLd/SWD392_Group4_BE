@@ -20,8 +20,11 @@ namespace Application.Events.DTOs
 		[SwaggerSchema("If not set, by default it won't get any DRAFT event")]
 		[FromQuery(Name = "state")]
 		public EventStateEnum eventStateEnum { get; set; } = EventStateEnum.None;
-		[FromQuery(Name = "own-event")]
-		public bool IsOwnEvent { get; set; } = false;
+
+		[FromQuery(Name = "is-own")]
+		public bool IsOwn { get; set; } = false;
+		[FromQuery(Name = "is-joined")]
+		public bool IsJoined { get; set; }
 
 		[FromQuery(Name = "order-by")]
 		public OrderByEnum OrderBy { get; set; } = OrderByEnum.DateDescending;
@@ -30,9 +33,5 @@ namespace Application.Events.DTOs
 		public DateTime? StartTime { get; set; }
 		[FromQuery(Name = "end-time")]
 		public DateTime? EndTime { get; set; }
-
-		[FromQuery(Name = "is-joined")]
-		public bool IsJoined { get; set; }
-
 	}
 }

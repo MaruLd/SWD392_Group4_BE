@@ -24,8 +24,7 @@ namespace Application.Events
 	{
 		public class Command : IRequest<Result<Unit>>
 		{
-			public Guid eventId { get; set; }
-			public EventStateEnum eventStateEnum { get; set; }
+			public PatchEventDTO dto { get; set; }
 		}
 
 		public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -60,7 +59,7 @@ namespace Application.Events
 			{
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
 
-				var e = await _eventService.GetByID(request.eventId);
+				var e = await _eventService.GetByID(request.dto.eventId);
 				if (e == null) return Result<Unit>.NotFound("Event Not Found!");
 
 				var eventUser = await _eventUserService.GetByID((Guid)e.Id, user.Id);
@@ -74,7 +73,7 @@ namespace Application.Events
 				try
 				{
 					EventStateMachine esm = new EventStateMachine(e);
-					e = esm.TriggerState((EventStateEnum)request.eventStateEnum);
+					e = esm.TriggerState((EventStateEnum)request.dto.eventStateEnum);
 
 					// Remove All TicketUser If Event Is Draft Or Cancelled (Refund Implement Later)
 					// if (e.State == EventStateEnum.Draft || e.State == EventStateEnum.Cancelled)

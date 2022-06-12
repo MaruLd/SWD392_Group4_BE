@@ -58,7 +58,7 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize]
 		[HttpDelete]
-		public async Task<ActionResult> DeletePost(Guid id)
+		public async Task<ActionResult> DeletePost([FromBody] Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Delete.Command { id = id }));
 		}

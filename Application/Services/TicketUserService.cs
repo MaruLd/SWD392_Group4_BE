@@ -37,7 +37,7 @@ namespace Application.Services
 			return await Get(ticketId, new TicketUserQueryParams());
 		}
 
-		public async Task<List<TicketUser>> Get(Guid ticketId, TicketUserQueryParams queryParams)
+		public async Task<PagedList<TicketUser>> Get(Guid ticketId, TicketUserQueryParams queryParams)
 		{
 			var query = _ticketUserRepository.GetQuery();
 			query = query.Include(e => e.Ticket).Include(e => e.User);

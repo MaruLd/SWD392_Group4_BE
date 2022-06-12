@@ -26,6 +26,7 @@ namespace Application.Events.DTOs
 
 		public DateTime CreatedDate { get; set; }
 		public EventStateEnum State { get; set; }
+		// public EventUserTypeEnum Type { get; set; } = EventUserTypeEnum.None;
 
 		public List<OrganizerDTO> Organizers { get; set; }
 		public EventCategoryDTO EventCategory { get; set; }

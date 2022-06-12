@@ -68,9 +68,9 @@ namespace Application.Core
 
 	public static class Pagination
 	{
-		public static void AddPaginationHeader(this HttpResponse response, int currentPage, int itemsPerPage, int totalItems, int totalPages)
+		public static void AddPaginationHeader<T>(this HttpResponse response, PagedList<T> list)
 		{
-			var paginationHeader = new PaginationHeader(currentPage, itemsPerPage, totalItems, totalPages);
+			var paginationHeader = new PaginationHeader(list.CurrentPage, list.PageSize, list.TotalCount, list.TotalPages);
 
 			var options = new JsonSerializerOptions
 			{

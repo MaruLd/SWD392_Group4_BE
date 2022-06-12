@@ -61,7 +61,7 @@ namespace Application.Tickets
 					return Result<Unit>.Failure("You have no permission!");
 				}
 
-				if (eventInDb.IsAbleToCreateOrEditTicket())
+				if (!eventInDb.IsAbleToCreateOrEditTicket())
 				{
 					return Result<Unit>.Forbidden("You can't no longer edit ticket for this event!");
 				}
