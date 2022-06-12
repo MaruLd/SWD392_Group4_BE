@@ -48,6 +48,7 @@ namespace Persistence
 					DisplayName = "Admin",
 					Email = userEmail[0],
 					UserName = userEmail[0]
+                    
 				}
             };
 			foreach(var user in users){
@@ -70,9 +71,10 @@ namespace Persistence
                     EndTime = DateTime.Now.AddMonths(1).AddHours(2),
                     Location = eventLocation[0],
                     Description = eventDes[0],
-                    EventCategoryId = 1,
+                    EventCategoryId = context.EventCategories.FirstOrDefault(x => x.Name == "General").Id,
                     MultiplierFactor = 1,
                     Status = StatusEnum.Available,
+                    State = EventStateEnum.Publish
                 },
                 // new Event
                 // {
@@ -85,7 +87,7 @@ namespace Persistence
                 //     Status = StatusEnum.Available
                 // }
             };
-
+            
             await context.Events.AddRangeAsync(events);
             await context.SaveChangesAsync();
 
@@ -127,11 +129,12 @@ namespace Persistence
                 new Comment {
                     Body = "I love this event!",
                     PostId = context.Posts.FirstOrDefault(x => x.Title == postTitle[0]).Id,
-
+                    UserId = userManager.Users.FirstOrDefault(x => x.Email == userEmail[0]).Id
                 },
                 new Comment {
                     Body = "I love this event!!!!!",
-                    PostId = context.Posts.FirstOrDefault(x => x.Title == postTitle[1]).Id
+                    PostId = context.Posts.FirstOrDefault(x => x.Title == postTitle[1]).Id,
+                    UserId = userManager.Users.FirstOrDefault(x => x.Email == userEmail[0]).Id
                 },
                 // new Comment {
                 //     Body = "I love this event!!!!!!!!!!!!!",
@@ -208,6 +211,20 @@ namespace Persistence
             };
             await context.EventAgendas.AddRangeAsync(eventAgendas);
             await context.SaveChangesAsync();
+
+             // ---------------- EventUser Seed ---------------------- 
+
+            var eventUsers = new List<EventUser>{
+                new EventUser {
+                    Status = StatusEnum.Available,
+                    Type = EventUserTypeEnum.Creator,
+                    EventId = context.Events.FirstOrDefault(x => x.Title == eventTitle[0]).Id,
+                    UserId = userManager.Users.FirstOrDefault(x => x.Email == userEmail[0]).Id
+                },
+            };
+            await context.EventUsers.AddRangeAsync(eventUsers);
+            await context.SaveChangesAsync();
+            
 
 
             }catch(Exception ex){
