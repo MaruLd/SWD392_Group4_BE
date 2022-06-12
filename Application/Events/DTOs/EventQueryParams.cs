@@ -4,6 +4,7 @@ using Application.Core;
 using Domain;
 using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Application.Events.DTOs
 {
@@ -15,6 +16,10 @@ namespace Application.Events.DTOs
 		public String? OrganizerName { get; set; }
 		[FromQuery(Name = "category-id")]
 		public int CategoryId { get; set; }
+
+		[SwaggerSchema("If not set, by default it won't get any DRAFT event")]
+		[FromQuery(Name = "state")]
+		public EventStateEnum eventStateEnum { get; set; } = EventStateEnum.None;
 		[FromQuery(Name = "own-event")]
 		public bool IsOwnEvent { get; set; } = false;
 

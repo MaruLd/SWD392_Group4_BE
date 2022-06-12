@@ -18,7 +18,7 @@ namespace API.Controllers
 	public class EventsController : BaseApiController
 	{
 		/// <summary>
-		/// Get Events
+		/// Get Events (Default will not get DRAFT event unless set in query)
 		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult<List<EventDTO>>> GetEvents([FromQuery] EventQueryParams queryParams)

@@ -66,21 +66,45 @@ namespace Application.Services
 				.Include(e => e.EventCategory);
 
 			var currentUserId = _userAccessor.GetID();
-			if (!eventParams.IsOwnEvent || currentUserId == null)
+			if (eventParams.IsOwnEvent && currentUserId != Guid.Empty)
 			{
 				query = query.Include(e => e.EventUsers)
-				.Where(e => e.State != EventStateEnum.Draft
-				|| (
-					e.State == EventStateEnum.Draft && e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator)
-					)
-				);
+				.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator));
 			}
+
+			// Query Param [eventStateEnum]
+			// If param existed
+			if (eventParams.eventStateEnum != EventStateEnum.None)
+			{
+				// If the param is DRAFT
+				if (eventParams.eventStateEnum == EventStateEnum.Draft)
+				{
+					// Check if user is logged in
+					if (currentUserId != Guid.Empty)
+					{
+						query = query.Include(e => e.EventUsers).Where(e =>
+							e.State == EventStateEnum.Draft &&
+							e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator));
+					}
+					// If there is no user, don't show them anything
+					else
+					{
+						query = query.Include(e => e.EventUsers).Where(e =>
+							e.State == EventStateEnum.None);
+					}
+				}
+				// If the param is exist and not DRAFT
+				else
+				{
+					query = query.Include(e => e.EventUsers).Where(e => e.State == eventParams.eventStateEnum);
+				}
+			}
+			// If there is no param, don't send DRAFT events!
 			else
 			{
-				query = query
-					.Include(e => e.EventUsers)
-					.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator));
+				query = query.Include(e => e.EventUsers).Where(e => e.State != EventStateEnum.Draft);
 			}
+
 
 			if (eventParams.OrganizerName != null)
 			{
