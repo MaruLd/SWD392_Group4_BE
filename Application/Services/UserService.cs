@@ -28,7 +28,7 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<List<User>> Get(UserQueryParams queryParams)
+		public async Task<PagedList<User>> Get(UserQueryParams queryParams)
 		{
 			var query = _userRepository.GetQuery();
 
@@ -50,7 +50,7 @@ namespace Application.Services
 			return await PagedList<User>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);
 		}
 
-		public async Task<User> GetByEmail(string email) => await _userRepository.GetQuery().FirstOrDefaultAsync(u => u.Email.ToLower() == email);
+		public async Task<User> GetByEmail(string email) => await _userRepository.GetQuery().FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
 		public async Task<User> GetByID(Guid id) => await _userRepository.GetByID(id);
 
 		// public async Task<bool> Insert(Ticket e) { _ticketRepository.Insert(e); return await _ticketRepository.Save(); }

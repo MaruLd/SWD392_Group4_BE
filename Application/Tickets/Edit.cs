@@ -27,15 +27,17 @@ namespace Application.Tickets
 		{
 			private readonly EventService _eventService;
 			private readonly TicketService _ticketService;
+			private readonly TicketUserService _ticketUserService;
 			private readonly UserService _userService;
 			private readonly EventUserService _eventUserService;
 			private readonly IUserAccessor _userAccessor;
 			private readonly IMapper _mapper;
 
-			public Handler(EventService eventService, TicketService ticketService, UserService userService, EventUserService eventUserService, IUserAccessor userAccessor, IMapper mapper)
+			public Handler(EventService eventService, TicketService ticketService, TicketUserService ticketUserService, UserService userService, EventUserService eventUserService, IUserAccessor userAccessor, IMapper mapper)
 			{
-                this._eventService = eventService;
+				this._eventService = eventService;
 				this._ticketService = ticketService;
+				this._ticketUserService = ticketUserService;
 				this._userService = userService;
 				this._eventUserService = eventUserService;
 				this._userAccessor = userAccessor;
@@ -57,6 +59,17 @@ namespace Application.Tickets
 				if (!eventUser.IsCreator())
 				{
 					return Result<Unit>.Failure("You have no permission!");
+				}
+
+				if (!eventInDb.IsAbleToCreateOrEditTicket())
+				{
+					return Result<Unit>.Forbidden("You can't no longer edit ticket for this event!");
+				}
+
+				var currentBought = ticket.TicketUsers.Select(tu => tu.User).Count();
+				if (currentBought <= ticket.Quantity)
+				{
+					return Result<Unit>.Forbidden($"Invalid Quantity! Currently ticket has been bought by {currentBought} user!");
 				}
 
 				var newTicket = _mapper.Map<EditTicketDTO, Ticket>(request.dto, ticket);

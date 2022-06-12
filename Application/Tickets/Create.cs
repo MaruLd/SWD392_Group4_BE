@@ -64,6 +64,11 @@ namespace Application.Tickets
 					return Result<TicketDTO>.Forbidden("You have no permission!");
 				}
 
+				if (!eventInDb.IsAbleToCreateOrEditTicket())
+				{
+					return Result<TicketDTO>.Forbidden("You can't no longer create ticket for this event!");
+				}
+
 				var ticket = _mapper.Map<Ticket>(request.dto);
 
 				var result = await _ticketService.Insert(ticket);

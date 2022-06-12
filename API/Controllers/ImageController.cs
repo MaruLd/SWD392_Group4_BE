@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
+using Application.Core;
 using Application.Services;
+using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,10 +18,12 @@ namespace API.Controllers
 	public class ImageController : BaseApiController
 	{
 		private readonly AWSService _awsService;
+		private readonly UserImageService _imageService;
 
-		public ImageController(IConfiguration config, AWSService awsService)
+		public ImageController(AWSService awsService, UserImageService imageService)
 		{
 			this._awsService = awsService;
+			this._imageService = imageService;
 		}
 
 		/// <summary>
@@ -26,11 +31,18 @@ namespace API.Controllers
 		/// </summary>
 		[HttpPost]
 		[Authorize]
-		public async Task<ActionResult> UploadImage(IFormFile files)
+		public async Task<ActionResult> UploadImage([Required] IFormFile file)
 		{
-			var key = await _awsService.UploadImage(files);
-			//commensing the transfer
-			return Ok(key);
+
+			if (file.Length > 10 * 1024 * 1024) return BadRequest("File size limit is 10 MB!");
+			if (!file.ContentType.Contains("image")) return BadRequest("File is not a valid image!");
+
+			var image = new UserImage() { UserId = Guid.Parse(User.GetUserId()) };
+			var result = await _imageService.Insert(image);
+
+			if (!result) return StatusCode(StatusCodes.Status500InternalServerError, "Something wrong, please try again!");
+			var uploadResult = await _awsService.UploadImage(file, image.Id);
+			return Ok(image.Id);
 		}
 
 		/// <summary>

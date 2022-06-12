@@ -29,13 +29,14 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<List<EventAgenda>> Get(EventAgendaQueryParams eventAgendaQueryParams)
+		public async Task<PagedList<EventAgenda>> Get(Guid eventId, EventAgendaQueryParams eventAgendaQueryParams)
 		{
 			var query = _eventAgendaRepository.GetQuery();
+			query = query.Where(e => e.EventId == eventId);
 
 			if (eventAgendaQueryParams.StartTime != null) query = query.Where(e => e.StartTime > eventAgendaQueryParams.StartTime);
 			if (eventAgendaQueryParams.EndTime != null) query = query.Where(e => e.EndTime > eventAgendaQueryParams.EndTime);
-			if (eventAgendaQueryParams.EventId != Guid.Empty) query = query.Where(e => e.EventId == eventAgendaQueryParams.EventId);
+
 
 			switch (eventAgendaQueryParams.OrderBy)
 			{

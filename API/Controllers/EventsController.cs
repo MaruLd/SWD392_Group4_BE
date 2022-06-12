@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Events;
 using Application.Events.DTOs;
+using Application.Events.StateMachine;
 using Domain;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +18,7 @@ namespace API.Controllers
 	public class EventsController : BaseApiController
 	{
 		/// <summary>
-		/// Get Events
+		/// Get Events (Default will not get DRAFT event unless set in query)
 		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult<List<EventDTO>>> GetEvents([FromQuery] EventQueryParams queryParams)
@@ -38,9 +40,9 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
-		public async Task<ActionResult> CreateEvent(CreateEventDTO Event)
+		public async Task<ActionResult> CreateEvent(CreateEventDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Create.Command { Event = Event }));
+			return HandleResult(await Mediator.Send(new Create.Command { dto = dto }));
 		}
 
 
@@ -70,9 +72,9 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize]
 		[HttpPatch]
-		public async Task<ActionResult> PatchEventState([FromBody] Guid eventId, EventTriggerEnum eventTriggerEnum)
+		public async Task<ActionResult> PatchEventState([FromBody] PatchEventDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Patch.Command { eventTriggerEnum = eventTriggerEnum, eventId = eventId }));
+			return HandleResult(await Mediator.Send(new Patch.Command { dto = dto }));
 		}
 
 	}

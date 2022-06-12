@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Domain;
 using Persistence;
 using System.Reflection;
+using Application.Events.StateMachine;
 
 namespace API.Extensions
 {
@@ -54,6 +55,8 @@ namespace API.Extensions
 			services.AddScoped<EventOrganizerRepository>();
 			services.AddScoped<EventOrganizerService>();
 
+			services.AddScoped<UserImageRepository>();
+			services.AddScoped<UserImageService>();
 
 			services.AddScoped<TokenService>();
 			services.AddSingleton<FirebaseService>();
@@ -69,9 +72,10 @@ namespace API.Extensions
 			  {
 				  c.SwaggerDoc("v1",
 		  				new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
+
 				  var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 				  var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-				  c.IncludeXmlComments(xmlPath);
+				  c.IncludeXmlComments(xmlPath, true);
 
 				  var securitySchema = new OpenApiSecurityScheme
 				  {

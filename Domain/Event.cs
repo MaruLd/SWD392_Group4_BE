@@ -10,11 +10,6 @@ using Stateless;
 
 namespace Domain;
 
-public enum EventTriggerEnum
-{
-	Start, End
-}
-
 public class Event
 {
 	[Key]
@@ -51,38 +46,4 @@ public class Event
 	public EventStateEnum State { get; set; }
 
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
-
-	// State Machine
-	private StateMachine<int, int> _machine;
-
-	public Event()
-	{
-		_machine = new StateMachine<int, int>((int)this.State);
-
-		_machine.Configure((int)EventStateEnum.Idle)
-			.Permit((int)EventTriggerEnum.Start, (int)EventStateEnum.Ongoing);
-
-		_machine.Configure((int)EventStateEnum.Ongoing)
-			.OnEntry(data => OnStart())
-			.Permit((int)EventTriggerEnum.End, (int)EventStateEnum.Ended);
-
-		_machine.Configure((int)EventStateEnum.Ended)
-			.OnEntry(data => OnEnd());
-
-		void OnStart()
-		{
-			this.State = EventStateEnum.Ongoing;
-		}
-
-		void OnEnd()
-		{
-			this.State = EventStateEnum.Ended;
-		}
-	}
-
-	public void TriggerState(EventTriggerEnum eventTriggerEnum)
-	{
-		_machine.Fire((int)eventTriggerEnum);
-	}
-
 }

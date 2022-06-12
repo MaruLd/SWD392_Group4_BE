@@ -40,7 +40,7 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<List<Event>> Get(EventQueryParams eventParams)
+		public async Task<PagedList<Event>> Get(EventQueryParams eventParams)
 		{
 			var query = _eventRepository.GetQuery();
 			query = query.Where(e => e.Status != StatusEnum.Unavailable);
@@ -61,22 +61,62 @@ namespace Application.Services
 					break;
 			}
 
-			if (eventParams.IsJoined)
-			{
-				var currentUserEmail = _userAccessor.GetEmail();
-				var user = await _userRepository.GetQuery().Where(u => u.Email == currentUserEmail).FirstOrDefaultAsync();
-				if (user != null) query = query.Where(e => e.EventUsers.Any(eu => eu.UserId == user.Id));
-			}
-
 			query = query
 				.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
 				.Include(e => e.EventCategory);
 
-			if (eventParams.OrganizerId != Guid.Empty)
+			var currentUserId = _userAccessor.GetID();
+			if (eventParams.IsOwn && currentUserId != Guid.Empty)
+			{
+				query = query.Include(e => e.EventUsers)
+				.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator));
+			}
+
+			if (eventParams.IsJoined && currentUserId != Guid.Empty)
+			{
+				query = query.Include(e => e.EventUsers)
+				.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId));
+			}
+
+			// Query Param [eventStateEnum]
+			// If param existed
+			if (eventParams.eventStateEnum != EventStateEnum.None)
+			{
+				// If the param is DRAFT
+				if (eventParams.eventStateEnum == EventStateEnum.Draft)
+				{
+					// Check if user is logged in
+					if (currentUserId != Guid.Empty)
+					{
+						query = query.Include(e => e.EventUsers).Where(e =>
+							e.State == EventStateEnum.Draft &&
+							e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator));
+					}
+					// If there is no user, don't show them anything
+					else
+					{
+						query = query.Include(e => e.EventUsers).Where(e =>
+							e.State == EventStateEnum.None);
+					}
+				}
+				// If the param is exist and not DRAFT
+				else
+				{
+					query = query.Include(e => e.EventUsers).Where(e => e.State == eventParams.eventStateEnum);
+				}
+			}
+			// If there is no param, don't send DRAFT events!
+			else
+			{
+				query = query.Include(e => e.EventUsers).Where(e => e.State != EventStateEnum.Draft);
+			}
+
+
+			if (eventParams.OrganizerName != null)
 			{
 				query = query.Where(e => e.EventOrganizers
 					.Any(o =>
-						o.OrganizerId == eventParams.OrganizerId &&
+						o.Organizer.Name.ToLower().Contains(eventParams.OrganizerName) &&
 						o.EventId == e.Id)
 					);
 			};
@@ -89,12 +129,26 @@ namespace Application.Services
 
 		public async Task<Event> GetByID(Guid id)
 		{
-			var e = await _eventRepository.GetQuery()
+			var query = _eventRepository.GetQuery()
 				.Where(entity => entity.Status != StatusEnum.Unavailable)
-				.Where(e => e.Id == id)
+				.Where(e => e.Id == id);
+
+			var currentUserId = _userAccessor.GetID();
+			if (currentUserId != Guid.Empty)
+			{
+				query = query.Include(e => e.EventUsers)
+					.Where(e => e.State != EventStateEnum.Draft
+					|| (
+						e.State == EventStateEnum.Draft && e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator)
+						)
+					);
+			}
+
+			var e = await query
 				.Include(e => e.EventCategory)
 				.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
-				.Include(e => e.Tickets).FirstOrDefaultAsync();
+				.Include(e => e.Tickets).ThenInclude(t => t.TicketUsers)
+				.FirstOrDefaultAsync();
 			return e;
 		}
 

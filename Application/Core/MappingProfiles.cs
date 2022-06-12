@@ -41,10 +41,6 @@ namespace Application.Core
 			CreateMap<TicketDTO, Ticket>();
 			CreateMap<Ticket, TicketDTO>()
 				.ForMember(t => t.QuantityLeft, opt => opt.MapFrom(t => t.Quantity - t.TicketUsers.Select(tu => tu.User).Count()));
-			CreateMap<Ticket, DetailTicketDTO>()
-				.ForMember(t => t.QuantityLeft, opt => opt.MapFrom(t => t.Quantity - t.TicketUsers.Select(tu => tu.User).Count()))
-				.ForMember(t => t.Users, opt => opt.MapFrom(t => t.TicketUsers.Select(tu => tu.User).ToList()));
-
 
 			CreateMap<CreatePostDTO, Post>();
 			CreateMap<EditPostDTO, Post>();
@@ -71,6 +67,15 @@ namespace Application.Core
 			CreateMap<EditUserDTO, User>();
 			CreateMap<User, UserDTO>();
 			CreateMap<UserDTO, User>();
+
+			CreateMap<TicketUser, SelfTicketDTO>()
+				.ForMember(st => st.Name, src => src.MapFrom(t => t.Ticket.Name))
+				.ForMember(st => st.Description, src => src.MapFrom(t => t.Ticket.Description))
+				.ForMember(st => st.Type, src => src.MapFrom(t => t.Ticket.Type))
+
+				.ForMember(st => st.EventId, src => src.MapFrom(t => t.Ticket.EventId))
+				.ForMember(st => st.TicketId, src => src.MapFrom(t => t.Ticket.Id));
+
 
 			CreateMap<CreateEventUserDTO, EventUser>();
 			CreateMap<EditEventUserDTO, EventUser>();

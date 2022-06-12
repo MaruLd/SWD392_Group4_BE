@@ -1,12 +1,26 @@
 namespace Domain.Enums
 {
-    public enum EventStateEnum
-    {
+	public enum EventStateEnum
+	{
+		None = -1, // For Query
+		
 		Draft, // First Created
-        Idle, // Allow Buying Ticket
-		Delay, // Delay Event
-		Ongoing, // Event Started
-		Ended, // Event Ended
-		Cancel // Event Canceled
-    }
+		Publish, // Allow To Buy Ticket
+
+		Delay,
+
+		// EarlyCheckin,
+		// LateCheckin,
+		CheckingIn,
+
+		Ongoing,
+
+		// EarlyCheckout,
+		// LateCheckout,
+		CheckingOut,
+
+		Ended,
+
+		Cancelled
+	}
 }

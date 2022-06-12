@@ -46,7 +46,7 @@ namespace Persistence
 		public DbSet<Post> Posts { get; set; }
 
 		public DbSet<Ticket> Tickets { get; set; }
-		
+
 		public DbSet<TicketUser> TicketUsers { get; set; }
 
 		public DbSet<EventUser> EventUsers { get; set; }
@@ -59,6 +59,6 @@ namespace Persistence
 
 		public DbSet<EventOrganizer> EventOrganizers { get; set; }
 
-
+		public DbSet<UserImage> Images { get; set; }
 	}
 }

@@ -54,6 +54,8 @@ namespace Application.TicketUsers
 				var ticket = await _ticketService.GetByID(request.ticketId);
 				if (ticket == null) return Result<TicketUserDTO>.NotFound("Ticket Not Found!");
 
+				if (!ticket.Event.IsAbleToBuyTicket()) return Result<TicketUserDTO>.Failure("Event currently not selling ticket!");
+
 				var userDst = await _userService.GetByID(request.dto.UserId);
 				if (userDst == null) return Result<TicketUserDTO>.NotFound("User Not Found!");
 

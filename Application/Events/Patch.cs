@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.Events.DTOs;
+using Application.Events.StateMachine;
 using Application.EventUsers.DTOs;
 using Application.Interfaces;
 using Application.Services;
@@ -23,8 +24,7 @@ namespace Application.Events
 	{
 		public class Command : IRequest<Result<Unit>>
 		{
-			public Guid eventId { get; set; }
-			public EventTriggerEnum eventTriggerEnum { get; set; }
+			public PatchEventDTO dto { get; set; }
 		}
 
 		public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -59,20 +59,32 @@ namespace Application.Events
 			{
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
 
-				var e = await _eventService.GetByID(request.eventId);
+				var e = await _eventService.GetByID(request.dto.eventId);
 				if (e == null) return Result<Unit>.NotFound("Event Not Found!");
 
 				var eventUser = await _eventUserService.GetByID((Guid)e.Id, user.Id);
 				if (eventUser == null) return Result<Unit>.Failure("You are not in the event");
 
-				if (!eventUser.IsModerator())
+				if (!eventUser.IsCreator())
 				{
 					return Result<Unit>.Failure("You have no permission!");
 				}
 
 				try
 				{
-					e.TriggerState((Domain.EventTriggerEnum)request.eventTriggerEnum);
+					EventStateMachine esm = new EventStateMachine(e);
+					e = esm.TriggerState((EventStateEnum)request.dto.eventStateEnum);
+
+					// Remove All TicketUser If Event Is Draft Or Cancelled (Refund Implement Later)
+					// if (e.State == EventStateEnum.Draft || e.State == EventStateEnum.Cancelled)
+					// {
+					// 	var tickets = await _ticketService.GetAllFromEvent(e.Id, true);
+					// 	tickets.ForEach(t =>
+					// 		t.TicketUsers.ToList().ForEach(async tu =>
+					// 		{
+					// 			await _ticketUserService.Remove(tu);
+					// 		}));
+					// }
 				}
 				catch
 				{

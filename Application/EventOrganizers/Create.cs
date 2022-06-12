@@ -61,7 +61,7 @@ namespace Application.EventOrganizers
 
 				var eventUser = await _eventUserService.GetByID(e.Id, user.Id);
 				if (eventUser == null) return Result<EventOrganizerDTO>.Forbidden("You aren't in the event!");
-				if (!eventUser.IsModerator())
+				if (!eventUser.IsCreator())
 				{
 					return Result<EventOrganizerDTO>.Forbidden("You have no permission!");
 				}

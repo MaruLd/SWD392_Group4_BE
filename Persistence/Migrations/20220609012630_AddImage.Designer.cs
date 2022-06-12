@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,10 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220609012630_AddImage")]
+    partial class AddImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -225,6 +227,25 @@ namespace Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("EventUsers");
+                });
+
+            modelBuilder.Entity("Domain.Image", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Domain.Organizer", b =>
@@ -440,25 +461,6 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.UserImage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Images");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
                     b.Property<Guid>("Id")
@@ -640,7 +642,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.EventAgenda", b =>
                 {
                     b.HasOne("Domain.Event", "Event")
-                        .WithMany("EventAgendas")
+                        .WithMany("EventAgenda")
                         .HasForeignKey("EventId");
 
                     b.Navigation("Event");
@@ -664,7 +666,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.EventUser", b =>
                 {
                     b.HasOne("Domain.Event", "Event")
-                        .WithMany("EventUsers")
+                        .WithMany("EventUser")
                         .HasForeignKey("EventId");
 
                     b.HasOne("Domain.User", "User")
@@ -672,6 +674,15 @@ namespace Persistence.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Event");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Image", b =>
+                {
+                    b.HasOne("Domain.User", "User")
+                        .WithMany("Images")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -711,15 +722,6 @@ namespace Persistence.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Ticket");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.UserImage", b =>
-                {
-                    b.HasOne("Domain.User", "User")
-                        .WithMany("Images")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -782,11 +784,11 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Event", b =>
                 {
-                    b.Navigation("EventAgendas");
+                    b.Navigation("EventAgenda");
 
                     b.Navigation("EventOrganizers");
 
-                    b.Navigation("EventUsers");
+                    b.Navigation("EventUser");
 
                     b.Navigation("Posts");
 

@@ -19,12 +19,19 @@ namespace Infrastructure
 
 		public string GetEmail()
 		{
-			return _httpContextAccessor.HttpContext.User.FindFirstValue("email");
+			return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
 		}
 
 		public string GetRole()
 		{
 			return _httpContextAccessor.HttpContext.User.FindFirstValue("role");
+		}
+
+		public Guid GetID()
+		{
+			return _httpContextAccessor.HttpContext.User.FindFirstValue("id") != null ?
+				Guid.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue("id"))
+					: Guid.Empty;
 		}
 	}
 }

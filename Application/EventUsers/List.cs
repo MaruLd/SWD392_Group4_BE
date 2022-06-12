@@ -11,6 +11,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Repositories;
@@ -31,19 +32,22 @@ namespace Application.EventUsers
 			private readonly EventUserService _eventUserService;
 			private readonly IUserAccessor _userAccessor;
 			private readonly UserService _userService;
+			private readonly IHttpContextAccessor _httpContextAccessor;
 			private readonly IMapper _mapper;
 
 			public Handler(IMapper mapper,
 				  EventService eventService,
 				  EventUserService eventUserService,
 				  IUserAccessor userAccessor,
-				  UserService userService)
+				  UserService userService,
+				  IHttpContextAccessor httpContextAccessor)
 			{
 				_mapper = mapper;
 				_eventService = eventService;
 				_eventUserService = eventUserService;
 				this._userAccessor = userAccessor;
 				this._userService = userService;
+				this._httpContextAccessor = httpContextAccessor;
 			}
 
 			public async Task<Result<List<EventUserDTO>>> Handle(Query request, CancellationToken cancellationToken)
@@ -58,6 +62,8 @@ namespace Application.EventUsers
 				if (!eventUser.IsModerator()) return Result<List<EventUserDTO>>.Failure("No Permission");
 
 				var res = await _eventUserService.Get(e.Id, request.queryParams);
+				_httpContextAccessor.HttpContext.Response.AddPaginationHeader<EventUser>(res);
+
 				return Result<List<EventUserDTO>>.Success(_mapper.Map<List<EventUserDTO>>(res));
 			}
 		}

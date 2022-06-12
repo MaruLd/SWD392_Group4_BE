@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authorization;
 using Application.Users.DTOs;
 using Application.Users;
 using Application.Core;
+using Application.TicketUsers.DTOs;
+using Application.Tickets.DTOs;
 
 namespace API.Controllers
 {
@@ -31,7 +33,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] Get User List
+		/// [Admin Only] Get User List
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpGet]
@@ -41,13 +43,23 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] Get Current User
+		/// [Authorize] Get Current User Info
 		/// </summary>
 		[Authorize]
 		[HttpGet("me")]
 		public async Task<ActionResult<UserDTO>> GetYourself()
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { Id = Guid.Parse(User.GetUserId()) }));
+		}
+
+		/// <summary>
+		/// [Authorize] Get Current User Tickets
+		/// </summary>
+		[Authorize]
+		[HttpGet("me/tickets")]
+		public async Task<ActionResult<List<SelfTicketDTO>>> GetYourTickets([FromQuery] TickerUserSelfQueryParams queryParams)
+		{
+			return HandleResult(await Mediator.Send(new ListSelfTickets.Query { userId = Guid.Parse(User.GetUserId()), queryParams = queryParams }));
 		}
 
 		/// <summary>

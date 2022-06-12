@@ -10,8 +10,6 @@ namespace Application.Comments.DTOs
 	public class CreateCommentDTO
 	{
 		[Required]
-		public Guid PostId { get; set; }
-		[Required]
 		public string Body { get; set; }
 	}
 }

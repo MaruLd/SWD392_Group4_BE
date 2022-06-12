@@ -49,7 +49,7 @@ namespace Application.Organizers
 				var organizerinDb = await _organizerService.GetByID(request.Id);
 				if (organizerinDb == null) return Result<Unit>.NotFound("Oraganizer not found!");
 
-				var events = await _eventService.Get(new EventQueryParams() { OrganizerId = request.Id });
+				var events = await _eventService.Get(new EventQueryParams() { OrganizerName = organizerinDb.Name });
 
 				if (events.Count() > 0) return Result<Unit>.Failure("Can't delete because organizer already have event!");
 				organizerinDb.Status = StatusEnum.Unavailable;

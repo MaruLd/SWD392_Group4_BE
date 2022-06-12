@@ -21,7 +21,7 @@ namespace Application.Services
 			_PostRepository = PostRepository;
 		}
 
-		public async Task<List<Post>> Get(PostQueryParams queryParams)
+		public async Task<PagedList<Post>> Get(PostQueryParams queryParams)
 		{
 			var query = _PostRepository.GetQuery();
 			query = query.Where(e => e.Status != StatusEnum.Unavailable);

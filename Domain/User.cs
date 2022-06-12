@@ -16,6 +16,8 @@ public class User : IdentityUser<Guid>
 	public virtual ICollection<TicketUser> TicketUsers { get; set; }
 	[JsonIgnore]
 	public virtual ICollection<CommentLike> CommentLikes { get; set; }
-	
+	[JsonIgnore]
+	public virtual ICollection<UserImage> Images { get; set; }
+
 	public DateTime CreatedDate { get; set; } = DateTime.Now;
 }
