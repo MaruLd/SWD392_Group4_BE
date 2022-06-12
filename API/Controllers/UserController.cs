@@ -33,7 +33,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] Get User List
+		/// [Admin Only] Get User List
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpGet]

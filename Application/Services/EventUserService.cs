@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Events.DTOs;
 using Application.EventUsers.DTOs;
 using AutoMapper;
@@ -27,7 +28,7 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<List<EventUser>> Get(Guid eventId, EventUserQueryParams queryParams)
+		public async Task<PagedList<EventUser>> Get(Guid eventId, EventUserQueryParams queryParams)
 		{
 			var query = _eventUserRepository.GetQuery();
 			query = query.Include(e => e.Event).Include(e => e.User);
@@ -37,7 +38,7 @@ namespace Application.Services
 			if (queryParams.DisplayName != null) query = query.Where(u => u.User.DisplayName.ToLower().Contains(queryParams.DisplayName.ToLower()));
 			if (queryParams.Email != null) query = query.Where(u => u.User.Email.ToLower().Contains(queryParams.Email.ToLower()));
 
-			return await query.ToListAsync();
+			return await PagedList<EventUser>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);
 		}
 
 		public async Task<EventUser> GetByID(Guid eventId, Guid userId)

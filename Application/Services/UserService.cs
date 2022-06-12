@@ -28,7 +28,7 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<List<User>> Get(UserQueryParams queryParams)
+		public async Task<PagedList<User>> Get(UserQueryParams queryParams)
 		{
 			var query = _userRepository.GetQuery();
 

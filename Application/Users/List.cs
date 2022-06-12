@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Repositories;
 using Application.Users.DTOs;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Users
 {
@@ -27,16 +28,20 @@ namespace Application.Users
 		{
 			private readonly UserService _userService;
 			private readonly IMapper _mapper;
+			private readonly IHttpContextAccessor _httpContextAccessor;
 
-			public Handler(UserService userService, IMapper mapper)
+			public Handler(UserService userService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
 			{
 				_userService = userService;
 				_mapper = mapper;
+				this._httpContextAccessor = httpContextAccessor;
 			}
 
 			public async Task<Result<List<UserDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
 				var res = await _userService.Get(request.queryParams);
+				_httpContextAccessor.HttpContext.Response.AddPaginationHeader<User>(res);
+
 				return Result<List<UserDTO>>.Success(_mapper.Map<List<UserDTO>>(res));
 			}
 		}

@@ -11,6 +11,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Repositories;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Posts
 {
@@ -26,17 +27,21 @@ namespace Application.Posts
 		{
 			private readonly PostService _postService;
 			private readonly IMapper _mapper;
+			private readonly IHttpContextAccessor _httpContextAccessor;
 
-			public Handler(PostService postService, IMapper mapper)
+			public Handler(PostService postService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
 			{
 				_postService = postService;
 				_mapper = mapper;
+				this._httpContextAccessor = httpContextAccessor;
 			}
 
 			public async Task<Result<List<PostDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
 				var res = await _postService.Get(request.queryParams);
 				if (res == null) return Result<List<PostDTO>>.Failure("Posts not found!");
+				_httpContextAccessor.HttpContext.Response.AddPaginationHeader<Post>(res);
+				
 				var PostDtos = _mapper.Map<List<PostDTO>>(res);
 				return Result<List<PostDTO>>.Success(PostDtos);
 			}

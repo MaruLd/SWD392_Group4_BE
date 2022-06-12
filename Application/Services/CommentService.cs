@@ -22,7 +22,7 @@ namespace Application.Services
 			_commentRepository = commentRepository;
 		}
 
-		public async Task<List<Comment>> Get(Guid postId, CommentQueryParams queryParams)
+		public async Task<PagedList<Comment>> Get(Guid postId, CommentQueryParams queryParams)
 		{
 			var query = _commentRepository.GetQuery();
 			query = query.Where(e => e.Status != StatusEnum.Unavailable);

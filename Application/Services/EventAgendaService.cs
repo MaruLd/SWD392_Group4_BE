@@ -29,7 +29,7 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<List<EventAgenda>> Get(Guid eventId, EventAgendaQueryParams eventAgendaQueryParams)
+		public async Task<PagedList<EventAgenda>> Get(Guid eventId, EventAgendaQueryParams eventAgendaQueryParams)
 		{
 			var query = _eventAgendaRepository.GetQuery();
 			query = query.Where(e => e.EventId == eventId);

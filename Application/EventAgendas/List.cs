@@ -10,6 +10,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Repositories;
@@ -28,13 +29,19 @@ namespace Application.EventAgendas
 		{
 			private readonly EventService _eventService;
 			private readonly EventAgendaService _eventAgendaService;
+			private readonly IHttpContextAccessor _httpContextAccessor;
 			private readonly IMapper _mapper;
 
-			public Handler(IMapper mapper, EventService eventService, EventAgendaService eventAgendaService)
+			public Handler(
+				IMapper mapper,
+				EventService eventService,
+				EventAgendaService eventAgendaService,
+				IHttpContextAccessor httpContextAccessor)
 			{
 				_mapper = mapper;
 				_eventService = eventService;
 				this._eventAgendaService = eventAgendaService;
+				this._httpContextAccessor = httpContextAccessor;
 			}
 
 			public async Task<Result<List<EventAgendaDTO>>> Handle(Query request, CancellationToken cancellationToken)
@@ -42,8 +49,10 @@ namespace Application.EventAgendas
 				var e = await _eventService.GetByID(request.eventid);
 				if (e == null) return Result<List<EventAgendaDTO>>.Failure("Event not found!");
 
-				var eventAgendasDto = await _eventAgendaService.Get(e.Id, request.queryParams);
-				return Result<List<EventAgendaDTO>>.Success(_mapper.Map<List<EventAgendaDTO>>(eventAgendasDto));
+				var res = await _eventAgendaService.Get(e.Id, request.queryParams);
+				_httpContextAccessor.HttpContext.Response.AddPaginationHeader<EventAgenda>(res);
+
+				return Result<List<EventAgendaDTO>>.Success(_mapper.Map<List<EventAgendaDTO>>(res));
 			}
 		}
 	}
