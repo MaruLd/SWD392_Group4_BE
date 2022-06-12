@@ -15,7 +15,7 @@ namespace Persistence
             System.Console.WriteLine("----------------- Seed Confirmation ----------------- \n\n\n Are you sure you want to generate the Seed Data? \n\n\n ----------------- Seed Confirmation -----------------");
             System.Console.Write("\n Input [y] to confirm: ");
             String seedConfirm =  Console.ReadLine();
-            
+
 			if (seedConfirm != "y") return;
             try{
             System.Console.WriteLine("Seeding...");
@@ -23,11 +23,23 @@ namespace Persistence
             userEmail[0] = "longnnhse150890@fpt.edu.vn";
 
             string[] eventTitle = new string[2];
-            eventTitle[0] = "The Event 1 Title Go Here";
+            eventTitle[0] = "Talkshow CHAM SACH";
+
+            string[] eventLocation = new string[2];
+            eventLocation[0] = "Thư viện Đại học FPT TP.HCM";
+
+            string[] eventDes = new string[2];
+            eventDes[0] = "Vào thứ Sáu (10.06.2022) tới đây, Ban Công tác Học đường FPT Edu kết hợp cùng Nhà xuất bản Phụ Nữ sẽ tổ chức một buổi trưng bày các tựa sách hay tại Thư viện Đại học FPT TP.HCM. Trong khuôn khổ chương trình, talkshow “Đọc thế nào?” với sự xuất hiện của hai tác giả: Nguyễn Quốc Vương và Hoàng Anh Đức cũng sẽ được diễn ra với mục đích tạo ra không gian chia sẻ và trao đổi giữa những độc giả yêu sách. \nBên cạnh đó, FPT Edu Experience Space cũng gửi tặng đến các bạn sinh viên Đại học FPT TP.HCM 12 quyển sách thú vị đến từ hai diễn giả của chương trình. Để nhận sách, mời bạn đọc thêm tại bài viết này. \nThư viện FPTU HCM rất mong được chào đón bạn tại Trưng bày và Talkshow Chạm Sách II: Đọc Thế Nào?. Hãy đến và cùng trò chuyện như những tâm hồn đồng điệu nhé!";
 
             string[] postTitle = new string[3];
-            postTitle[0] = "The Post 1 Title of Event 1";
-            postTitle[1] = "The Post 2 Title of Event 1";
+            postTitle[0] = "Ra mắt sách nói danh tác hơn trăm năm tuổi 'Người Dublin'";
+            postTitle[1] = "Ra mắt bộ tác phẩm 'Việt kiệu thư'";
+
+            string[] postContent = new string[3];
+            postContent[0] = "Ireland đã có những đóng góp to lớn cho nền văn học thế giới với 4 giải Nobel Văn chương đã được trao cho các tác gia William Butler Yeats, Samuel Beckett, George Bernard và Seamus Heaney. Quốc gia cũng có nhiều nhà văn nữ nổi tiếng như Anne Enright, Edna O’Brien và Anna Burns - người đoạt giải Man Booker 2018 cho cuốn tiểu thuyết Người giao sữa.";
+            postContent[1] = "Bộ sách được đánh giá là một sử liệu quan trọng hàng đầu viết về lịch sử Việt Nam, phản ánh rõ nét tư tưởng, cách nhìn của giới trí thức Trung Quốc về Việt Nam.";
+
+
             // ---------------- User Seed ----------------------
 
             var users = new List<User>
@@ -56,10 +68,11 @@ namespace Persistence
                     Title = eventTitle[0],
                     StartTime = DateTime.Now.AddMonths(1),
                     EndTime = DateTime.Now.AddMonths(1).AddHours(2),
-                    Description = "Description about the event here",
+                    Location = eventLocation[0],
+                    Description = eventDes[0],
                     EventCategoryId = 1,
                     MultiplierFactor = 1,
-                    Status = StatusEnum.Available
+                    Status = StatusEnum.Available,
                 },
                 // new Event
                 // {
@@ -84,14 +97,14 @@ namespace Persistence
                 new Post
                 {
                     Title = postTitle[0],
-                    Content = "Content of the post here",
+                    Content =  postContent[0],
                     Status = StatusEnum.Available,
                     UserId = userManager.Users.FirstOrDefault(x => x.Email == userEmail[0]).Id
                 },
                 new Post
                 {
                     Title = postTitle[1],
-                    Content = "Content of the post here",
+                    Content =  postContent[1],
                     Status = StatusEnum.Available,
                     UserId = userManager.Users.FirstOrDefault(x => x.Email == userEmail[0]).Id
                 },
@@ -195,7 +208,6 @@ namespace Persistence
             };
             await context.EventAgendas.AddRangeAsync(eventAgendas);
             await context.SaveChangesAsync();
-            
 
             }catch(Exception ex){
                 System.Console.WriteLine(ex);
