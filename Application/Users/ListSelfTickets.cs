@@ -14,6 +14,7 @@ using Persistence.Repositories;
 using Application.Users.DTOs;
 using Application.Tickets.DTOs;
 using Application.TicketUsers.DTOs;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Users
 {
@@ -30,16 +31,19 @@ namespace Application.Users
 		{
 			private readonly TicketUserService _ticketUserService;
 			private readonly IMapper _mapper;
+			private readonly IHttpContextAccessor _httpContextAccessor;
 
-			public Handler(TicketUserService ticketUserService, IMapper mapper)
+			public Handler(TicketUserService ticketUserService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
 			{
 				this._ticketUserService = ticketUserService;
 				_mapper = mapper;
+				this._httpContextAccessor = httpContextAccessor;
 			}
 
 			public async Task<Result<List<SelfTicketDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
 				var res = await _ticketUserService.GetTicketsFromUser(request.userId, request.queryParams);
+				_httpContextAccessor.HttpContext.Response.AddPaginationHeader<TicketUser>(res);
 				return Result<List<SelfTicketDTO>>.Success(_mapper.Map<List<SelfTicketDTO>>(res));
 			}
 		}

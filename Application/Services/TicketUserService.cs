@@ -63,7 +63,7 @@ namespace Application.Services
 			.Include(tu => tu.User).Where(tu => tu.UserId == userId).FirstOrDefaultAsync();
 		}
 
-		public async Task<List<TicketUser>> GetTicketsFromUser(Guid userId, TickerUserSelfQueryParams queryParams)
+		public async Task<PagedList<TicketUser>> GetTicketsFromUser(Guid userId, TickerUserSelfQueryParams queryParams)
 		{
 			var query = _ticketUserRepository.GetQuery()
 			.Include(tu => tu.Ticket).Where(tu => tu.UserId == userId);
