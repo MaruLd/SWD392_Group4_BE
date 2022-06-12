@@ -40,7 +40,7 @@ namespace API.Controllers
 		/// <summary>
 		///[Authorize] [>= Moderator] Get Event Users
 		/// </summary>
-		[HttpGet()]
+		[HttpGet("{userid}")]
 		[Authorize]
 		public async Task<ActionResult<EventUserDTO>> GetEventUser(Guid eventid, Guid userid)
 		{
