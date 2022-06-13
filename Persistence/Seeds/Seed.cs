@@ -12,7 +12,7 @@ namespace Persistence
     {
         public static async Task SeedData(DataContext context, UserManager<User> userManager)
         {
-            System.Console.WriteLine("----------------- Seed Confirmation ----------------- \n\n\n Are you sure you want to generate the Seed Data? \n\n\n ----------------- Seed Confirmation -----------------");
+            System.Console.WriteLine("----------------- Seed Confirmation ----------------- \n\n\n Are you sure you want to generate the Seed Data? \n\n\n----------------- Seed Confirmation -----------------");
             System.Console.Write("\n Input [y] to confirm: ");
             String seedConfirm =  Console.ReadLine();
 
@@ -48,11 +48,11 @@ namespace Persistence
 					DisplayName = "Admin",
 					Email = userEmail[0],
 					UserName = userEmail[0]
-                    
 				}
             };
 			foreach(var user in users){
 				await userManager.CreateAsync(user);
+				await userManager.AddToRoleAsync(user, "Admin");
 			}
             
             // ---------------- EventCategory Seed ----------------------
