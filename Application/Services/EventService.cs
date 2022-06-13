@@ -163,7 +163,7 @@ namespace Application.Services
 			{
 				EventId = eventEntity.Id,
 				UserId = userId,
-				Type = EventUserTypeEnum.Moderator,
+				Type = EventUserTypeEnum.Creator,
 				Status = StatusEnum.Available,
 			});
 
