@@ -12,6 +12,8 @@ using Domain;
 using Persistence;
 using System.Reflection;
 using Application.Events.StateMachine;
+using EFCoreSecondLevelCacheInterceptor;
+using EasyCaching.Core.Configurations;
 
 namespace API.Extensions
 {
@@ -104,12 +106,36 @@ namespace API.Extensions
 
 			// DataContext
 			services
-			  .AddDbContext<DataContext>(opt =>
+			  .AddDbContextPool<DataContext>((prov, opt) =>
 			  {
 				  opt
-		  .UseSqlServer(config
-		  .GetConnectionString("DefaultConnection"));
+					.UseSqlServer(config
+					.GetConnectionString("DefaultConnection"),
+					sqlOpts =>
+					{
+						sqlOpts.CommandTimeout((int)TimeSpan.FromMinutes(3).TotalSeconds)
+									.EnableRetryOnFailure()
+									.MigrationsAssembly(typeof(ApplicationServiceExtensions).Assembly.FullName);
+					})
+					.AddInterceptors(prov.GetRequiredService<SecondLevelCacheInterceptor>());
 			  });
+
+			// Add Redis Cache
+			const string _providerName = "redis1";
+			services.AddEFSecondLevelCache(options =>
+			   {
+				   options.UseEasyCachingCoreProvider(_providerName, isHybridCache: false)
+				   		.SkipCachingCommands(commandText =>
+								commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
+				   options.CacheQueriesContainingTableNames(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30), TableNameComparison.Contains, "Event");
+
+			   });
+
+			services.AddEasyCaching(option =>
+			 {
+				 option.UseRedis(configuration: config, _providerName, sectionName: "easycaching:redis").WithMessagePack("_msgpack");
+			 });
+
 
 			services.AddMediatR(typeof(List.Handler).Assembly);
 			services.AddAutoMapper(typeof(MappingProfiles).Assembly);

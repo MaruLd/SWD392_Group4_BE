@@ -20,9 +20,7 @@ namespace API
 		public static async Task Main(string[] args)
 		{
 			var host = CreateHostBuilder(args).Build();
-
 			using var scope = host.Services.CreateScope();
-
 			var services = scope.ServiceProvider;
 
 			try
@@ -31,8 +29,6 @@ namespace API
 				var userManager = services.GetRequiredService<UserManager<User>>();
 				var config = services.GetRequiredService<IConfiguration>();
 				var rm = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-
-
 
 				FirebaseApp.Create(new AppOptions()
 				{

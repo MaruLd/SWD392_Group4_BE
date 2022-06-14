@@ -13,6 +13,10 @@
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
 		<PackageReference Include="AWSSDK.Core" Version="3.7.11.11" />
 		<PackageReference Include="AWSSDK.S3" Version="3.7.9.11" />
+		<PackageReference Include="EasyCaching.Core" Version="1.6.0" />
+		<PackageReference Include="EasyCaching.Redis" Version="1.6.0" />
+		<PackageReference Include="EasyCaching.Serialization.MessagePack" Version="1.6.0" />
+		<PackageReference Include="EFCoreSecondLevelCacheInterceptor" Version="3.5.1" />
 		<PackageReference Include="FluentValidation" Version="11.0.1" />
 		<PackageReference Include="JorgeSerrano.Json.JsonSnakeCaseNamingPolicy" Version="0.9.0" />
 		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
