@@ -78,6 +78,7 @@ namespace API.Controllers
 			else
 			{
 				var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+				if (role == null) role = "User";
 				return Ok(await CreateUserObject(user, role));
 			}
 
