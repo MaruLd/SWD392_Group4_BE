@@ -12,6 +12,7 @@ using Application.Organizers.DTOs;
 using Application.Posts.DTOs;
 using Application.Tickets.DTOs;
 using Application.TicketUsers.DTOs;
+using Application.UserImages.DTOs;
 using Application.Users.DTOs;
 using AutoMapper;
 using Domain;
@@ -24,8 +25,10 @@ namespace Application.Core
 		{
 
 
-			CreateMap<CreateEventDTO, Event>();
-			CreateMap<EditEventDTO, Event>();
+			CreateMap<CreateEventDTO, Event>()
+				.ForMember(e => e.Description, src => src.MapFrom(ed => HTMLHelper.CleanupHTML(ed.Description)));
+			CreateMap<EditEventDTO, Event>()
+				.ForMember(e => e.Description, src => src.MapFrom(ed => HTMLHelper.CleanupHTML(ed.Description)));
 			CreateMap<EventDTO, Event>();
 			CreateMap<Event, EventDTO>()
 				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.EventOrganizers.Select(eo => eo.Organizer).ToList()))
@@ -91,6 +94,7 @@ namespace Application.Core
 			// CreateMap<EditTicketUserDTO, TicketUser>();
 			CreateMap<EventOrganizer, EventOrganizerDTO>();
 			CreateMap<EventOrganizerDTO, EventOrganizer>();
+
 		}
 
 	}

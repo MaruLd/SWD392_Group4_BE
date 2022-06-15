@@ -9,6 +9,7 @@ using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Application.Core;
 using Application.Services;
+using Application.UserImages.DTOs;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +32,7 @@ namespace API.Controllers
 		/// </summary>
 		[HttpPost]
 		[Authorize]
-		public async Task<ActionResult> UploadImage([Required] IFormFile file)
+		public async Task<ActionResult<UserImageDTO>> UploadImage([Required] IFormFile file)
 		{
 
 			if (file.Length > 10 * 1024 * 1024) return BadRequest("File size limit is 10 MB!");
@@ -42,7 +43,14 @@ namespace API.Controllers
 
 			if (!result) return StatusCode(StatusCodes.Status500InternalServerError, "Something wrong, please try again!");
 			var uploadResult = await _awsService.UploadImage(file, image.Id);
-			return Ok(image.Id);
+
+			var dto = new UserImageDTO()
+			{
+				Id = image.Id.ToString(),
+				Url = "https://evsmart.heroku.com/api/v1/" + image.Id.ToString(),
+				CreatedDate = image.CreatedDate
+			};
+			return Ok(dto);
 		}
 
 		/// <summary>
@@ -51,9 +59,20 @@ namespace API.Controllers
 		[HttpGet]
 		public async Task<ActionResult> GetImage(string key)
 		{
-			var url = await _awsService.GetImage(key);
-			//commensing the transfer
-			return Redirect(url);
+			var notfoundImg = "https://i.imgur.com/goEUDMG.png";
+			try
+			{
+				var id = Guid.Parse(key);
+				var image = await _imageService.GetByID(id);
+				if (image == null) return Redirect(notfoundImg);
+
+				var url = await _awsService.GetImage(id.ToString().ToLower());
+				return Redirect(url);
+			}
+			catch
+			{
+				return Redirect(notfoundImg);
+			}
 		}
 	}
 }
