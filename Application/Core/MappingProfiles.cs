@@ -12,6 +12,7 @@ using Application.Organizers.DTOs;
 using Application.Posts.DTOs;
 using Application.Tickets.DTOs;
 using Application.TicketUsers.DTOs;
+using Application.UserImages.DTOs;
 using Application.Users.DTOs;
 using AutoMapper;
 using Domain;
@@ -91,6 +92,7 @@ namespace Application.Core
 			// CreateMap<EditTicketUserDTO, TicketUser>();
 			CreateMap<EventOrganizer, EventOrganizerDTO>();
 			CreateMap<EventOrganizerDTO, EventOrganizer>();
+
 		}
 
 	}
