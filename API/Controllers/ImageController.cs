@@ -34,7 +34,6 @@ namespace API.Controllers
 		[Authorize]
 		public async Task<ActionResult<UserImageDTO>> UploadImage([Required] IFormFile file)
 		{
-
 			if (file.Length > 10 * 1024 * 1024) return BadRequest("File size limit is 10 MB!");
 			if (!file.ContentType.Contains("image")) return BadRequest("File is not a valid image!");
 
@@ -47,9 +46,10 @@ namespace API.Controllers
 			var dto = new UserImageDTO()
 			{
 				Id = image.Id.ToString(),
-				Url = "https://evsmart.heroku.com/api/v1/" + image.Id.ToString(),
+				Url = "https://evsmart.herokuapp.com/api/v1/" + image.Id.ToString(),
 				CreatedDate = image.CreatedDate
 			};
+
 			return Ok(dto);
 		}
 
