@@ -45,7 +45,6 @@ namespace Application.Services
 		{
 			var query = _eventUserRepository.GetQuery();
 			query = query.Where(e => e.UserId == userId && e.EventId == eventId);
-			query = query.Include(e => e.Event).Include(e => e.User);
 
 			return await query.FirstOrDefaultAsync();
 		}

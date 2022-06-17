@@ -127,7 +127,7 @@ namespace Application.Services
 			return list;
 		}
 
-		public async Task<Event> GetByID(Guid id)
+		public async Task<Event> GetByID(Guid id, bool depthInclude = true)
 		{
 			var query = _eventRepository.GetQuery()
 				.Where(entity => entity.Status != StatusEnum.Unavailable)
@@ -144,11 +144,15 @@ namespace Application.Services
 					);
 			}
 
-			var e = await query
-				.Include(e => e.EventCategory)
-				.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
-				.Include(e => e.Tickets).ThenInclude(t => t.TicketUsers)
-				.FirstOrDefaultAsync();
+			if (depthInclude)
+			{
+				query = query
+					.Include(e => e.EventCategory)
+					.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
+					.Include(e => e.Tickets).ThenInclude(t => t.TicketUsers);
+			}
+
+			var e = await query.FirstOrDefaultAsync();
 			return e;
 		}
 

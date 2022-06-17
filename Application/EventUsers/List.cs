@@ -54,7 +54,7 @@ namespace Application.EventUsers
 			{
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
 
-				var e = await _eventService.GetByID(request.eventId);
+				var e = await _eventService.GetByID(request.eventId, false);
 				if (e == null) return Result<List<EventUserDTO>>.Failure("Events not found!");
 
 				var eventUser = await _eventUserService.GetByID(e.Id, user.Id);

@@ -47,18 +47,16 @@ namespace Application.EventUsers
 			{
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
 
-				var e = await _eventService.GetByID(request.eventId);
+				var e = await _eventService.GetByID(request.eventId, false);
 				if (e == null) return Result<EventUserDTO>.Failure("Events not found!");
 
-				var eventUser = await _eventUserService.GetByID(request.eventId, user.Id);
-				if (eventUser == null) return Result<EventUserDTO>.NotFound("Not Found");
+				var result = await _eventUserService.GetByID(request.eventId, user.Id);
+				if (result == null) return Result<EventUserDTO>.NotFound("Not Found");
 
 				if (user.Id != request.userId)
 				{
-					if (!eventUser.IsModerator()) return Result<EventUserDTO>.Failure("No Permission");
+					if (!result.IsModerator()) return Result<EventUserDTO>.Failure("No Permission");
 				}
-
-				var result = await _eventUserService.GetByID(e.Id, request.userId);
 				if (result == null) return Result<EventUserDTO>.NotFound("Event user not found!");
 
 				return Result<EventUserDTO>.Success(_mapper.Map<EventUserDTO>(result));
