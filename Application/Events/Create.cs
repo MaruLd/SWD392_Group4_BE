@@ -43,11 +43,17 @@ namespace Application.Events
 			public async Task<Result<EventDTO>> Handle(Command request, CancellationToken cancellationToken)
 			{
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
-				var result = await _eventService.CreateEvent(request.dto, user.Id);
+				try
+				{
+					var result = await _eventService.CreateEvent(request.dto, user.Id);
+					if (result == null) return Result<EventDTO>.Failure("Failed to create event");
 
-				if (result == null) return Result<EventDTO>.Failure("Failed to create event");
-
-				return Result<EventDTO>.CreatedSuccess(_mapper.Map<EventDTO>(result)); //Unit.Value is nothing
+					return Result<EventDTO>.CreatedSuccess(_mapper.Map<EventDTO>(result)); //Unit.Value is nothing
+				}
+				catch
+				{
+					return Result<EventDTO>.Failure("Failed to create event");
+				}
 			}
 		}
 	}

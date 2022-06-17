@@ -16,6 +16,7 @@ using Application.UserImages.DTOs;
 using Application.Users.DTOs;
 using AutoMapper;
 using Domain;
+using Domain.Enums;
 
 namespace Application.Core
 {
@@ -31,6 +32,7 @@ namespace Application.Core
 				.ForMember(e => e.Description, src => src.MapFrom(ed => HTMLHelper.CleanupHTML(ed.Description)));
 			CreateMap<EventDTO, Event>();
 			CreateMap<Event, EventDTO>()
+				.ForMember(dst => dst.UserType, src => src.MapFrom<EventRoleResolver, List<EventUser>>(o => o.EventUsers.ToList()))
 				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.EventOrganizers.Select(eo => eo.Organizer).ToList()))
 				.ForMember(dst => dst.EventCategory, src => src.MapFrom(o => o.EventCategory));
 
