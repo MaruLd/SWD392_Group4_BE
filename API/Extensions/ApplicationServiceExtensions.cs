@@ -12,6 +12,11 @@ using Domain;
 using Persistence;
 using System.Reflection;
 using Application.Events.StateMachine;
+using EFCoreSecondLevelCacheInterceptor;
+using EasyCaching.Core.Configurations;
+using MessagePack.Formatters;
+using MessagePack.Resolvers;
+using MessagePack;
 
 namespace API.Extensions
 {
@@ -104,12 +109,56 @@ namespace API.Extensions
 
 			// DataContext
 			services
-			  .AddDbContext<DataContext>(opt =>
+			  .AddDbContextPool<DataContext>((prov, opt) =>
 			  {
 				  opt
-		  .UseSqlServer(config
-		  .GetConnectionString("DefaultConnection"));
+					.UseSqlServer(config
+					.GetConnectionString("DefaultConnection"),
+					sqlOpts =>
+					{
+						sqlOpts.CommandTimeout((int)TimeSpan.FromMinutes(3).TotalSeconds)
+									.EnableRetryOnFailure()
+									.MigrationsAssembly(typeof(ApplicationServiceExtensions).Assembly.FullName);
+					})
+					.AddInterceptors(prov.GetRequiredService<SecondLevelCacheInterceptor>());
 			  });
+
+			// Add Redis Cache
+			const string _providerName = "redis1";
+			services.AddEFSecondLevelCache(options =>
+			   {
+				   options.UseEasyCachingCoreProvider(_providerName, isHybridCache: false).DisableLogging(false)
+						.CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30));
+				   //    		.SkipCachingCommands(commandText =>
+				   // 				commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
+				   //    options.CacheQueriesContainingTypes(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30),
+				   //    		TableTypeComparison.Contains, typeof(Event));
+
+			   });
+
+			services.AddEasyCaching(option =>
+			 {
+				 option
+				 	.UseRedis(configuration: config, _providerName, sectionName: "easycaching:redis")
+				 	.WithMessagePack(so =>
+					{
+						so.EnableCustomResolver = true;
+						so.CustomResolvers = CompositeResolver.Create(
+						new IMessagePackFormatter[]
+						{
+							DBNullFormatter.Instance // This is necessary for the null values
+                        },
+						new IFormatterResolver[]
+						{
+							NativeDateTimeResolver.Instance,
+							ContractlessStandardResolver.Instance,
+							StandardResolverAllowPrivate.Instance,
+							TypelessContractlessStandardResolver.Instance,
+						});
+					},
+					"_msgpack");
+			 });
+
 
 			services.AddMediatR(typeof(List.Handler).Assembly);
 			services.AddAutoMapper(typeof(MappingProfiles).Assembly);
@@ -132,6 +181,25 @@ namespace API.Extensions
 
 			services.AddSignalR();
 			return services;
+		}
+	}
+
+	public class DBNullFormatter : IMessagePackFormatter<DBNull>
+	{
+		public static DBNullFormatter Instance = new();
+
+		private DBNullFormatter()
+		{
+		}
+
+		public void Serialize(ref MessagePackWriter writer, DBNull value, MessagePackSerializerOptions options)
+		{
+			writer.WriteNil();
+		}
+
+		public DBNull Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+		{
+			return DBNull.Value;
 		}
 	}
 }
