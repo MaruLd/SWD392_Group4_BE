@@ -19,11 +19,13 @@ namespace Application.Services
 		{
 			var amazonConfig = new AmazonS3Config
 			{
-				AuthenticationRegion = configuration.GetValue<string>("AWS:Region"),
+				AuthenticationRegion = "ap-southeast-1",
 				ForcePathStyle = true
 			};
-			var accessKey = configuration.GetValue<string>("AWS:AccessKey");
-			var secretKey = configuration.GetValue<string>("AWS:SecretKey");
+			// var accessKey = configuration.GetValue<string>("AWS:AccessKey");
+			var accessKey = "AKIAYFYSY4MYV6W7Z3X3";
+			// var secretKey = configuration.GetValue<string>("AWS:SecretKey");
+			var secretKey = "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";
 
 			client = new AmazonS3Client(accessKey, secretKey, amazonConfig);
 
