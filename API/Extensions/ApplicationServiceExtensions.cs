@@ -64,6 +64,7 @@ namespace API.Extensions
 			services.AddScoped<UserImageService>();
 
 			services.AddScoped<TokenService>();
+			
 			services.AddSingleton<FirebaseService>();
 			services.AddSingleton<AWSService>();
 

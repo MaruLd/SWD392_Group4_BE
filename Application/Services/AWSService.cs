@@ -24,14 +24,18 @@ namespace Application.Services
 		{
 			if (client == null)
 			{
-
+				var amazonConfig = new AmazonS3Config
+				{
+					RegionEndpoint = RegionEndpoint.APSoutheast1,
+					ForcePathStyle = true
+				};
 				// var accessKey = configuration.GetValue<string>("AWS:AccessKey");
 				var accessKey = "AKIAYFYSY4MYV6W7Z3X3";
 				// var secretKey = configuration.GetValue<string>("AWS:SecretKey");
 				var secretKey = "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";
 
 				var credentials = new BasicAWSCredentials(accessKey, secretKey);
-				client = new AmazonS3Client(credentials, RegionEndpoint.APSoutheast1);
+				client = new AmazonS3Client(credentials, amazonConfig);
 			}
 		}
 
