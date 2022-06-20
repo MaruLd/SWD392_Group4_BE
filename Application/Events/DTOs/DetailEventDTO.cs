@@ -17,6 +17,7 @@ namespace Application.Events.DTOs
 
 		public String? Title { get; set; }
 		public String? Description { get; set; }
+		public String? ImageURL { get; set; }
 
 		public DateTime StartTime { get; set; }
 		public DateTime EndTime { get; set; }

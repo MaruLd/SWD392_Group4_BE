@@ -17,6 +17,9 @@ namespace Application.Events.DTOs
 		public String? Title { get; set; }
 		[Required]
 		public String? Description { get; set; }
+		[Required]
+		public String? ImageURL { get; set; }
+
 
 		[Required]
 		[CheckDateRangeAttribute]
