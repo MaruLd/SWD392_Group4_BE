@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
@@ -13,13 +14,11 @@ namespace Application.Services
 	public class AWSService
 	{
 		AmazonS3Client client;
-
-
 		public AWSService(IConfiguration configuration)
 		{
 			var amazonConfig = new AmazonS3Config
 			{
-				AuthenticationRegion = "ap-southeast-1",
+				AuthenticationRegion = S3Region.APSoutheast1,
 				ForcePathStyle = true
 			};
 			// var accessKey = configuration.GetValue<string>("AWS:AccessKey");
@@ -27,8 +26,8 @@ namespace Application.Services
 			// var secretKey = configuration.GetValue<string>("AWS:SecretKey");
 			var secretKey = "FLIqBikojQaeUOBPibgx3qBPG7zXB7mH9DSbq1AA";
 
-			client = new AmazonS3Client(accessKey, secretKey, amazonConfig);
-
+			var credentials = new BasicAWSCredentials(accessKey, secretKey);
+			client = new AmazonS3Client(credentials, amazonConfig);
 		}
 
 		public async Task<String> UploadImage(IFormFile file, Guid key)
