@@ -46,7 +46,7 @@ namespace API.Controllers
 			var dto = new UserImageDTO()
 			{
 				Id = image.Id.ToString(),
-				Url = "https://evsmart.herokuapp.com/api/v1/" + image.Id.ToString(),
+				Url = "https://evsmart.herokuapp.com/api/v1/image?key=" + image.Id.ToString(),
 				CreatedDate = image.CreatedDate
 			};
 
