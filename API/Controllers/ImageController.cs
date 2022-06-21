@@ -74,5 +74,17 @@ namespace API.Controllers
 				return Redirect(notfoundImg);
 			}
 		}
+
+		/// <summary>
+		/// Test Upload Parameter
+		/// </summary>
+		[HttpPost("validate-upload")]
+		public async Task<ActionResult> TestUploadImage([Required] IFormFile file)
+		{
+			if (file.Length > 10 * 1024 * 1024) return BadRequest("File size limit is 10 MB!");
+			if (!file.ContentType.Contains("image")) return BadRequest("File is not a valid image!");
+
+			return Ok("Image Is Valid!");
+		}
 	}
 }
