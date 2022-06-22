@@ -132,8 +132,8 @@ namespace API.Extensions
 					  // .CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30));
 					  //    		.SkipCachingCommands(commandText =>
 					  // 				commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
-					  .CacheQueriesContainingTypes(CacheExpirationMode.Sliding, TimeSpan.FromMinutes(15),
-							  TableTypeComparison.Contains, typeof(User));
+					  .CacheQueriesContainingTypes(CacheExpirationMode.Sliding, TimeSpan.FromMinutes(30),
+							  TableTypeComparison.Contains, typeof(Event));
 
 			   });
 
