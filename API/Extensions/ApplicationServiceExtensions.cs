@@ -118,8 +118,7 @@ namespace API.Extensions
 					sqlOpts =>
 					{
 						sqlOpts.CommandTimeout((int)TimeSpan.FromMinutes(3).TotalSeconds)
-									.EnableRetryOnFailure()
-									.MigrationsAssembly(typeof(ApplicationServiceExtensions).Assembly.FullName);
+									.EnableRetryOnFailure();
 					})
 					.AddInterceptors(prov.GetRequiredService<SecondLevelCacheInterceptor>());
 			  });
@@ -129,11 +128,11 @@ namespace API.Extensions
 			services.AddEFSecondLevelCache(options =>
 			   {
 				   options.UseEasyCachingCoreProvider(_providerName, isHybridCache: false).DisableLogging(false)
-					  // .CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30));
-					  //    		.SkipCachingCommands(commandText =>
-					  // 				commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
-					  .CacheQueriesContainingTypes(CacheExpirationMode.Sliding, TimeSpan.FromMinutes(30),
-							  TableTypeComparison.Contains, typeof(Event));
+					  .CacheAllQueries(CacheExpirationMode.Sliding, TimeSpan.FromDays(30));
+				   //    		.SkipCachingCommands(commandText =>
+				   // 				commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
+				   //   .CacheQueriesContainingTypes(CacheExpirationMode.Sliding, TimeSpan.FromMinutes(30),
+				   // 		  TableTypeComparison.Contains, typeof(Event));
 
 			   });
 
