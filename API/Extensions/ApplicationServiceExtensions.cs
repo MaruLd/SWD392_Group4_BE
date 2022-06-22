@@ -64,7 +64,7 @@ namespace API.Extensions
 			services.AddScoped<UserImageService>();
 
 			services.AddScoped<TokenService>();
-			
+
 			services.AddSingleton<FirebaseService>();
 			services.AddSingleton<AWSService>();
 
@@ -129,11 +129,11 @@ namespace API.Extensions
 			services.AddEFSecondLevelCache(options =>
 			   {
 				   options.UseEasyCachingCoreProvider(_providerName, isHybridCache: false).DisableLogging(false)
-						.CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30));
-				   //    		.SkipCachingCommands(commandText =>
-				   // 				commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
-				   //    options.CacheQueriesContainingTypes(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30),
-				   //    		TableTypeComparison.Contains, typeof(Event));
+					  // .CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30));
+					  //    		.SkipCachingCommands(commandText =>
+					  // 				commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
+					  .CacheQueriesContainingTypes(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(30),
+							  TableTypeComparison.Contains, typeof(EventUser));
 
 			   });
 

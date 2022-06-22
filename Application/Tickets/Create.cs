@@ -64,7 +64,7 @@ namespace Application.Tickets
 					return Result<TicketDTO>.Forbidden("You have no permission!");
 				}
 
-				if (!eventInDb.IsAbleToCreateOrEditTicket())
+				if (!eventInDb.IsAbleToEdit())
 				{
 					return Result<TicketDTO>.Forbidden("You can't no longer create ticket for this event!");
 				}

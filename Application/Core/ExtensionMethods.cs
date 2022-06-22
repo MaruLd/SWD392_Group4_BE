@@ -57,10 +57,10 @@ namespace Application.Core
 			// 	&& e.State != EventStateEnum.Ended;
 		}
 
-		public static bool IsAbleToCreateOrEditTicket(this Event e)
+		public static bool IsAbleToEdit(this Event e)
 		{
-			return e.State == EventStateEnum.Publish;
-			// return e.State != EventStateEnum.Draft
+			// return e.State == EventStateEnum.Publish;
+			return e.State != EventStateEnum.Draft;
 			// 	&& e.State != EventStateEnum.Cancelled
 			// 	&& e.State != EventStateEnum.Ended;
 		}
