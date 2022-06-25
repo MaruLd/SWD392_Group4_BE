@@ -21,10 +21,10 @@ namespace Application.Services
 			_PostRepository = PostRepository;
 		}
 
-		public async Task<List<Post>> Get(PostQueryParams queryParams)
+		public async Task<PagedList<Post>> Get(PostQueryParams queryParams)
 		{
 			var query = _PostRepository.GetQuery();
-			query = query.Where(e => e.Status == StatusEnum.Available);
+			query = query.Where(e => e.Status != StatusEnum.Unavailable);
 
 			if (queryParams.EventId != Guid.Empty)
 			{
@@ -54,7 +54,7 @@ namespace Application.Services
 		public async Task<List<Post>> GetAllFromEvent(Guid eventId)
 		{
 			var query = _PostRepository.GetQuery();
-			return await query.Where(entity => entity.Status == StatusEnum.Available).Where(t => t.EventId == eventId).OrderBy(e => e.CreatedDate).ToListAsync();
+			return await query.Where(entity => entity.Status != StatusEnum.Unavailable).Where(t => t.EventId == eventId).OrderBy(e => e.CreatedDate).ToListAsync();
 		}
 
 		public async Task<Post> GetByID(Guid id) => await _PostRepository.GetByID(id);

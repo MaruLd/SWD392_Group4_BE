@@ -11,7 +11,6 @@ namespace API.Controllers
 {
 	[Route("api/v{version:apiVersion}/posts/{postid}/comments")]
 	[ApiVersion("1.0")]
-	[ApiController]
 	public class CommentsController : BaseApiController
 	{
 		/// <summary>
@@ -37,24 +36,24 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize]
 		[HttpPost]
-		public async Task<ActionResult> CreateComment(CreateCommentDTO dto)
+		public async Task<ActionResult> CreateComment(Guid postid, [FromBody] CreateCommentDTO dto)
 		{
-			return HandleResult(await Mediator.Send(new Create.Command { dto = dto }));
+			return HandleResult(await Mediator.Send(new Create.Command { postid = postid, dto = dto }));
 		}
 
 		/// <summary>
 		/// [Authorize] [Student] Write Comment
 		/// </summary>
-		[Authorize]
-		[HttpPut]
-		public async Task<ActionResult> EditComment(Guid postid, EditCommentDTO dto)
-		{
-			dto.PostId = postid;
-			return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
-		}
+		// [Authorize]
+		// [HttpPut]
+		// public async Task<ActionResult> EditComment(Guid postid, EditCommentDTO dto)
+		// {
+		// 	dto.PostId = postid;
+		// 	return HandleResult(await Mediator.Send(new Edit.Command { dto = dto }));
+		// }
 
 		/// <summary>
-		/// [Authorize] [Student delete own / Admin delete others] Delete Comment
+		/// [Authorize] [>= Moderator] Delete Comment
 		/// </summary>
 		[Authorize]
 		[HttpDelete]

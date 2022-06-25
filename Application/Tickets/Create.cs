@@ -59,9 +59,14 @@ namespace Application.Tickets
 				var eventUser = await _eventUserService.GetByID(eventInDb.Id, user.Id);
 
 				if (eventUser == null) return Result<TicketDTO>.Forbidden("You aren't in the event!");
-				if (eventUser.Type >= EventUserTypeEnum.Moderator)
+				if (!eventUser.IsCreator())
 				{
 					return Result<TicketDTO>.Forbidden("You have no permission!");
+				}
+
+				if (!eventInDb.IsAbleToEdit())
+				{
+					return Result<TicketDTO>.Forbidden("You can't no longer create ticket for this event!");
 				}
 
 				var ticket = _mapper.Map<Ticket>(request.dto);

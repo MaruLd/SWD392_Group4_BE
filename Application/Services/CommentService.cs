@@ -22,10 +22,10 @@ namespace Application.Services
 			_commentRepository = commentRepository;
 		}
 
-		public async Task<List<Comment>> Get(Guid postId, CommentQueryParams queryParams)
+		public async Task<PagedList<Comment>> Get(Guid postId, CommentQueryParams queryParams)
 		{
 			var query = _commentRepository.GetQuery();
-			query = query.Where(e => e.Status == StatusEnum.Available);
+			query = query.Where(e => e.Status != StatusEnum.Unavailable);
 			query = query.Where(t => t.PostId == postId);
 
 			switch (queryParams.OrderBy)
@@ -46,7 +46,7 @@ namespace Application.Services
 		public async Task<List<Comment>> GetAllFromPost(Guid postId)
 		{
 			var query = _commentRepository.GetQuery();
-			return await query.Where(entity => entity.Status == StatusEnum.Available).Where(t => t.PostId == postId).OrderBy(e => e.CreatedDate).ToListAsync();
+			return await query.Where(entity => entity.Status != StatusEnum.Unavailable).Where(t => t.PostId == postId).OrderBy(e => e.CreatedDate).ToListAsync();
 		}
 
 		public async Task<Comment> GetByID(Guid id)

@@ -13,7 +13,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
 {
-	[Route("api/v{version:apiVersion}/event/{eventId}/agenda")]
+	[Route("api/v{version:apiVersion}/events/{eventId}/agenda")]
 	public class EventAgendasController : BaseApiController
 	{
 		/// <summary>
@@ -21,12 +21,11 @@ namespace API.Controllers
 		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult<List<EventAgendaDTO>>> GetEventAgendas(
-			Guid eventId,
+			Guid eventid,
 			[FromQuery] EventAgendaQueryParams queryParams
 			)
 		{
-			queryParams.EventId = eventId;
-			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
+			return HandleResult(await Mediator.Send(new List.Query() { eventid = eventid, queryParams = queryParams }));
 		}
 
 		/// <summary>
@@ -39,20 +38,20 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Create Event Agenda
+		/// [Authorize] [>= Moderator] Create Event Agenda
 		/// </summary>
 		[Authorize]
 		[HttpPost]
 		public async Task<ActionResult> CreateEventAgenda(
-			 Guid eventId,
+			 Guid eventid,
 			[FromBody] CreateEventAgendaDTO dto
 			)
 		{
-			return HandleResult(await Mediator.Send(new Create.Command { eventId = eventId, dto = dto }));
+			return HandleResult(await Mediator.Send(new Create.Command { eventId = eventid, dto = dto }));
 		}
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Edit Event Agenda
+		/// [Authorize] [>= Moderator] Edit Event Agenda
 		/// </summary>
 		[Authorize]
 		[HttpPut]
@@ -62,7 +61,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Delete Event Agenda
+		/// [Authorize] [>= Moderator] Delete Event Agenda
 		/// </summary>
 		[Authorize]
 		[HttpDelete]

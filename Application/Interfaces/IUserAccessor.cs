@@ -5,5 +5,6 @@ namespace Application.Interfaces
         string GetUsername();
 		string GetEmail();
 		string GetRole();
+		Guid GetID();
     }
 }

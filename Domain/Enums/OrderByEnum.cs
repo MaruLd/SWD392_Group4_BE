@@ -10,7 +10,6 @@ namespace Domain.Enums
 	public enum OrderByEnum
 	{
 		DateAscending,
-		DateDescending,
-		Popular
+		DateDescending
 	}
 }

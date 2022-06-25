@@ -18,8 +18,5 @@ namespace Application.Events.DTOs
 		public String? Description { get; set; }
 		[Required]
 		public String? ImageURL { get; set; }
-
-		[Required]
-		public String Status { get; set; }
 	}
 }

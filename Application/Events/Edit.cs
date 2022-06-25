@@ -58,9 +58,15 @@ namespace Application.Events
 				var eventUser = await _eventUserService.GetByID(eventInDb.Id, user.Id);
 
 				if (eventUser == null) return Result<Unit>.Forbidden("You aren't in the event!");
-				if (eventUser.Type >= EventUserTypeEnum.Moderator)
+
+				if (!eventUser.IsModerator())
 				{
 					return Result<Unit>.Forbidden("You have no permission!");
+				}
+
+				if (!eventInDb.IsAbleToEdit())
+				{
+					return Result<Unit>.Forbidden("You can't no longer edit this event!");
 				}
 
 				_mapper.Map(request.dto, eventInDb);

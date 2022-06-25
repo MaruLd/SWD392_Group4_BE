@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class initialAWS : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -72,7 +72,7 @@ namespace Persistence.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -187,6 +187,24 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserImages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserImages_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Events",
                 columns: table => new
                 {
@@ -197,8 +215,10 @@ namespace Persistence.Migrations
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MultiplierFactor = table.Column<float>(type: "real", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EventCategoryId = table.Column<int>(type: "int", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    State = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -234,27 +254,27 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventOrganizer",
+                name: "EventOrganizers",
                 columns: table => new
                 {
-                    EventsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrganizersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrganizerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EventOrganizer", x => new { x.EventsId, x.OrganizersId });
+                    table.PrimaryKey("PK_EventOrganizers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EventOrganizer_Events_EventsId",
-                        column: x => x.EventsId,
+                        name: "FK_EventOrganizers_Events_EventId",
+                        column: x => x.EventId,
                         principalTable: "Events",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_EventOrganizer_Organizers_OrganizersId",
-                        column: x => x.OrganizersId,
+                        name: "FK_EventOrganizers_Organizers_OrganizerId",
+                        column: x => x.OrganizerId,
                         principalTable: "Organizers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -262,8 +282,8 @@ namespace Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
                     EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -293,7 +313,7 @@ namespace Persistence.Migrations
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -322,7 +342,7 @@ namespace Persistence.Migrations
                     Cost = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
@@ -343,7 +363,7 @@ namespace Persistence.Migrations
                     PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Body = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -364,27 +384,30 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TicketUser",
+                name: "TicketUsers",
                 columns: table => new
                 {
-                    TicketsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UsersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TicketId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CheckedInDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CheckedOutDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    State = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TicketUser", x => new { x.TicketsId, x.UsersId });
+                    table.PrimaryKey("PK_TicketUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TicketUser_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_TicketUsers_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_TicketUser_Tickets_TicketsId",
-                        column: x => x.TicketsId,
+                        name: "FK_TicketUsers_Tickets_TicketId",
+                        column: x => x.TicketId,
                         principalTable: "Tickets",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -394,7 +417,7 @@ namespace Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -479,9 +502,14 @@ namespace Persistence.Migrations
                 column: "EventId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventOrganizer_OrganizersId",
-                table: "EventOrganizer",
-                column: "OrganizersId");
+                name: "IX_EventOrganizers_EventId",
+                table: "EventOrganizers",
+                column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventOrganizers_OrganizerId",
+                table: "EventOrganizers",
+                column: "OrganizerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_EventCategoryId",
@@ -514,9 +542,19 @@ namespace Persistence.Migrations
                 column: "EventId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TicketUser_UsersId",
-                table: "TicketUser",
-                column: "UsersId");
+                name: "IX_TicketUsers_TicketId",
+                table: "TicketUsers",
+                column: "TicketId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TicketUsers_UserId",
+                table: "TicketUsers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserImages_UserId",
+                table: "UserImages",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -543,13 +581,16 @@ namespace Persistence.Migrations
                 name: "EventAgendas");
 
             migrationBuilder.DropTable(
-                name: "EventOrganizer");
+                name: "EventOrganizers");
 
             migrationBuilder.DropTable(
                 name: "EventUsers");
 
             migrationBuilder.DropTable(
-                name: "TicketUser");
+                name: "TicketUsers");
+
+            migrationBuilder.DropTable(
+                name: "UserImages");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

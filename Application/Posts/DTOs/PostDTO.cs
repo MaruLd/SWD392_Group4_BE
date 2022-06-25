@@ -12,7 +12,6 @@ namespace Application.Posts.DTOs
 		public string Title { get; set; }
 		public string Content { get; set; }
 		public string? ImageURL { get; set; }
-		public StatusEnum Status { get; set; }
-		public DateTime CreatedDate { get; set; } = DateTime.Now;
+		public DateTime CreatedDate { get; set; }
 	}
 }

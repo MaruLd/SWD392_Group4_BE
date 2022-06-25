@@ -14,7 +14,7 @@ namespace Infrastructure
 
 		public string GetUsername()
 		{
-			return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+			return _httpContextAccessor.HttpContext.User.FindFirstValue("name");
 		}
 
 		public string GetEmail()
@@ -24,7 +24,14 @@ namespace Infrastructure
 
 		public string GetRole()
 		{
-			return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+			return _httpContextAccessor.HttpContext.User.FindFirstValue("role");
+		}
+
+		public Guid GetID()
+		{
+			return _httpContextAccessor.HttpContext.User.FindFirstValue("id") != null ?
+				Guid.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue("id"))
+					: Guid.Empty;
 		}
 	}
 }

@@ -16,6 +16,7 @@ namespace Application.Comments
 	{
 		public class Command : IRequest<Result<CommentDTO>>
 		{
+			public Guid postid { get; set; }
 			public CreateCommentDTO dto { get; set; }
 		}
 
@@ -45,7 +46,7 @@ namespace Application.Comments
 			{
 				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
 
-				var post = await _postService.GetByID(request.dto.PostId);
+				var post = await _postService.GetByID(request.postid);
 				if (post == null) return Result<CommentDTO>.NotFound("Post not found!");
 
 				var eventUser = await _eventUserService.GetByID((Guid)post.EventId, user.Id);

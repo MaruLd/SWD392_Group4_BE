@@ -34,7 +34,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Create Post
+		/// [Authorize] [>= Moderator] Create Post
 		/// </summary>
 		[Authorize]
 		[HttpPost]
@@ -44,7 +44,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Edit Post
+		/// [Authorize] [>= Moderator] Edit Post
 		/// </summary>
 		[Authorize]
 		[HttpPut]
@@ -54,11 +54,11 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Delete Post
+		/// [Authorize] [>= Moderator] Delete Post
 		/// </summary>
 		[Authorize]
 		[HttpDelete]
-		public async Task<ActionResult> DeletePost(Guid id)
+		public async Task<ActionResult> DeletePost([FromBody] Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Delete.Command { id = id }));
 		}

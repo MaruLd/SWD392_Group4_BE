@@ -10,6 +10,7 @@ using AutoMapper.QueryableExtensions;
 using Domain;
 using Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -28,17 +29,20 @@ namespace Application.Comments
 		{
 			private readonly CommentService _commentService;
 			private readonly IMapper _mapper;
+			private readonly IHttpContextAccessor _httpContextAccessor;
 
-			public Handler(CommentService commentService, IMapper mapper)
+			public Handler(CommentService commentService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
 			{
 				_commentService = commentService;
 				_mapper = mapper;
+				_httpContextAccessor = httpContextAccessor;
 			}
 
 			public async Task<Result<List<CommentDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				var comments = await _commentService.Get(request.postId, request.queryParams);
-				return Result<List<CommentDTO>>.Success(_mapper.Map<List<CommentDTO>>(comments));
+				var res = await _commentService.Get(request.postId, request.queryParams);
+				_httpContextAccessor.HttpContext.Response.AddPaginationHeader<Comment>(res);
+				return Result<List<CommentDTO>>.Success(_mapper.Map<List<CommentDTO>>(res));
 			}
 		}
 	}

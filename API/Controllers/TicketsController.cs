@@ -19,7 +19,7 @@ namespace API.Controllers
 		/// Get Tickets
 		/// </summary>
 		[HttpGet]
-		public async Task<ActionResult<List<Ticket>>> GetTickets([FromQuery] TicketQueryParams queryParams)
+		public async Task<ActionResult<List<TicketDTO>>> GetTickets([FromQuery] TicketQueryParams queryParams)
 		{
 			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
@@ -28,19 +28,13 @@ namespace API.Controllers
 		/// Get Ticket
 		/// </summary>
 		[HttpGet("{id}")]
-		public async Task<ActionResult<Ticket>> GetTicket(Guid id)
+		public async Task<ActionResult<TicketDTO>> GetTicket(Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
 
-		// [HttpGet("{id}/buy")]
-		// public async Task<ActionResult<Ticket>> BuyTicket(Guid id)
-		// {
-		// 	return HandleResult(await Mediator.Send(new Create.Command { dto = Ticket }));
-		// }
-
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Create Ticket
+		/// [Authorize] [>= Moderator] Create Ticket
 		/// </summary>
 		[Authorize]
 		[HttpPost]
@@ -51,7 +45,7 @@ namespace API.Controllers
 
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Edit Ticket
+		/// [Authorize] [>= Moderator] Edit Ticket
 		/// </summary>
 		[Authorize]
 		[HttpPut]
@@ -61,13 +55,13 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] [Moderator or Creator] Delete Ticket
+		/// [Authorize] [>= Moderator] Delete Ticket
 		/// </summary>
 		[Authorize]
 		[HttpDelete]
-		public async Task<ActionResult> DeleteTicket(Guid id)
+		public async Task<ActionResult> DeleteTicket([FromBody] Guid id)
 		{
-			return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
+			return HandleResult(await Mediator.Send(new Delete.Command { ticketId = id }));
 		}
 	}
 }

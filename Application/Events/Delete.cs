@@ -47,9 +47,14 @@ namespace Application.Events
 				var eventUser = await _eventUserService.GetByID(eventInDb.Id, user.Id);
 
 				if (eventUser == null) return Result<Unit>.Forbidden("You aren't in the event!");
-				if (eventUser.Type >= EventUserTypeEnum.Moderator)
+				if (!eventUser.IsCreator())
 				{
 					return Result<Unit>.Forbidden("You have no permission!");
+				}
+
+				if (eventInDb.State != EventStateEnum.Draft)
+				{
+					return Result<Unit>.Forbidden("You can only remove event in draft state!");
 				}
 
 				eventInDb.Status = StatusEnum.Unavailable;

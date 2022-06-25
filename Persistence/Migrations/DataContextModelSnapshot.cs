@@ -100,11 +100,17 @@ namespace Persistence.Migrations
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<float>("MultiplierFactor")
                         .HasColumnType("real");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -165,6 +171,30 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EventCategories");
+                });
+
+            modelBuilder.Entity("Domain.EventOrganizer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("OrganizerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("OrganizerId");
+
+                    b.ToTable("EventOrganizers");
                 });
 
             modelBuilder.Entity("Domain.EventUser", b =>
@@ -301,6 +331,39 @@ namespace Persistence.Migrations
                     b.ToTable("Tickets");
                 });
 
+            modelBuilder.Entity("Domain.TicketUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CheckedInDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("CheckedOutDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("TicketId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TicketId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TicketUsers");
+                });
+
             modelBuilder.Entity("Domain.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -377,19 +440,23 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("EventOrganizer", b =>
+            modelBuilder.Entity("Domain.UserImage", b =>
                 {
-                    b.Property<Guid>("EventsId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OrganizersId")
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("EventsId", "OrganizersId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("OrganizersId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("EventOrganizer");
+                    b.ToTable("UserImages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -523,21 +590,6 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TicketUser", b =>
-                {
-                    b.Property<Guid>("TicketsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UsersId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("TicketsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("TicketUser");
-                });
-
             modelBuilder.Entity("Domain.Comment", b =>
                 {
                     b.HasOne("Domain.Post", "Post")
@@ -579,7 +631,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Event", b =>
                 {
                     b.HasOne("Domain.EventCategory", "EventCategory")
-                        .WithMany()
+                        .WithMany("Events")
                         .HasForeignKey("EventCategoryId");
 
                     b.Navigation("EventCategory");
@@ -588,16 +640,31 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.EventAgenda", b =>
                 {
                     b.HasOne("Domain.Event", "Event")
-                        .WithMany("EventAgenda")
+                        .WithMany("EventAgendas")
                         .HasForeignKey("EventId");
 
                     b.Navigation("Event");
                 });
 
+            modelBuilder.Entity("Domain.EventOrganizer", b =>
+                {
+                    b.HasOne("Domain.Event", "Event")
+                        .WithMany("EventOrganizers")
+                        .HasForeignKey("EventId");
+
+                    b.HasOne("Domain.Organizer", "Organizer")
+                        .WithMany("EventOrganizers")
+                        .HasForeignKey("OrganizerId");
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Organizer");
+                });
+
             modelBuilder.Entity("Domain.EventUser", b =>
                 {
                     b.HasOne("Domain.Event", "Event")
-                        .WithMany("EventUser")
+                        .WithMany("EventUsers")
                         .HasForeignKey("EventId");
 
                     b.HasOne("Domain.User", "User")
@@ -633,19 +700,28 @@ namespace Persistence.Migrations
                     b.Navigation("Event");
                 });
 
-            modelBuilder.Entity("EventOrganizer", b =>
+            modelBuilder.Entity("Domain.TicketUser", b =>
                 {
-                    b.HasOne("Domain.Event", null)
-                        .WithMany()
-                        .HasForeignKey("EventsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Domain.Ticket", "Ticket")
+                        .WithMany("TicketUsers")
+                        .HasForeignKey("TicketId");
 
-                    b.HasOne("Domain.Organizer", null)
-                        .WithMany()
-                        .HasForeignKey("OrganizersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Domain.User", "User")
+                        .WithMany("TicketUsers")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Ticket");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.UserImage", b =>
+                {
+                    b.HasOne("Domain.User", "User")
+                        .WithMany("Images")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -699,21 +775,6 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TicketUser", b =>
-                {
-                    b.HasOne("Domain.Ticket", null)
-                        .WithMany()
-                        .HasForeignKey("TicketsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain.Comment", b =>
                 {
                     b.Navigation("CommentLikes");
@@ -721,13 +782,25 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Event", b =>
                 {
-                    b.Navigation("EventAgenda");
+                    b.Navigation("EventAgendas");
 
-                    b.Navigation("EventUser");
+                    b.Navigation("EventOrganizers");
+
+                    b.Navigation("EventUsers");
 
                     b.Navigation("Posts");
 
                     b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("Domain.EventCategory", b =>
+                {
+                    b.Navigation("Events");
+                });
+
+            modelBuilder.Entity("Domain.Organizer", b =>
+                {
+                    b.Navigation("EventOrganizers");
                 });
 
             modelBuilder.Entity("Domain.Post", b =>
@@ -735,9 +808,18 @@ namespace Persistence.Migrations
                     b.Navigation("Comments");
                 });
 
+            modelBuilder.Entity("Domain.Ticket", b =>
+                {
+                    b.Navigation("TicketUsers");
+                });
+
             modelBuilder.Entity("Domain.User", b =>
                 {
                     b.Navigation("CommentLikes");
+
+                    b.Navigation("Images");
+
+                    b.Navigation("TicketUsers");
                 });
 #pragma warning restore 612, 618
         }

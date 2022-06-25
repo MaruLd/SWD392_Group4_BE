@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Repositories;
 using Application.Organizers.DTOs;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Organizers
 {
@@ -27,19 +28,22 @@ namespace Application.Organizers
 		{
 			private readonly OrganizerService _organizerService;
 			private readonly IMapper _mapper;
+			private readonly IHttpContextAccessor _httpContextAccessor;
 
-			public Handler(OrganizerService organizerService, IMapper mapper)
+			public Handler(OrganizerService organizerService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
 			{
 				_organizerService = organizerService;
 				_mapper = mapper;
+				this._httpContextAccessor = httpContextAccessor;
 			}
 
 			public async Task<Result<List<OrganizerDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
 				var res = await _organizerService.Get(request.queryParams);
 				if (res == null) return Result<List<OrganizerDTO>>.Failure("Organizers not found!");
-				var dto = _mapper.Map<List<OrganizerDTO>>(res);
-				return Result<List<OrganizerDTO>>.Success(dto);
+
+				_httpContextAccessor.HttpContext.Response.AddPaginationHeader<Organizer>(res);
+				return Result<List<OrganizerDTO>>.Success(_mapper.Map<List<OrganizerDTO>>(res));
 			}
 		}
 	}

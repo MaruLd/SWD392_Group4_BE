@@ -29,7 +29,7 @@ namespace Domain
 		public Guid? EventId { get; set; }
 
 		[JsonIgnore]
-		public virtual ICollection<User> Users { get; set; }
+		public virtual ICollection<TicketUser> TicketUsers { get; set; }
 		// [JsonIgnore]
 		// public virtual ICollection<EventTicket> EventTicket { get; set; }
 

@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authorization;
 using Application.Users.DTOs;
 using Application.Users;
 using Application.Core;
+using Application.TicketUsers.DTOs;
+using Application.Tickets.DTOs;
 
 namespace API.Controllers
 {
@@ -31,7 +33,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] 
+		/// [Admin Only] Get User List
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpGet]
@@ -41,7 +43,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] Get Current User Info
 		/// </summary>
 		[Authorize]
 		[HttpGet("me")]
@@ -51,9 +53,29 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize]
+		/// [Authorize] Get Current User Tickets
 		/// </summary>
-		[Authorize(Roles = "Admin")]
+		[Authorize]
+		[HttpGet("me/tickets")]
+		public async Task<ActionResult<List<SelfTicketDTO>>> GetYourTickets([FromQuery] TickerUserSelfQueryParams queryParams)
+		{
+			return HandleResult(await Mediator.Send(new ListSelfTickets.Query { userId = Guid.Parse(User.GetUserId()), queryParams = queryParams }));
+		}
+
+		/// <summary>
+		/// [Authorize] Get Current User Events
+		/// </summary>
+		[Authorize]
+		[HttpGet("me/events")]
+		public async Task<ActionResult<List<SelfEventDTO>>> GetYourEvents([FromQuery] EventSelfQueryParams queryParams)
+		{
+			return HandleResult(await Mediator.Send(new ListSelfEvents.Query { userId = Guid.Parse(User.GetUserId()), queryParams = queryParams }));
+		}
+
+		/// <summary>
+		/// [Authorize] Edit User information
+		/// </summary>
+		[Authorize]
 		[HttpPut]
 		public async Task<ActionResult<UserDTO>> EditUser(EditUserDTO dto)
 		{

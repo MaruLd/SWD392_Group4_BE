@@ -9,6 +9,7 @@ using JorgeSerrano.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 
 namespace API
@@ -69,8 +70,8 @@ namespace API
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
-			if (env.IsDevelopment())
-			{
+			// if (env.IsDevelopment())
+			// {
 				app.UseDeveloperExceptionPage();
 				app.UseSwagger();
 				app
@@ -81,7 +82,7 @@ namespace API
 				  });
 
 				app.UseMiddleware<ExceptionMiddleware>();
-			}
+			// }
 
 			// app.UseHttpsRedirection();
 			app.UseCors("CorsPolicy");

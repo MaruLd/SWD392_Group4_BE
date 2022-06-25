@@ -20,7 +20,7 @@ namespace API.Controllers
 		/// Get Organizers
 		/// </summary>
 		[HttpGet]
-		public async Task<ActionResult<List<OrganizerDTO>>> GetOrganziers([FromQuery] OrganizerQueryParams queryParams)
+		public async Task<ActionResult<List<OrganizerDTO>>> GetOrganizers([FromQuery] OrganizerQueryParams queryParams)
 		{
 			return HandleResult(await Mediator.Send(new List.Query() { queryParams = queryParams }));
 		}
@@ -55,7 +55,7 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// [Authorize] Delete Organnizer
+		/// [Admin Only] Delete Organizer
 		/// </summary>
 		[Authorize(Roles = "Admin")]
 		[HttpDelete]

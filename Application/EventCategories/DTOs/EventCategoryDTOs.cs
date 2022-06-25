@@ -10,8 +10,5 @@ namespace Application.EventCategories.DTOs
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
-
-		[JsonIgnore]
-		public int EventCount { get; set; }
 	}
 }

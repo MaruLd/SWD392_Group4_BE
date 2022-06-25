@@ -14,7 +14,7 @@ namespace Domain
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public Guid Id { get; set; }
 
-		public EventUserStatusEnum Status { get; set; }
+		public StatusEnum Status { get; set; }
 		public EventUserTypeEnum Type { get; set; }
 
 		public virtual Event? Event { get; set; }
