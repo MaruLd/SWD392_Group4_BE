@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Core;
 using Application.Events.DTOs;
 using Application.Interfaces;
+using Application.Users.DTOs;
 using AutoMapper;
 using Domain;
 using Domain.Enums;
@@ -65,42 +66,12 @@ namespace Application.Services
 				.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
 				.Include(e => e.EventCategory);
 
-			var currentUserId = _userAccessor.GetID();
-			if (eventParams.IsOwn && currentUserId != Guid.Empty)
-			{
-				query = query.Include(e => e.EventUsers)
-				.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator));
-			}
-
-			if (eventParams.IsJoined && currentUserId != Guid.Empty)
-			{
-				query = query.Include(e => e.EventUsers)
-				.Where(e => e.EventUsers.Any(eu => eu.UserId == currentUserId));
-			}
-
 			// Query Param [eventStateEnum]
 			// If param existed
 			if (eventParams.eventStateEnum != EventStateEnum.None)
 			{
 				// If the param is DRAFT
-				if (eventParams.eventStateEnum == EventStateEnum.Draft)
-				{
-					// Check if user is logged in
-					if (currentUserId != Guid.Empty)
-					{
-						query = query.Include(e => e.EventUsers).Where(e =>
-							e.State == EventStateEnum.Draft &&
-							e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator));
-					}
-					// If there is no user, don't show them anything
-					else
-					{
-						query = query.Include(e => e.EventUsers).Where(e =>
-							e.State == EventStateEnum.None);
-					}
-				}
-				// If the param is exist and not DRAFT
-				else
+				if (eventParams.eventStateEnum != EventStateEnum.Draft)
 				{
 					query = query.Include(e => e.EventUsers).Where(e => e.State == eventParams.eventStateEnum);
 				}
@@ -148,12 +119,67 @@ namespace Application.Services
 			{
 				query = query
 					.Include(e => e.EventCategory)
-					.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
-					.Include(e => e.Tickets).ThenInclude(t => t.TicketUsers);
+					.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer);
 			}
 
 			var e = await query.FirstOrDefaultAsync();
 			return e;
+		}
+
+		public async Task<PagedList<Event>> GetSelfEvent(Guid userId, EventSelfQueryParams eventParams)
+		{
+			var query = _eventRepository.GetQuery();
+			query = query.Where(e => e.Status != StatusEnum.Unavailable);
+
+			query = query
+				.Include(e => e.EventUsers)
+				.Where(e => e.EventUsers.Any(eu => eu.UserId == userId));
+
+			if (eventParams.Title != null) query = query.Where(e => e.Title.Contains(eventParams.Title));
+			if (eventParams.StartTime != null) query = query.Where(e => e.StartTime > eventParams.StartTime);
+			if (eventParams.EndTime != null) query = query.Where(e => e.EndTime < eventParams.EndTime);
+
+			switch (eventParams.OrderBy)
+			{
+				case OrderByEnum.DateAscending:
+					query = query.OrderBy(e => e.CreatedDate);
+					break;
+				case OrderByEnum.DateDescending:
+					query = query.OrderByDescending(e => e.CreatedDate);
+					break;
+				default:
+					break;
+			}
+
+			query = query
+				.Include(e => e.EventOrganizers).ThenInclude(eo => eo.Organizer)
+				.Include(e => e.EventCategory);
+
+			if (eventParams.IsOwn)
+			{
+				query = query
+					.Where(e => e.EventUsers.Any(eu => eu.UserId == userId && eu.Type == EventUserTypeEnum.Creator));
+			}
+
+			if (eventParams.eventStateEnum != EventStateEnum.None)
+			{
+				query = query.Where(e =>
+					e.State == eventParams.eventStateEnum);
+			}
+
+			if (eventParams.OrganizerName != null)
+			{
+				query = query.Where(e => e.EventOrganizers
+					.Any(o =>
+						o.Organizer.Name.ToLower().Contains(eventParams.OrganizerName) &&
+						o.EventId == e.Id)
+					);
+			};
+
+			if (eventParams.CategoryId != 0) query = query.Where(e => e.EventCategoryId == eventParams.CategoryId);
+
+			var list = await PagedList<Event>.CreateAsync(query, eventParams.PageNumber, eventParams.PageSize);
+			return list;
 		}
 
 		public async Task<Event> CreateEvent(CreateEventDTO e, Guid userId)

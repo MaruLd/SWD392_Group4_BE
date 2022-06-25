@@ -17,14 +17,8 @@ namespace Application.Events.DTOs
 		[FromQuery(Name = "category-id")]
 		public int CategoryId { get; set; }
 
-		[SwaggerSchema("If not set, by default it won't get any DRAFT event")]
 		[FromQuery(Name = "state")]
 		public EventStateEnum eventStateEnum { get; set; } = EventStateEnum.None;
-
-		[FromQuery(Name = "is-own")]
-		public bool IsOwn { get; set; } = false;
-		[FromQuery(Name = "is-joined")]
-		public bool IsJoined { get; set; }
 
 		[FromQuery(Name = "order-by")]
 		public OrderByEnum OrderBy { get; set; } = OrderByEnum.DateDescending;

@@ -14,12 +14,12 @@ namespace Application.Events
 {
 	public class Details
 	{
-		public class Query : IRequest<Result<DetailEventDTO>>
+		public class Query : IRequest<Result<EventDTO>>
 		{
 			public Guid Id { get; set; }
 		}
 
-		public class Handler : IRequestHandler<Query, Result<DetailEventDTO>>
+		public class Handler : IRequestHandler<Query, Result<EventDTO>>
 		{
 			private readonly EventService _eventService;
 			private readonly IMapper _mapper;
@@ -31,12 +31,12 @@ namespace Application.Events
 				_mapper = mapper;
 			}
 
-			public async Task<Result<DetailEventDTO>> Handle(Query request, CancellationToken cancellationToken)
+			public async Task<Result<EventDTO>> Handle(Query request, CancellationToken cancellationToken)
 			{
 				var e = await _eventService.GetByID(request.Id);
-				if (e == null) return Result<DetailEventDTO>.Failure("Event not found!");
-				var dto = _mapper.Map<DetailEventDTO>(e);
-				return Result<DetailEventDTO>.Success(dto);
+				if (e == null) return Result<EventDTO>.Failure("Event not found!");
+				var dto = _mapper.Map<EventDTO>(e);
+				return Result<EventDTO>.Success(dto);
 			}
 		}
 	}

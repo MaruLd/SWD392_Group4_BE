@@ -24,7 +24,7 @@ public class Event
 	public DateTime EndTime { get; set; }
 
 	public float MultiplierFactor { get; set; }
-	public String? Location { get; set; }
+	public string? Location { get; set; }
 
 	public virtual EventCategory? EventCategory { get; set; }
 	public int? EventCategoryId { get; set; }

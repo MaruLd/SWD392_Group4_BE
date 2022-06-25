@@ -129,10 +129,10 @@ namespace API.Extensions
 			   {
 				   options.UseEasyCachingCoreProvider(_providerName, isHybridCache: false).DisableLogging(false)
 					  .CacheAllQueries(CacheExpirationMode.Sliding, TimeSpan.FromDays(30));
-				   //    		.SkipCachingCommands(commandText =>
-				   // 				commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
-				   //   .CacheQueriesContainingTypes(CacheExpirationMode.Sliding, TimeSpan.FromMinutes(30),
-				   // 		  TableTypeComparison.Contains, typeof(Event));
+				      		// .SkipCachingCommands(commandText =>
+				   			// 	commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
+				    //  .CacheQueriesContainingTypes(CacheExpirationMode.Sliding, TimeSpan.FromDays(30),
+				   	// 	  TableTypeComparison.Contains, typeof(Event));
 
 			   });
 

@@ -39,7 +39,7 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize]
 		[HttpPost]
-		public async Task<ActionResult> CreateEventOrganizer(Guid eventid, CreateEventOrganizerDTO dto)
+		public async Task<ActionResult<EventOrganizerDTO>> CreateEventOrganizer(Guid eventid, CreateEventOrganizerDTO dto)
 		{
 			return HandleResult(await Mediator.Send(new Create.Command { eventId = eventid, dto = dto }));
 		}

@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.Core;
 using Application.EventCategories.DTOs;
 using Application.Organizers.DTOs;
 using Application.Tickets.DTOs;
+using Application.Users.DTOs;
 using Domain;
 using Domain.Enums;
 
-namespace Application.Events.DTOs
+namespace Application.Users.DTOs
 {
-	public class DetailEventDTO
+	public class SelfEventDTO
 	{
 		public Guid Id { get; set; }
 
@@ -27,6 +27,7 @@ namespace Application.Events.DTOs
 
 		public DateTime CreatedDate { get; set; }
 		public EventStateEnum State { get; set; }
+		public EventUserTypeEnum UserType { get; set; }
 
 		public List<OrganizerDTO> Organizers { get; set; }
 		public EventCategoryDTO EventCategory { get; set; }

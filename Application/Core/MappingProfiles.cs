@@ -31,13 +31,10 @@ namespace Application.Core
 			CreateMap<EditEventDTO, Event>()
 				.ForMember(e => e.Description, src => src.MapFrom(ed => HTMLHelper.CleanupHTML(ed.Description)));
 			CreateMap<EventDTO, Event>();
+			
 			CreateMap<Event, EventDTO>()
-				.ForMember(dst => dst.UserType, src => src.MapFrom<EventRoleResolver, List<EventUser>>(o => o.EventUsers.ToList()))
-				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.EventOrganizers.Select(eo => eo.Organizer).ToList()))
 				.ForMember(dst => dst.EventCategory, src => src.MapFrom(o => o.EventCategory));
-
 			CreateMap<Event, DetailEventDTO>()
-				.ForMember(dst => dst.Tickets, src => src.MapFrom(t => t.Tickets))
 				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.EventOrganizers.Select(eo => eo.Organizer).ToList()))
 				.ForMember(dst => dst.EventCategory, src => src.MapFrom(o => o.EventCategory));
 
@@ -80,6 +77,11 @@ namespace Application.Core
 
 				.ForMember(st => st.EventId, src => src.MapFrom(t => t.Ticket.EventId))
 				.ForMember(st => st.TicketId, src => src.MapFrom(t => t.Ticket.Id));
+
+			CreateMap<Event, SelfEventDTO>()
+				.ForMember(dst => dst.UserType, src => src.MapFrom<EventRoleResolver, List<EventUser>>(o => o.EventUsers.ToList()))
+				.ForMember(dst => dst.Organizers, src => src.MapFrom(o => o.EventOrganizers.Select(eo => eo.Organizer).ToList()))
+				.ForMember(dst => dst.EventCategory, src => src.MapFrom(o => o.EventCategory));
 
 
 			CreateMap<CreateEventUserDTO, EventUser>();

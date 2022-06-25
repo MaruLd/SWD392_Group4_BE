@@ -63,6 +63,16 @@ namespace API.Controllers
 		}
 
 		/// <summary>
+		/// [Authorize] Get Current User Events
+		/// </summary>
+		[Authorize]
+		[HttpGet("me/events")]
+		public async Task<ActionResult<List<SelfEventDTO>>> GetYourEvents([FromQuery] EventSelfQueryParams queryParams)
+		{
+			return HandleResult(await Mediator.Send(new ListSelfEvents.Query { userId = Guid.Parse(User.GetUserId()), queryParams = queryParams }));
+		}
+
+		/// <summary>
 		/// [Authorize] Edit User information
 		/// </summary>
 		[Authorize]

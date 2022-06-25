@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Events.DTOs;
 using Application.Interfaces;
+using Application.Users.DTOs;
 using AutoMapper;
 using Domain;
 using Domain.Enums;
@@ -22,7 +23,7 @@ namespace Application.Core
 
 	}
 
-	public class EventRoleResolver : IMemberValueResolver<Event, EventDTO, List<EventUser>, EventUserTypeEnum>
+	public class EventRoleResolver : IMemberValueResolver<Event, SelfEventDTO, List<EventUser>, EventUserTypeEnum>
 	{
 		private readonly IUserAccessor _userAccessor;
 
@@ -31,7 +32,7 @@ namespace Application.Core
 			this._userAccessor = userAccessor;
 		}
 
-		public EventUserTypeEnum Resolve(Event source, EventDTO destination, List<EventUser> sourceMember, EventUserTypeEnum destMember, ResolutionContext context)
+		public EventUserTypeEnum Resolve(Event source, SelfEventDTO destination, List<EventUser> sourceMember, EventUserTypeEnum destMember, ResolutionContext context)
 		{
 			var id = _userAccessor.GetID();
 			if (id != Guid.Empty)
@@ -42,4 +43,5 @@ namespace Application.Core
 			return EventUserTypeEnum.None;
 		}
 	}
+	
 }

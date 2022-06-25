@@ -33,6 +33,7 @@ namespace API.Controllers
 		/// [Authorize] [>= Student] Get Self Ticket User
 		/// </summary>
 		[HttpGet("me")]
+		[Authorize]
 		public async Task<ActionResult<TicketUserDTO>> GetSelfTicketUser(Guid ticketid)
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { ticketId = ticketid, userId = Guid.Parse(User.GetUserId()) }));

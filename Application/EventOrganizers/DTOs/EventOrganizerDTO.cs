@@ -13,8 +13,6 @@ namespace Application.EventOrganizers.DTOs
 {
 	public class EventOrganizerDTO
 	{
-		public EventDTO Event { get; set; }
 		public OrganizerDTO Organizer { get; set; }
-		public DateTime CreatedDate { get; set; }
 	}
 }

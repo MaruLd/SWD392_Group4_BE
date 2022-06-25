@@ -9,7 +9,9 @@ namespace Persistence
 {
 	public class DataContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 	{
-		public DataContext(DbContextOptions options) : base(options) { }
+		public DataContext(DbContextOptions options) : base(options) {
+	
+		 }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
