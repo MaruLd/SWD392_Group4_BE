@@ -30,7 +30,7 @@ namespace API.Controllers
 		/// Get Event
 		/// </summary>
 		[HttpGet("{id}")]
-		public async Task<ActionResult<EventDTO>> GetEvent(Guid id)
+		public async Task<ActionResult<DetailEventDTO>> GetEvent(Guid id)
 		{
 			return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
 		}
