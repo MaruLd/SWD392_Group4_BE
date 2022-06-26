@@ -67,6 +67,7 @@ namespace API.Extensions
 
 			services.AddSingleton<FirebaseService>();
 			services.AddSingleton<AWSService>();
+			services.AddSingleton<GCService>();
 
 			services.AddScoped<UserAccessor>();
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();

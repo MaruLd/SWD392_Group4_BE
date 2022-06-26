@@ -19,11 +19,13 @@ namespace API.Controllers
 	public class ImageController : BaseApiController
 	{
 		private readonly AWSService _awsService;
+		private readonly GCService _gCService;
 		private readonly UserImageService _imageService;
 
-		public ImageController(AWSService awsService, UserImageService imageService)
+		public ImageController(AWSService awsService, GCService gCService, UserImageService imageService)
 		{
 			this._awsService = awsService;
+			this._gCService = gCService;
 			this._imageService = imageService;
 		}
 
@@ -37,11 +39,26 @@ namespace API.Controllers
 			if (file.Length > 10 * 1024 * 1024) return BadRequest("File size limit is 10 MB!");
 			if (!file.ContentType.Contains("image")) return BadRequest("File is not a valid image!");
 
-			var image = new UserImage() { UserId = Guid.Parse(User.GetUserId()) };
-			var result = await _imageService.Insert(image);
+			var image = new UserImage()
+			{
+				UserId = Guid.Parse(User.GetUserId())
+			};
 
+			var result = await _imageService.Insert(image);
 			if (!result) return StatusCode(StatusCodes.Status500InternalServerError, "Something wrong, please try again!");
-			var uploadResult = await _awsService.UploadImage(file, image.Id);
+
+			var ext = file.FileName.Split(".").Last();
+			var uploadResult = await _gCService.UploadImage(file, image.Id, ext);
+
+			if (uploadResult == null)
+			{
+				await _imageService.Delete(image);
+				return StatusCode(StatusCodes.Status500InternalServerError, "Something wrong, please try again!2s");
+			}
+
+
+			image.ImageName = $"{image.Id}.{ext}";
+			await _imageService.Update(image);
 
 			var dto = new UserImageDTO()
 			{
@@ -66,7 +83,7 @@ namespace API.Controllers
 				var image = await _imageService.GetByID(id);
 				if (image == null) return Redirect(notfoundImg);
 
-				var url = await _awsService.GetImage(id.ToString().ToLower());
+				var url = await _gCService.GetImage(image.ImageName);
 				return Redirect(url);
 			}
 			catch

@@ -30,13 +30,17 @@ namespace Application.Services
 
 		public async Task<List<UserImage>> Get()
 		{
-			return await _imageRepository.GetAll();;
+			return await _imageRepository.GetAll(); ;
 		}
 
 		public async Task<UserImage> GetByID(Guid id) => await _imageRepository.GetByID(id);
 
 		public async Task<bool> Insert(UserImage e) { _imageRepository.Insert(e); return await _imageRepository.Save(); }
 		public async Task<bool> Update(UserImage e) { _imageRepository.Update(e); return await _imageRepository.Save(); }
+		public async Task<bool> Delete(UserImage e)
+		{
+			_imageRepository.Delete(e); return await _imageRepository.Save();
+		}
 		public async Task<bool> Save() { return await _imageRepository.Save(); }
 	}
 }
