@@ -81,7 +81,7 @@ namespace API.Controllers
 			{
 				var id = Guid.Parse(key);
 				var image = await _imageService.GetByID(id);
-				if (image == null) return Redirect(notfoundImg);
+				if (image == null || image.ImageName == "") return Redirect(notfoundImg);
 
 				var url = await _gCService.GetImage(image.ImageName);
 				return Redirect(url);
