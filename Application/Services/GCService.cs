@@ -28,9 +28,9 @@ namespace Application.Services
 		public async Task<String> UploadImage(IFormFile file, Guid key, String extension)
 		{
 			var bucket = await client.GetBucketAsync("evsmart_bucket_1");
-			var result = await client.UploadObjectAsync(bucket.Name, $"images/{key.ToString()}.{extension}", file.ContentType, file.OpenReadStream());
+			var result = await client.UploadObjectAsync(bucket.Name, $"images/{key.ToString().ToLower()}.{extension}", file.ContentType, file.OpenReadStream());
 			if (result == null) return null;
-			
+
 			return key.ToString();
 		}
 
@@ -40,7 +40,7 @@ namespace Application.Services
 
 			RequestTemplate template = RequestTemplate
 				.FromBucket("evsmart_bucket_1")
-				.WithObjectName($"images/{key}")
+				.WithObjectName($"images/{key.ToLower()}")
 				.WithHttpMethod(HttpMethod.Get);
 
 			Options options = Options.FromDuration(TimeSpan.FromDays(1));
