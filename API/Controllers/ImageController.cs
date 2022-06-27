@@ -53,7 +53,7 @@ namespace API.Controllers
 			if (uploadResult == null)
 			{
 				await _imageService.Delete(image);
-				return StatusCode(StatusCodes.Status500InternalServerError, "Something wrong, please try again!2s");
+				return StatusCode(StatusCodes.Status500InternalServerError, "Something wrong, please try again!");
 			}
 
 
