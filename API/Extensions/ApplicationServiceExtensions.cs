@@ -63,6 +63,9 @@ namespace API.Extensions
 			services.AddScoped<UserImageRepository>();
 			services.AddScoped<UserImageService>();
 
+			services.AddScoped<UserFCMTokenRepository>();
+			services.AddScoped<UserFCMTokenService>();
+
 			services.AddScoped<TokenService>();
 
 			services.AddSingleton<FirebaseService>();
@@ -129,11 +132,11 @@ namespace API.Extensions
 			services.AddEFSecondLevelCache(options =>
 			   {
 				   options.UseEasyCachingCoreProvider(_providerName, isHybridCache: false).DisableLogging(false)
-					  .CacheAllQueries(CacheExpirationMode.Sliding, TimeSpan.FromDays(30));
+					  .CacheAllQueries(CacheExpirationMode.Sliding, TimeSpan.FromDays(1));
 				      		// .SkipCachingCommands(commandText =>
 				   			// 	commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
-				    //  .CacheQueriesContainingTypes(CacheExpirationMode.Sliding, TimeSpan.FromDays(30),
-				   	// 	  TableTypeComparison.Contains, typeof(Event));
+				    //  .CacheQueriesContainingTypes(CacheExpirationMode.Sliding, TimeSpan.FromDays(1),
+				   	// 	  TableTypeComparison.Contains, typeof(Event), typeof(Ticket), typeof(User));
 
 			   });
 

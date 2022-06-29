@@ -74,8 +74,7 @@ namespace Application.Core
 				.ForMember(st => st.Name, src => src.MapFrom(t => t.Ticket.Name))
 				.ForMember(st => st.Description, src => src.MapFrom(t => t.Ticket.Description))
 				.ForMember(st => st.Type, src => src.MapFrom(t => t.Ticket.Type))
-
-				.ForMember(st => st.EventId, src => src.MapFrom(t => t.Ticket.EventId))
+				
 				.ForMember(st => st.TicketId, src => src.MapFrom(t => t.Ticket.Id));
 
 			CreateMap<Event, SelfEventDTO>()

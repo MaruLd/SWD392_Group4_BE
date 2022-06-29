@@ -23,6 +23,7 @@ namespace API.Controllers
 		private readonly IConfiguration _config;
 		private readonly UserManager<User> _userManager;
 		private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+		private readonly UserFCMTokenService _userFCMTokenService;
 
 		public AuthController(TokenService tokenService,
 						UserService userService,
@@ -30,6 +31,7 @@ namespace API.Controllers
 						FirebaseService firebaseService,
 						UserManager<User> userManager,
 						RoleManager<IdentityRole<Guid>> roleManager,
+						UserFCMTokenService userFCMTokenService,
 						IMapper mapper
 						)
 		{
@@ -39,6 +41,7 @@ namespace API.Controllers
 			_config = config;
 			_userManager = userManager;
 			this._roleManager = roleManager;
+			this._userFCMTokenService = userFCMTokenService;
 		}
 
 		/// <summary>
@@ -68,7 +71,7 @@ namespace API.Controllers
 					Email = email,
 					UserName = email,
 					DisplayName = name,
-					ImageURL = imgUrl					
+					ImageURL = imgUrl
 				};
 
 				await _userManager.CreateAsync(user);
@@ -108,16 +111,35 @@ namespace API.Controllers
 
 			var role = await _roleManager.FindByNameAsync(roleName);
 			if (role == null) return NotFound();
-			
+
 			await _userManager.RemoveFromRoleAsync(user, currentRole.First());
 			await _userManager.AddToRoleAsync(user, role.Name);
 			return Ok(user);
 		}
 
-		[HttpGet("test-message")]
-		public async Task<ActionResult> SendTestMessage([FromQuery] string message)
+		/// <summary>
+		/// Add Android's FCM Token to User
+		/// </summary>
+
+		[Authorize]
+		[HttpPost("fcm-token")]
+		public async Task<ActionResult> AddFCMToken([FromBody] string fcmToken)
 		{
-			return Ok(await _firebaseService.SendMessage(message));
+			var tokenInDb = _userFCMTokenService.GetByFCMToken(fcmToken);
+			if (tokenInDb != null) return BadRequest("Token already added!");
+
+			if (!await _firebaseService.VerifyFCMToken(fcmToken)) return BadRequest("Token not valid!");
+
+			var user = await _userService.GetByID(Guid.Parse(User.GetUserId()));
+			if (user == null) return NotFound("User Not Found");
+
+			var result = await _userFCMTokenService.Insert(new UserFCMToken() {
+					UserId = user.Id,
+					Token = fcmToken
+			});
+
+			if (!result) return StatusCode(StatusCodes.Status500InternalServerError, "Something wrong please try again!");
+			return Ok("Token Added");
 		}
 	}
 

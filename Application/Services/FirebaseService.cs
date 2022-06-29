@@ -13,25 +13,63 @@ namespace Application.Services
 	public class FirebaseService
 	{
 		private IConfiguration _config;
+		FirebaseApp _firebaseApp;
+		FirebaseAuth _firebaseAuth;
+		FirebaseMessaging _firebaseMessaging;
 
 		public FirebaseService(IConfiguration config)
 		{
 			_config = config;
-		}
-
-		public FirebaseApp GetInstance()
-		{
-			return FirebaseApp.GetInstance("[DEFAULT]");
+			_firebaseApp = FirebaseApp.GetInstance("[DEFAULT]");
+			_firebaseAuth = FirebaseAuth.GetAuth(_firebaseApp);
+			_firebaseMessaging = FirebaseMessaging.GetMessaging(_firebaseApp);
 		}
 
 		public async Task<FirebaseToken> VerifyIdToken(string token)
 		{
-			FirebaseAuth auth = FirebaseAuth.GetAuth(GetInstance());
-			var result = await auth.VerifyIdTokenAsync(token);
+			var result = await _firebaseAuth.VerifyIdTokenAsync(token);
 			return result;
 		}
 
-		public async Task<string> SendMessage(String message)
+		public async Task<Boolean> VerifyFCMToken(string token)
+		{
+			Message msg = new Message()
+			{
+				Token = token,
+				Data = new Dictionary<string, string>() { { "message", "Welcome To The System" } }
+			};
+
+			try
+			{
+				await _firebaseMessaging.SendAsync(msg);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		// public async Task<Boolean> SendMessageToDevice(string token)
+		// {
+		// 	Message msg = new Message()
+		// 	{
+		// 		Token = token,
+		// 		Data = new Dictionary<string, string>() { { "message", "Welcome To The System" } }
+		// 	};
+
+		// 	try
+		// 	{
+		// 		await fm.SendAsync(msg);
+		// 		return true;
+		// 	}
+		// 	catch
+		// 	{
+		// 		return false;
+		// 	}
+		// }
+
+		public async Task<string> SendMessageToAll(String message)
 		{
 			// var registrationToken = "AIzaSyDFNS-Nr2NSI2JrPM-pSgNBkr-BOj5q7WA";
 			var msg = new Message()
@@ -49,7 +87,7 @@ namespace Application.Services
 				// Token = registrationToken,
 			};
 
-			string response = await FirebaseMessaging.DefaultInstance.SendAsync(msg);
+			string response = await _firebaseMessaging.SendAsync(msg);
 			return response;
 		}
 
