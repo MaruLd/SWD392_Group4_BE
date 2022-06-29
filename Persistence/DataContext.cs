@@ -62,5 +62,7 @@ namespace Persistence
 		public DbSet<EventOrganizer> EventOrganizers { get; set; }
 
 		public DbSet<UserImage> UserImages { get; set; }
+
+		public DbSet<UserFCMToken> UserFCMTokens { get; set; }
 	}
 }
