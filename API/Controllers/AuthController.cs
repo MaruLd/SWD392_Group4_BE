@@ -125,7 +125,7 @@ namespace API.Controllers
 		[HttpPost("fcm-token")]
 		public async Task<ActionResult> AddFCMToken([FromBody] string fcmToken)
 		{
-			var tokenInDb = _userFCMTokenService.GetByFCMToken(fcmToken);
+			var tokenInDb = await _userFCMTokenService.GetByFCMToken(fcmToken);
 			if (tokenInDb != null) return BadRequest("Token already added!");
 
 			if (!await _firebaseService.VerifyFCMToken(fcmToken)) return BadRequest("Token not valid!");
