@@ -66,7 +66,7 @@ namespace Application.Services
 		public async Task<PagedList<TicketUser>> GetTicketsFromUser(Guid userId, TickerUserSelfQueryParams queryParams)
 		{
 			var query = _ticketUserRepository.GetQuery()
-			.Include(tu => tu.Ticket).Where(tu => tu.UserId == userId);
+			.Include(tu => tu.Ticket).ThenInclude(tu => tu.Event).Where(tu => tu.UserId == userId);
 			if (queryParams.ticketUserStateEnum != TicketUserStateEnum.None)
 			{
 				query = query.Where(t => t.State == queryParams.ticketUserStateEnum);

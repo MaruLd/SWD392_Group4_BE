@@ -46,7 +46,7 @@ namespace Application.Services
 			var query = _eventRepository.GetQuery();
 			query = query.Where(e => e.Status != StatusEnum.Unavailable);
 
-			if (eventParams.Title != null) query = query.Where(e => e.Title.Contains(eventParams.Title));
+			if (eventParams.Title != null) query = query.Where(e => e.Title.ToLower().Contains(eventParams.Title.ToLower()));
 			if (eventParams.StartTime != null) query = query.Where(e => e.StartTime > eventParams.StartTime);
 			if (eventParams.EndTime != null) query = query.Where(e => e.EndTime < eventParams.EndTime);
 
@@ -87,7 +87,7 @@ namespace Application.Services
 			{
 				query = query.Where(e => e.EventOrganizers
 					.Any(o =>
-						o.Organizer.Name.ToLower().Contains(eventParams.OrganizerName) &&
+						o.Organizer.Name.ToLower().Contains(eventParams.OrganizerName.ToLower()) &&
 						o.EventId == e.Id)
 					);
 			};
