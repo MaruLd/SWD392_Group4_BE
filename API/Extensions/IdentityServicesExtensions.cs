@@ -28,6 +28,8 @@ namespace API.Extensions
 				})
 				.AddJwtBearer(options =>
 				{
+					options.Authority = "https://evsmart.herokuapp.com";
+					options.RequireHttpsMetadata = false;
 					options.TokenValidationParameters =
 						new TokenValidationParameters
 						{
