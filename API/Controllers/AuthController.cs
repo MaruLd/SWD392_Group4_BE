@@ -58,12 +58,12 @@ namespace API.Controllers
 
 				if (claims == null)
 				{
-					return BadRequest(Results.BadRequest("Token not valid!"));
+					return BadRequest("Token not valid!");
 				}
 			}
 			catch (Exception e)
 			{
-				return BadRequest(Results.BadRequest("Token not valid!"));
+				return BadRequest("Token not valid!");
 			}
 
 
