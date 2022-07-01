@@ -8,6 +8,7 @@ using Application.Core;
 using Application.Services;
 using AutoMapper;
 using Domain;
+using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -50,12 +51,22 @@ namespace API.Controllers
 		[HttpPost("auth-google")]
 		public async Task<ActionResult<LoginResultDTO>> TestGoogleAuth([FromQuery] string token)
 		{
-			var claims = await _firebaseService.VerifyIdToken(token);
+			FirebaseToken claims = null;
+			try
+			{
+				claims = await _firebaseService.VerifyIdToken(token);
 
-			if (claims == null)
+				if (claims == null)
+				{
+					return BadRequest(Results.BadRequest("Token not valid!"));
+				}
+			}
+			catch (Exception e)
 			{
 				return BadRequest(Results.BadRequest("Token not valid!"));
 			}
+
+
 
 			var email = claims.Claims.FirstOrDefault(c => c.Key == "email").Value.ToString();
 			// if (email.Split("@").Last() != "fpt.edu.vn") return StatusCode(418, "The system currently only accepted [fpt.edu.vn] email!");
@@ -133,9 +144,10 @@ namespace API.Controllers
 			var user = await _userService.GetByID(Guid.Parse(User.GetUserId()));
 			if (user == null) return NotFound("User Not Found");
 
-			var result = await _userFCMTokenService.Insert(new UserFCMToken() {
-					UserId = user.Id,
-					Token = fcmToken
+			var result = await _userFCMTokenService.Insert(new UserFCMToken()
+			{
+				UserId = user.Id,
+				Token = fcmToken
 			});
 
 			if (!result) return StatusCode(StatusCodes.Status500InternalServerError, "Something wrong please try again!");
