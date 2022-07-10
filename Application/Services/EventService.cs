@@ -107,12 +107,18 @@ namespace Application.Services
 			var currentUserId = _userAccessor.GetID();
 			if (currentUserId != Guid.Empty)
 			{
-				query = query.Include(e => e.EventUsers)
-					.Where(e => e.State != EventStateEnum.Draft
-					|| (
-						e.State == EventStateEnum.Draft && e.EventUsers.Any(eu => eu.UserId == currentUserId && eu.Type == EventUserTypeEnum.Creator)
-						)
-					);
+				query = query.Include(e => e.EventUsers);
+				// query = query
+				// 	.Where(e =>
+				// 		e.State == EventStateEnum.Draft &&
+				// 		e.EventUsers.Any(eu =>
+				// 			eu.UserId.Equals(currentUserId) &&
+				// 			eu.Type.Equals(EventUserTypeEnum.Creator))
+				// 		);
+			}
+			else
+			{
+				query = query.Where(e => e.State != EventStateEnum.Draft);
 			}
 
 			if (depthInclude)

@@ -12,11 +12,11 @@ namespace Domain
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public Guid Id { get; set; }
-		public string ImageName { get; set; }
+		public string? ImageName { get; set; }
 
 		public virtual User? User { get; set; }
 		public Guid? UserId { get; set; }
 
-		public DateTime CreatedDate { get; set; } = DateTime.Now;
+		public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 	}
 }
