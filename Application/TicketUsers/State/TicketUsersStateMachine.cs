@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Services;
 using Domain;
 using Domain.Enums;
@@ -31,17 +32,24 @@ namespace Application.TicketUsers
 				.Permit((int)TicketUserStateEnum.Ended, (int)TicketUserStateEnum.Ended);
 
 			_machine.Configure((int)TicketUserStateEnum.CheckedOut)
+				.OnEntry(data => OnCheckOut())
 				.Permit((int)TicketUserStateEnum.Ended, (int)TicketUserStateEnum.Ended);
+
+			_machine.Configure((int)TicketUserStateEnum.Ended)
+				.OnEntry(data => OnEnd());
+
 		}
 
 		void OnCheckIn()
 		{
+			if (!_ticketUser.Ticket.Event.IsAbleToCheckin()) throw new Exception();
 			_ticketUser.CheckedInDate = DateTime.Now;
 			_ticketUser.State = TicketUserStateEnum.CheckedIn;
 		}
 
 		void OnCheckOut()
 		{
+			if (!_ticketUser.Ticket.Event.IsAbleToCheckout()) throw new Exception();
 			_ticketUser.CheckedOutDate = DateTime.Now;
 			_ticketUser.State = TicketUserStateEnum.CheckedOut;
 		}

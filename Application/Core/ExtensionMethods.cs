@@ -64,5 +64,19 @@ namespace Application.Core
 			// 	&& e.State != EventStateEnum.Cancelled
 			// 	&& e.State != EventStateEnum.Ended;
 		}
+
+		public static bool IsAbleToCheckin(this Event e)
+		{
+
+			return e.State == EventStateEnum.CheckingIn ||
+			e.State == EventStateEnum.Ongoing;
+		}
+
+		
+		public static bool IsAbleToCheckout(this Event e)
+		{
+
+			return e.State == EventStateEnum.CheckingOut;
+		}
 	}
 }

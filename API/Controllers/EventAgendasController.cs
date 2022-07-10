@@ -21,11 +21,11 @@ namespace API.Controllers
 		/// </summary>
 		[HttpGet]
 		public async Task<ActionResult<List<EventAgendaDTO>>> GetEventAgendas(
-			Guid eventid,
+			Guid eventId,
 			[FromQuery] EventAgendaQueryParams queryParams
 			)
 		{
-			return HandleResult(await Mediator.Send(new List.Query() { eventid = eventid, queryParams = queryParams }));
+			return HandleResult(await Mediator.Send(new List.Query() { eventid = eventId, queryParams = queryParams }));
 		}
 
 		/// <summary>
@@ -43,11 +43,11 @@ namespace API.Controllers
 		[Authorize]
 		[HttpPost]
 		public async Task<ActionResult> CreateEventAgenda(
-			 Guid eventid,
+			 Guid eventId,
 			[FromBody] CreateEventAgendaDTO dto
 			)
 		{
-			return HandleResult(await Mediator.Send(new Create.Command { eventId = eventid, dto = dto }));
+			return HandleResult(await Mediator.Send(new Create.Command { eventId = eventId, dto = dto }));
 		}
 
 		/// <summary>
