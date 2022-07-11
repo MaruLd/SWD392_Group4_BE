@@ -19,6 +19,6 @@ namespace Domain
 		public virtual Organizer? Organizer { get; set; }
 		public Guid? OrganizerId { get; set; }
 
-		public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+		public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
 	}
 }

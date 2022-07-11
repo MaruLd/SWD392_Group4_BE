@@ -45,5 +45,5 @@ public class Event
 	public StatusEnum Status { get; set; }
 	public EventStateEnum State { get; set; }
 
-	public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+	public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
 }

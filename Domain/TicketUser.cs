@@ -25,6 +25,6 @@ namespace Domain
 		public DateTime? CheckedOutDate { get; set; }
 		public TicketUserStateEnum State { get; set; }
 		
-		public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+		public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
 	}
 }

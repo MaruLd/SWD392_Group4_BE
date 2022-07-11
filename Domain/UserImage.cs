@@ -17,6 +17,6 @@ namespace Domain
 		public virtual User? User { get; set; }
 		public Guid? UserId { get; set; }
 
-		public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+		public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
 	}
 }

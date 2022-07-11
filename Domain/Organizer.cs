@@ -20,7 +20,7 @@ namespace Domain
 		public String? ImageURL { get; set; }
 
 		public StatusEnum Status { get; set; }
-		public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+		public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
 
 		[JsonIgnore]
 		public virtual ICollection<EventOrganizer> EventOrganizers { get; set; }

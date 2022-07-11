@@ -27,6 +27,6 @@ namespace Domain
 		public virtual ICollection<CommentLike> CommentLikes { get; set; }
 
 		public StatusEnum Status { get; set; }
-		public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+		public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
 	}
 }
