@@ -24,7 +24,7 @@ namespace Application.Users.DTOs
 
 		public float MultiplierFactor { get; set; }
 
-		public DateTime CreatedDate { get; set; }
+		public DateTimeOffset CreatedDate { get; set; }
 		public EventStateEnum State { get; set; }
 		public EventUserTypeEnum UserType { get; set; }
 

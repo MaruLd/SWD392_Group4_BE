@@ -26,6 +26,6 @@ namespace Application.Users.DTOs
 		public DateTime? CheckedOutDate { get; set; }
 		public TicketUserStateEnum State { get; set; }
 
-		public DateTime CreatedDate { get; set; }
+		public DateTimeOffset CreatedDate { get; set; }
 	}
 }
