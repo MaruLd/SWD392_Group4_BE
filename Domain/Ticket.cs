@@ -21,7 +21,7 @@ namespace Domain
 		public int Cost { get; set; }
 		public int Quantity { get; set; }
 
-		public DateTime CreatedDate { get; set; } = DateTime.Now;
+		public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 		
 		public StatusEnum Status { get; set; }
 		[JsonIgnore]
