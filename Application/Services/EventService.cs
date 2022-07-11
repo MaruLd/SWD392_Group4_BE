@@ -68,13 +68,10 @@ namespace Application.Services
 
 			// Query Param [eventStateEnum]
 			// If param existed
-			if (eventParams.eventStateEnum != EventStateEnum.None)
+			if (eventParams.eventStateEnum != EventStateEnum.None &&
+			eventParams.eventStateEnum != EventStateEnum.Draft)
 			{
-				// If the param is DRAFT
-				if (eventParams.eventStateEnum != EventStateEnum.Draft)
-				{
-					query = query.Include(e => e.EventUsers).Where(e => e.State == eventParams.eventStateEnum);
-				}
+				query = query.Include(e => e.EventUsers).Where(e => e.State == eventParams.eventStateEnum);
 			}
 			// If there is no param, don't send DRAFT events!
 			else
