@@ -77,5 +77,14 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Patch.Command { dto = dto }));
 		}
 
+		/// <summary>
+		/// [Authorize] [>= Moderator] Patch Event State
+		/// </summary>
+		[Authorize]
+		[HttpPatch]
+		public async Task<ActionResult<EventCodeDTO>> GetEventCode([FromBody] EventCodeParams dto)
+		{
+			return HandleResult(await Mediator.Send(new GetCode.Query { dto = dto }));
+		}
 	}
 }

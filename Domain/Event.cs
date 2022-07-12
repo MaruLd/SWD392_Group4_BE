@@ -20,8 +20,8 @@ public class Event
 	public String? Description { get; set; }
 	public String? ImageURL { get; set; }
 
-	public DateTime StartTime { get; set; }
-	public DateTime EndTime { get; set; }
+	public DateTimeOffset StartTime { get; set; }
+	public DateTimeOffset EndTime { get; set; }
 
 	public float MultiplierFactor { get; set; }
 	public string? Location { get; set; }

@@ -66,6 +66,9 @@ namespace API.Extensions
 			services.AddScoped<UserFCMTokenRepository>();
 			services.AddScoped<UserFCMTokenService>();
 
+			services.AddScoped<EventCodeRepository>();
+			services.AddScoped<EventCodeService>();
+
 			services.AddScoped<TokenService>();
 
 			services.AddSingleton<FirebaseService>();
@@ -133,10 +136,10 @@ namespace API.Extensions
 			   {
 				   options.UseEasyCachingCoreProvider(_providerName, isHybridCache: false).DisableLogging(false)
 					  .CacheAllQueries(CacheExpirationMode.Sliding, TimeSpan.FromDays(1));
-				      		// .SkipCachingCommands(commandText =>
-				   			// 	commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
-				    //  .CacheQueriesContainingTypes(CacheExpirationMode.Sliding, TimeSpan.FromDays(1),
-				   	// 	  TableTypeComparison.Contains, typeof(Event), typeof(Ticket), typeof(User));
+				   // .SkipCachingCommands(commandText =>
+				   // 	commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
+				   //  .CacheQueriesContainingTypes(CacheExpirationMode.Sliding, TimeSpan.FromDays(1),
+				   // 	  TableTypeComparison.Contains, typeof(Event), typeof(Ticket), typeof(User));
 
 			   });
 

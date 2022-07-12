@@ -50,24 +50,29 @@ namespace Application.Services
 			}
 		}
 
-		// public async Task<Boolean> SendMessageToDevice(string token)
-		// {
-		// 	Message msg = new Message()
-		// 	{
-		// 		Token = token,
-		// 		Data = new Dictionary<string, string>() { { "message", "Welcome To The System" } }
-		// 	};
+		public async Task<Boolean> SendMessageToDevice(string token, String message)
+		{
+			Message msg = new Message()
+			{
+				Token = token,
+				Data = new Dictionary<string, string>() { { "message", message } },
+				Notification = new Notification()
+				{
+					Title = "Event Notification",
+					Body = message
+				}
+			};
 
-		// 	try
-		// 	{
-		// 		await fm.SendAsync(msg);
-		// 		return true;
-		// 	}
-		// 	catch
-		// 	{
-		// 		return false;
-		// 	}
-		// }
+			try
+			{
+				await _firebaseMessaging.SendAsync(msg);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
 
 		public async Task<string> SendMessageToAll(String message)
 		{

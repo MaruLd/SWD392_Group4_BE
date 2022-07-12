@@ -7,20 +7,18 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-	public class EventAgenda
+	public class EventCode
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public Guid Id { get; set; }
 
-		public String? Title { get; set; }
-		public String? Description { get; set; }
-
-		public DateTimeOffset StartTime { get; set; }
-		public DateTimeOffset EndTime { get; set; }
-		public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
-
 		public virtual Event? Event { get; set; }
 		public Guid? EventId { get; set; }
+
+		public String Code { get; set; }
+
+		public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
+		public DateTimeOffset ExpireDate { get; set; }
 	}
 }

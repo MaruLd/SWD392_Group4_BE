@@ -98,6 +98,8 @@ namespace Application.Core
 			CreateMap<EventOrganizer, EventOrganizerDTO>();
 			CreateMap<EventOrganizerDTO, EventOrganizer>();
 
+			CreateMap<EventCode, EventCodeDTO>();
+
 		}
 
 	}

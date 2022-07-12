@@ -337,10 +337,10 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime?>("CheckedInDate")
+                    b.Property<DateTimeOffset?>("CheckedInDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("CheckedOutDate")
+                    b.Property<DateTimeOffset?>("CheckedOutDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset>("CreatedDate")
@@ -371,6 +371,9 @@ namespace Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Bean")
                         .HasColumnType("integer");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -742,7 +745,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.UserFCMToken", b =>
                 {
                     b.HasOne("Domain.User", "User")
-                        .WithMany()
+                        .WithMany("Tokens")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -853,6 +856,8 @@ namespace Persistence.Migrations
                     b.Navigation("Images");
 
                     b.Navigation("TicketUsers");
+
+                    b.Navigation("Tokens");
                 });
 #pragma warning restore 612, 618
         }

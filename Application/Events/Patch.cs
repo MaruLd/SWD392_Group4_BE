@@ -34,6 +34,7 @@ namespace Application.Events
 			private readonly UserService _userService;
 			private readonly TicketUserService _ticketUserService;
 			private readonly EventUserService _eventUserService;
+			private readonly FirebaseService _firebaseService;
 			private readonly IUserAccessor _userAccessor;
 			private readonly IMapper _mapper;
 
@@ -43,6 +44,7 @@ namespace Application.Events
 				UserService userService,
 				TicketUserService ticketUserService,
 				EventUserService eventUserService,
+				FirebaseService firebaseService,
 				IMapper mapper,
 				IUserAccessor userAccessor)
 			{
@@ -52,6 +54,7 @@ namespace Application.Events
 				_userService = userService;
 				this._ticketUserService = ticketUserService;
 				this._eventUserService = eventUserService;
+				this._firebaseService = firebaseService;
 				_userAccessor = userAccessor;
 			}
 
@@ -72,7 +75,7 @@ namespace Application.Events
 
 				try
 				{
-					EventStateMachine esm = new EventStateMachine(e);
+					EventStateMachine esm = new EventStateMachine(e, _firebaseService);
 					e = esm.TriggerState((EventStateEnum)request.dto.eventStateEnum);
 
 					// Remove All TicketUser If Event Is Draft Or Cancelled (Refund Implement Later)

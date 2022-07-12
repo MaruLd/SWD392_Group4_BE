@@ -38,10 +38,19 @@ namespace Application.Core
 			if (id != Guid.Empty)
 			{
 				var eu = sourceMember.FirstOrDefault(u => u.UserId == id);
-				return eu == null? EventUserTypeEnum.None : eu.Type;
+				return eu == null ? EventUserTypeEnum.None : eu.Type;
 			}
 			return EventUserTypeEnum.None;
 		}
 	}
-	
+
+	public static class RandomUtil
+	{
+		public static string GenerateRandomCode()
+		{
+			Random rand = new Random();
+			return rand.NextInt64(100000, 999999).ToString();
+		}
+
+	}
 }

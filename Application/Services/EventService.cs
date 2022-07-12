@@ -104,7 +104,9 @@ namespace Application.Services
 			var currentUserId = _userAccessor.GetID();
 			if (currentUserId != Guid.Empty)
 			{
-				query = query.Include(e => e.EventUsers);
+				query = query.Include(e => e.EventUsers)
+					.ThenInclude(eu => eu.User)
+					.ThenInclude(u => u.Tokens);
 				// query = query
 				// 	.Where(e =>
 				// 		e.State == EventStateEnum.Draft &&

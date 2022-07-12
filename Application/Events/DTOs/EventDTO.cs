@@ -19,8 +19,8 @@ namespace Application.Events.DTOs
 		public String? ImageURL { get; set; }
 		public String? Location { get; set; }
 
-		public DateTime StartTime { get; set; }
-		public DateTime EndTime { get; set; }
+		public DateTimeOffset StartTime { get; set; }
+		public DateTimeOffset EndTime { get; set; }
 
 		public float MultiplierFactor { get; set; }
 

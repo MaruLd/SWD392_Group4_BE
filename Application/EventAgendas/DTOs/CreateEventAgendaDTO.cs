@@ -17,9 +17,9 @@ namespace Application.EventAgendas.DTOs
 
 		[Required]
 		[CheckDateRangeAttribute]
-		public DateTime StartTime { get; set; }
+		public DateTimeOffset StartTime { get; set; }
 		[Required]
 		[CheckDateRangeAttribute]
-		public DateTime EndTime { get; set; }
+		public DateTimeOffset EndTime { get; set; }
 	}
 }

@@ -82,7 +82,8 @@ namespace API.Controllers
 					Email = email,
 					UserName = email,
 					DisplayName = name,
-					ImageURL = imgUrl
+					ImageURL = imgUrl,
+					Bean = 100
 				};
 
 				await _userManager.CreateAsync(user);

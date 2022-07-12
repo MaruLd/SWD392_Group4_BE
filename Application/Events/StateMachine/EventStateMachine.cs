@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Services;
 using Domain;
 using Domain.Enums;
 using Stateless;
@@ -12,10 +13,12 @@ namespace Application.Events.StateMachine
 	{
 		private StateMachine<int, int> _machine;
 		Event _e;
+		private readonly FirebaseService _firebaseService;
 
-		public EventStateMachine(Event e)
+		public EventStateMachine(Event e, FirebaseService firebaseService)
 		{
 			_e = e;
+			this._firebaseService = firebaseService;
 			_machine = new StateMachine<int, int>((int)_e.State);
 
 			_machine.Configure((int)EventStateEnum.Draft)
@@ -61,16 +64,19 @@ namespace Application.Events.StateMachine
 			void OnPublish()
 			{
 				_e.State = EventStateEnum.Publish;
+				NotifyAll();
 			}
 
 			void OnDelay()
 			{
 				_e.State = EventStateEnum.Delay;
+				NotifySpecific();
 			}
 
 			void OnCheckin()
 			{
 				_e.State = EventStateEnum.CheckingIn;
+				NotifySpecific();
 			}
 
 			void OnOngoing()
@@ -81,16 +87,19 @@ namespace Application.Events.StateMachine
 			void OnCheckout()
 			{
 				_e.State = EventStateEnum.CheckingOut;
+				NotifySpecific();
 			}
 
 			void OnEnd()
 			{
 				_e.State = EventStateEnum.Ended;
+				NotifySpecific();
 			}
 
 			void OnCancel()
 			{
 				_e.State = EventStateEnum.Cancelled;
+				NotifySpecific();
 			}
 		}
 
@@ -99,6 +108,33 @@ namespace Application.Events.StateMachine
 			_machine.Fire((int)eventStateEnum);
 			return _e;
 		}
+
+		private void NotifyAll()
+		{
+			new Thread(async () =>
+			{
+				List<UserFCMToken> tokensToNotify = new List<UserFCMToken>();
+				tokensToNotify = (List<UserFCMToken>)_e.EventUsers.Select(eu => eu.User.Tokens);
+				foreach (var t in tokensToNotify)
+				{
+					await _firebaseService.SendMessageToAll($"{_e.Title} is now ${_e.State}");
+				};
+			}).Start();
+		}
+
+		private void NotifySpecific()
+		{
+			new Thread(async () =>
+			{
+				List<UserFCMToken> tokensToNotify = new List<UserFCMToken>();
+				tokensToNotify = (List<UserFCMToken>)_e.EventUsers.Select(eu => eu.User.Tokens);
+				foreach (var t in tokensToNotify)
+				{
+					await _firebaseService.SendMessageToDevice(t.Token, $"{_e.Title} is now ${_e.State}");
+				};
+			}).Start();
+		}
+
 
 	}
 }
