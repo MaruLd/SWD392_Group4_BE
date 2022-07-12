@@ -15,8 +15,6 @@ namespace Application.Users.DTOs
 		[Required]
 		public string DisplayName { get; set; }
 		[Required]
-		public DateTime DateOfBirth { get; set; }
-		[Required]
 		public string? ImageURL { get; set; }
 	}
 }

@@ -13,7 +13,7 @@ namespace Application.Core
 	{
 		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
 		{
-			DateTime dt = (DateTime)value;
+			DateTimeOffset dt = (DateTimeOffset)value;
 			if (dt >= DateTime.UtcNow)
 			{
 				return ValidationResult.Success;
