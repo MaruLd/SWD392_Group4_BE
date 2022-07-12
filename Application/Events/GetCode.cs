@@ -44,13 +44,13 @@ namespace Application.Events
 					ec = new EventCode();
 					ec.EventId = e.Id;
 					ec.Code = RandomUtil.GenerateRandomCode();
-					ec.ExpireDate = DateTime.UtcNow.AddMinutes(5);
+					ec.ExpireDate = DateTime.Now.AddMinutes(5);
 				}
 
-				if (ec.ExpireDate >= DateTime.UtcNow)
+				if (ec.ExpireDate >= DateTime.Now)
 				{
 					ec.Code = RandomUtil.GenerateRandomCode();
-					ec.ExpireDate = DateTime.UtcNow.AddMinutes(5);
+					ec.ExpireDate = DateTime.Now.AddMinutes(5);
 					await _eventCodeService.Update(ec);
 				}
 

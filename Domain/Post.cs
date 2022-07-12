@@ -31,7 +31,7 @@ public class Post
 	public Guid? UserId { get; set; }
 
 	public StatusEnum Status { get; set; }
-	public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
+	public DateTime CreatedDate { get; set; } = DateTime.Now;
 
 	[JsonIgnore]
 	public virtual ICollection<Comment> Comments { get; set; }

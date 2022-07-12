@@ -19,12 +19,12 @@ namespace Application.Events.DTOs
 		public String? ImageURL { get; set; }
 		public String? Location { get; set; }
 
-		public DateTimeOffset StartTime { get; set; }
-		public DateTimeOffset EndTime { get; set; }
+		public DateTime StartTime { get; set; }
+		public DateTime EndTime { get; set; }
 
 		public float MultiplierFactor { get; set; }
 
-		public DateTimeOffset CreatedDate { get; set; }
+		public DateTime CreatedDate { get; set; }
 		public EventStateEnum State { get; set; }
 
 		public EventCategoryDTO EventCategory { get; set; }

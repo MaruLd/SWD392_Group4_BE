@@ -20,8 +20,8 @@ public class Event
 	public String? Description { get; set; }
 	public String? ImageURL { get; set; }
 
-	public DateTimeOffset StartTime { get; set; }
-	public DateTimeOffset EndTime { get; set; }
+	public DateTime StartTime { get; set; }
+	public DateTime EndTime { get; set; }
 
 	public float MultiplierFactor { get; set; }
 	public string? Location { get; set; }
@@ -45,5 +45,5 @@ public class Event
 	public StatusEnum Status { get; set; }
 	public EventStateEnum State { get; set; }
 
-	public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
+	public DateTime CreatedDate { get; set; } = DateTime.Now;
 }

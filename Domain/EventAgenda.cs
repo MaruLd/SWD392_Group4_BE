@@ -16,9 +16,9 @@ namespace Domain
 		public String? Title { get; set; }
 		public String? Description { get; set; }
 
-		public DateTimeOffset StartTime { get; set; }
-		public DateTimeOffset EndTime { get; set; }
-		public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
+		public DateTime StartTime { get; set; }
+		public DateTime EndTime { get; set; }
+		public DateTime CreatedDate { get; set; } = DateTime.Now;
 
 		public virtual Event? Event { get; set; }
 		public Guid? EventId { get; set; }

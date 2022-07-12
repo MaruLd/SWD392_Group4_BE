@@ -120,7 +120,7 @@ namespace API.Extensions
 			  .AddDbContextPool<DataContext>((prov, opt) =>
 			  {
 				  opt
-					.UseNpgsql(config
+					.UseSqlServer(config
 					.GetConnectionString("DefaultConnection"),
 					sqlOpts =>
 					{

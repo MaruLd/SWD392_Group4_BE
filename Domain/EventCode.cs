@@ -18,7 +18,7 @@ namespace Domain
 
 		public String Code { get; set; }
 
-		public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
-		public DateTimeOffset ExpireDate { get; set; }
+		public DateTime CreatedDate { get; set; } = DateTime.Now;
+		public DateTime ExpireDate { get; set; }
 	}
 }

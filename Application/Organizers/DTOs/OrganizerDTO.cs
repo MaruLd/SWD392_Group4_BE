@@ -13,7 +13,7 @@ namespace Application.Organizers.DTOs
 		public String? Description { get; set; }
 		public String? ImageURL { get; set; }
 
-		public DateTimeOffset CreatedDate { get; set; }
+		public DateTime CreatedDate { get; set; }
 
 	}
 }

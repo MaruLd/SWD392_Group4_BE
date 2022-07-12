@@ -23,10 +23,10 @@ namespace Application.Events.DTOs
 
 		[Required]
 		[CheckDateRangeAttribute]
-		public DateTimeOffset StartTime { get; set; }
+		public DateTime StartTime { get; set; }
 		[Required]
 		[CheckDateRangeAttribute]
-		public DateTimeOffset EndTime { get; set; }
+		public DateTime EndTime { get; set; }
 		[Required]
 		public String Location { get; set; }
 

@@ -12,6 +12,6 @@ namespace Application.Comments.DTOs
 		public Guid Id { get; set; }
 
 		public string Body { get; set; }
-		public DateTimeOffset CreatedDate { get; set; }
+		public DateTime CreatedDate { get; set; }
 	}
 }

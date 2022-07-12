@@ -17,6 +17,6 @@ namespace Application.Tickets.DTOs
 		public int Quantity { get; set; }
 		public int QuantityLeft { get; set; }
 
-		public DateTimeOffset CreatedDate { get; set; }
+		public DateTime CreatedDate { get; set; }
 	}
 }

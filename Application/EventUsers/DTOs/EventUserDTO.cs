@@ -15,6 +15,6 @@ namespace Application.EventUsers.DTOs
 		public EventUserTypeEnum Type { get; set; }
 		public UserDTO User { get; set; }
 
-		public DateTimeOffset CreatedDate { get; set; }
+		public DateTime CreatedDate { get; set; }
 	}
 }

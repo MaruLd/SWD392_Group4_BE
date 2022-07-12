@@ -14,6 +14,6 @@ namespace Application.Events.DTOs
 	public class EventCodeDTO
 	{
 		public String Code { get; set; }
-		public DateTimeOffset CreatedDate { get; set; }
+		public DateTime CreatedDate { get; set; }
 	}
 }

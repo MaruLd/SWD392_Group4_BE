@@ -21,10 +21,10 @@ namespace Domain
 		public virtual User? User { get; set; }
 		public Guid? UserId { get; set; }
 
-		public DateTimeOffset? CheckedInDate { get; set; }
-		public DateTimeOffset? CheckedOutDate { get; set; }
+		public DateTime? CheckedInDate { get; set; }
+		public DateTime? CheckedOutDate { get; set; }
 		public TicketUserStateEnum State { get; set; }
 		
-		public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
+		public DateTime CreatedDate { get; set; } = DateTime.Now;
 	}
 }

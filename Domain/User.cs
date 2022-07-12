@@ -23,5 +23,5 @@ public class User : IdentityUser<Guid>
 	[JsonIgnore]
 	public virtual ICollection<UserFCMToken> Tokens { get; set; }
 
-	public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
+	public DateTime CreatedDate { get; set; } = DateTime.Now;
 }

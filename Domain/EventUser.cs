@@ -24,6 +24,6 @@ namespace Domain
 		public Guid? UserId { get; set; }
 
 
-		public DateTimeOffset CreatedDate { get; set; } = DateTime.UtcNow;
+		public DateTime CreatedDate { get; set; } = DateTime.Now;
 	}
 }
