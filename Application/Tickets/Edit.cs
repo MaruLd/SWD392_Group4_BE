@@ -66,8 +66,8 @@ namespace Application.Tickets
 					return Result<Unit>.Forbidden("You can't no longer edit ticket for this event!");
 				}
 
-				var currentBought = ticket.TicketUsers.Select(tu => tu.User).Count();
-				if (currentBought <= ticket.Quantity)
+				var currentBought = ticket.TicketUsers.Select(tu => tu.User).Count(); // User mua 50 ve, 
+				if (currentBought >= ticket.Quantity)
 				{
 					return Result<Unit>.Forbidden($"Invalid Quantity! Currently ticket has been bought by {currentBought} user!");
 				}
