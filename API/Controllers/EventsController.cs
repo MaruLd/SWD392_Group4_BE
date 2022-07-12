@@ -81,7 +81,7 @@ namespace API.Controllers
 		/// [Authorize] [>= Moderator] Patch Event State
 		/// </summary>
 		[Authorize]
-		[HttpPatch]
+		[HttpGet("get-code")]
 		public async Task<ActionResult<EventCodeDTO>> GetEventCode([FromBody] EventCodeParams dto)
 		{
 			return HandleResult(await Mediator.Send(new GetCode.Query { dto = dto }));
