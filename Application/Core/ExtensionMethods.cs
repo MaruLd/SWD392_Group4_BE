@@ -60,7 +60,7 @@ namespace Application.Core
 		public static bool IsAbleToEdit(this Event e)
 		{
 			// return e.State == EventStateEnum.Publish;
-			return e.State != EventStateEnum.Draft;
+			return e.State == EventStateEnum.Draft;
 			// 	&& e.State != EventStateEnum.Cancelled
 			// 	&& e.State != EventStateEnum.Ended;
 		}
