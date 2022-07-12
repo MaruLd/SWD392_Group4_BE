@@ -22,8 +22,8 @@ namespace Application.Users.DTOs
 		public String Description { get; set; }
 		public String Type { get; set; }
 
-		public DateTime? CheckedInDate { get; set; }
-		public DateTime? CheckedOutDate { get; set; }
+		public DateTimeOffset? CheckedInDate { get; set; }
+		public DateTimeOffset? CheckedOutDate { get; set; }
 		public TicketUserStateEnum State { get; set; }
 
 		public DateTimeOffset CreatedDate { get; set; }

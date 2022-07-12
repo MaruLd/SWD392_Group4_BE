@@ -48,6 +48,16 @@ namespace API.Controllers
 			if (!result) return StatusCode(StatusCodes.Status500InternalServerError, "Something wrong, please try again!");
 
 			var ext = file.FileName.Split(".").Last();
+
+			if (
+				ext.Contains("[") ||
+				ext.ToLower().Contains("object") ||
+				ext.ToLower().Contains("file") ||
+				ext.Contains("]"))
+			{
+				ext = file.ContentType.Split("/").Last();
+			}
+
 			var uploadResult = await _gCService.UploadImage(file, image.Id, ext);
 
 			if (uploadResult == null)
