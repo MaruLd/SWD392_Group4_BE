@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.Events.DTOs;
+using Application.Interfaces;
 using Application.Services;
 using AutoMapper;
 using Domain;
@@ -23,13 +24,17 @@ namespace Application.Events
 		{
 			private readonly EventService _eventService;
 			private readonly EventCodeService _eventCodeService;
+			private readonly EventUserService _eventUserService;
+			private readonly IUserAccessor _userAccessor;
 			private readonly IMapper _mapper;
 
-			public Handler(EventService eventService, EventCodeService eventCodeService, IMapper mapper)
+			public Handler(EventService eventService, EventCodeService eventCodeService, EventUserService eventUserService, IUserAccessor userAccessor, IMapper mapper)
 			{
 				;
 				_eventService = eventService;
 				this._eventCodeService = eventCodeService;
+				this._eventUserService = eventUserService;
+				this._userAccessor = userAccessor;
 				_mapper = mapper;
 			}
 
@@ -37,6 +42,16 @@ namespace Application.Events
 			{
 				var e = await _eventService.GetByID(request.dto.EventId);
 				if (e == null) return Result<EventCodeDTO>.Failure("Event not found!");
+
+				var userId = _userAccessor.GetID();
+
+				var eventUser = await _eventUserService.GetByID((Guid)e.Id, userId);
+				if (eventUser == null) return Result<EventCodeDTO>.Failure("You are not in the event");
+
+				if (!eventUser.IsModerator())
+				{
+					return Result<EventCodeDTO>.Failure("You have no permission!");
+				}
 
 				var ec = await _eventCodeService.GetByID(request.dto.EventId);
 				if (ec == null)
@@ -47,14 +62,14 @@ namespace Application.Events
 					ec.ExpireDate = DateTime.Now.AddMinutes(5);
 				}
 
-				if (ec.ExpireDate >= DateTime.Now)
+				if (ec.ExpireDate <= DateTime.Now)
 				{
 					ec.Code = RandomUtil.GenerateRandomCode();
 					ec.ExpireDate = DateTime.Now.AddMinutes(5);
 					await _eventCodeService.Update(ec);
 				}
 
-				var dto = _mapper.Map<EventCodeDTO>(e);
+				var dto = _mapper.Map<EventCodeDTO>(ec);
 				return Result<EventCodeDTO>.Success(dto);
 			}
 		}

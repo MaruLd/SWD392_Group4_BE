@@ -24,8 +24,6 @@ namespace Application.Core
 	{
 		public MappingProfiles()
 		{
-
-
 			CreateMap<CreateEventDTO, Event>()
 				.ForMember(e => e.Description, src => src.MapFrom(ed => HTMLHelper.CleanupHTML(ed.Description)));
 			CreateMap<EditEventDTO, Event>()

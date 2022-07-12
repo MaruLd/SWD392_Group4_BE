@@ -15,5 +15,6 @@ namespace Application.Events.DTOs
 	{
 		public String Code { get; set; }
 		public DateTime CreatedDate { get; set; }
+		public DateTime ExpireDate { get; set; }
 	}
 }

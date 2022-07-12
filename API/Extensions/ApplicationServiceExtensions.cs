@@ -75,7 +75,7 @@ namespace API.Extensions
 			services.AddSingleton<AWSService>();
 			services.AddSingleton<GCService>();
 
-			services.AddScoped<UserAccessor>();
+			services.AddScoped<IUserAccessor, UserAccessor>();
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 
@@ -168,6 +168,7 @@ namespace API.Extensions
 
 
 			services.AddMediatR(typeof(List.Handler).Assembly);
+
 			services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 			services.AddScoped<IUserAccessor, UserAccessor>();
 			services
