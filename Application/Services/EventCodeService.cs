@@ -27,10 +27,26 @@ namespace Application.Services
 			_mapper = mapper;
 		}
 
-		public async Task<EventCode> GetByID(Guid eventId)
+		public async Task<EventCode> GetByID(Guid id)
 		{
 			var query = _eventCodeRepository.GetQuery();
-			query = query.Where(e => e.EventId == eventId);
+			query = query.Where(e => e.Id == id);
+
+			return await query.FirstOrDefaultAsync();
+		}
+
+		public async Task<EventCode> GetByEventID(Guid id)
+		{
+			var query = _eventCodeRepository.GetQuery();
+			query = query.Where(e => e.EventId == id);
+
+			return await query.FirstOrDefaultAsync();
+		}
+		
+		public async Task<EventCode> GetByCode(string code)
+		{
+			var query = _eventCodeRepository.GetQuery();
+			query = query.Where(e => e.Code == code);
 
 			return await query.FirstOrDefaultAsync();
 		}

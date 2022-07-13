@@ -8,11 +8,5 @@ namespace Application.Events.DTOs
 	public class EventCodeParams
 	{
 		public Guid EventId { get; set; }
-		public EventCodeType Type { get; set; }
-	}
-
-	public enum EventCodeType
-	{
-		Checkin, Checkout
 	}
 }

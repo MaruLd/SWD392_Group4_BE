@@ -53,13 +53,14 @@ namespace Application.Events
 					return Result<EventCodeDTO>.Failure("You have no permission!");
 				}
 
-				var ec = await _eventCodeService.GetByID(request.dto.EventId);
+				var ec = await _eventCodeService.GetByEventID(request.dto.EventId);
 				if (ec == null)
 				{
 					ec = new EventCode();
 					ec.EventId = e.Id;
 					ec.Code = RandomUtil.GenerateRandomCode();
 					ec.ExpireDate = DateTime.Now.AddMinutes(5);
+					await _eventCodeService.Insert(ec);
 				}
 
 				if (ec.ExpireDate <= DateTime.Now)

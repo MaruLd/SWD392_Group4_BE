@@ -48,8 +48,13 @@ namespace Application.Core
 	{
 		public static string GenerateRandomCode()
 		{
+			const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 			Random rand = new Random();
-			return rand.NextInt64(100000, 999999).ToString();
+
+			return new string(Enumerable.Repeat(chars, 6)
+			  .Select(s => s[rand.Next(s.Length)]).ToArray());
+
+			// return rand.NextInt64(100000000, 999999999).ToString();
 		}
 
 	}
