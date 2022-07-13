@@ -83,9 +83,13 @@ namespace Application.TicketUsers
 				{
 					sm.TriggerState(TicketUserStateEnum.CheckedIn);
 				}
-				else if (e.IsAbleToCheckout() && ticketUser.State == TicketUserStateEnum.CheckedOut)
+				else if (e.IsAbleToCheckout() && ticketUser.State == TicketUserStateEnum.CheckedIn)
 				{
 					sm.TriggerState(TicketUserStateEnum.CheckedOut);
+				}
+				else
+				{
+					return Result<Unit>.Failure("Event is not ready for checkin/checkout!");
 				}
 
 				var result = await _ticketUserService.Update(ticketUser);

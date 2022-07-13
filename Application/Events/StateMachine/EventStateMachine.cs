@@ -44,7 +44,7 @@ namespace Application.Events.StateMachine
 
 			_machine.Configure((int)EventStateEnum.Ongoing)
 				.OnEntry(data => OnOngoing())
-				.Permit((int)EventStateEnum.Ongoing, (int)EventStateEnum.CheckingOut);
+				.Permit((int)EventStateEnum.CheckingOut, (int)EventStateEnum.CheckingOut);
 
 			_machine.Configure((int)EventStateEnum.CheckingOut)
 				.OnEntry(data => OnCheckout())
@@ -64,7 +64,7 @@ namespace Application.Events.StateMachine
 			void OnPublish()
 			{
 				_e.State = EventStateEnum.Publish;
-				NotifyAll();
+				// NotifyAll();
 			}
 
 			void OnDelay()
@@ -113,12 +113,7 @@ namespace Application.Events.StateMachine
 		{
 			new Thread(async () =>
 			{
-				List<UserFCMToken> tokensToNotify = new List<UserFCMToken>();
-				tokensToNotify = (List<UserFCMToken>)_e.EventUsers.Select(eu => eu.User.Tokens);
-				foreach (var t in tokensToNotify)
-				{
-					await _firebaseService.SendMessageToAll($"{_e.Title} is now ${_e.State}");
-				};
+				await _firebaseService.SendMessageToAll($"{_e.Title} is now ${_e.State}");
 			}).Start();
 		}
 
@@ -127,7 +122,10 @@ namespace Application.Events.StateMachine
 			new Thread(async () =>
 			{
 				List<UserFCMToken> tokensToNotify = new List<UserFCMToken>();
-				tokensToNotify = (List<UserFCMToken>)_e.EventUsers.Select(eu => eu.User.Tokens);
+				foreach (var t in _e.EventUsers.Select(eu => eu.User.Tokens)) {
+					tokensToNotify.AddRange(t);
+				}
+
 				foreach (var t in tokensToNotify)
 				{
 					await _firebaseService.SendMessageToDevice(t.Token, $"{_e.Title} is now ${_e.State}");

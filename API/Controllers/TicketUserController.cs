@@ -60,13 +60,13 @@ namespace API.Controllers
 
 		
 		/// <summary>
-		/// [Authorize] [> Student] Create Ticket User (Buy a ticket, 1 ticket/event)
+		/// [Authorize] [> Student] Use Code To Checkin/Checkout on Ticket
 		/// </summary>
 		[Authorize]
 		[HttpPost("use-code")]
-		public async Task<ActionResult> UseEventCode(Guid ticketid, CreateTicketUserDTO dto)
+		public async Task<ActionResult> UseEventCode(Guid ticketid, string code)
 		{
-			return HandleResult(await Mediator.Send(new Create.Command { ticketId = ticketid, dto = dto }));
+			return HandleResult(await Mediator.Send(new UseCode.Command { ticketId = ticketid, code = code }));
 		}
 
 		// /// <summary>

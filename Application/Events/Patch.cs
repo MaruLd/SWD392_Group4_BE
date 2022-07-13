@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -89,8 +90,9 @@ namespace Application.Events
 					// 		}));
 					// }
 				}
-				catch
+				catch (Exception ex)
 				{
+					Trace.WriteLine(ex.StackTrace);
 					return Result<Unit>.Failure("Invalid State Change!");
 				}
 
