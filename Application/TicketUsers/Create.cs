@@ -33,16 +33,25 @@ namespace Application.TicketUsers
 			private readonly TicketService _ticketService;
 			private readonly UserService _userService;
 			private readonly TicketUserService _ticketUserService;
+			private readonly EventUserService _eventUserService;
 			private readonly IUserAccessor _userAccessor;
 			private readonly IMapper _mapper;
 
-			public Handler(EventService eventService, TicketService ticketService, UserService userService, TicketUserService ticketUserService, IMapper mapper, IUserAccessor userAccessor)
+			public Handler(
+				EventService eventService,
+				TicketService ticketService,
+				UserService userService,
+				TicketUserService ticketUserService,
+				EventUserService eventUserService,
+				IMapper mapper,
+				IUserAccessor userAccessor)
 			{
 				_mapper = mapper;
 				_eventService = eventService;
 				this._ticketService = ticketService;
 				_userService = userService;
 				this._ticketUserService = ticketUserService;
+				this._eventUserService = eventUserService;
 				_userAccessor = userAccessor;
 			}
 
@@ -68,11 +77,26 @@ namespace Application.TicketUsers
 				var usersCount = (await _ticketUserService.Get(ticket.Id)).Count();
 				if (usersCount >= ticket.Quantity) return Result<TicketUserDTO>.Failure("Ticket is out of stock!");
 
+				if (user.Bean < ticket.Cost)
+				{
+					return Result<TicketUserDTO>.Failure("You don't have enough Bean!");
+				}
+
 				var newTicketUser = new TicketUser() { TicketId = ticket.Id, UserId = userDst.Id };
 				var newEventUser = new EventUser() { EventId = ticket.EventId, UserId = userDst.Id, Type = EventUserTypeEnum.Student };
+
 				var result = await _ticketUserService.Insert(newTicketUser);
 
 				if (!result) return Result<TicketUserDTO>.Failure("Failed to create ticket user");
+
+				user.Bean -= ticket.Cost;
+				await _userService.Update(user);
+
+				try
+				{
+					await _eventUserService.Insert(newEventUser);
+				}
+				catch { }
 				return Result<TicketUserDTO>.CreatedSuccess(_mapper.Map<TicketUserDTO>(newTicketUser));
 			}
 		}
