@@ -10,6 +10,7 @@ namespace Application.Users.DTOs
 		public Guid Id { get; set; }
 		public string Email { get; set; }
 		public string DisplayName { get; set; }
+		public int Bean { get; set; }
 
 		public string? ImageURL { get; set; }
 	}

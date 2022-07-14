@@ -83,6 +83,8 @@ namespace API.Extensions
 			services
 			  .AddSwaggerGen(c =>
 			  {
+				  //   c.EnableAnnotations();
+				  c.OrderActionsBy((apiDesc) => $"{apiDesc.RelativePath}");
 				  c.SwaggerDoc("v1",
 		  				new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
 
