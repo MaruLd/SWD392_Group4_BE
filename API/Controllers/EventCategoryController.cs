@@ -38,7 +38,7 @@ namespace API.Controllers
 		/// Get Category
 		/// </summary>
 		[HttpGet("{id}")]
-		public async Task<ActionResult<EventCategoryDTO>> GetCategory([FromQuery] int id)
+		public async Task<ActionResult<EventCategoryDTO>> GetCategory(int id)
 		{
 			var ecDto = await _eventCategoryService.GetByID(id);
 			if (ecDto == null) return NotFound();
