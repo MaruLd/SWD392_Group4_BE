@@ -69,6 +69,9 @@ namespace API.Extensions
 			services.AddScoped<EventCodeRepository>();
 			services.AddScoped<EventCodeService>();
 
+			services.AddScoped<LocationRepository>();
+			services.AddScoped<LocationService>();
+
 			services.AddScoped<TokenService>();
 
 			services.AddSingleton<FirebaseService>();
@@ -141,13 +144,19 @@ namespace API.Extensions
 					// .SkipCachingCommands(commandText =>
 					// 	commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
 					.CacheQueriesContainingTypes(CacheExpirationMode.Sliding, TimeSpan.FromDays(1),
-						 TableTypeComparison.Contains, 
-						 typeof(Event), 
-						 typeof(Ticket), 
-						 typeof(User),
-						 typeof(EventCategory),
-						 typeof(Organizer)
-						 );
+						TableTypeComparison.Contains,
+						typeof(Event),
+						typeof(EventCategory),
+
+						typeof(Ticket),
+						typeof(User),
+
+						typeof(Organizer),
+						typeof(Location),
+
+						typeof(Post),
+						typeof(Comment)
+						);
 
 			   });
 

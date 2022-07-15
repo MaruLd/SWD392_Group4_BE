@@ -67,5 +67,8 @@ namespace Persistence
 		public DbSet<UserFCMToken> UserFCMTokens { get; set; }
 
 		public DbSet<EventCode> EventCodes { get; set; }
+
+		public DbSet<Location> Locations { get; set; }
+
 	}
 }

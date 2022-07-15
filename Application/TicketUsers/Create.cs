@@ -97,6 +97,7 @@ namespace Application.TicketUsers
 					await _eventUserService.Insert(newEventUser);
 				}
 				catch { }
+				
 				return Result<TicketUserDTO>.CreatedSuccess(_mapper.Map<TicketUserDTO>(newTicketUser));
 			}
 		}
