@@ -17,6 +17,7 @@ using EasyCaching.Core.Configurations;
 using MessagePack.Formatters;
 using MessagePack.Resolvers;
 using MessagePack;
+using API.SignalR;
 
 namespace API.Extensions
 {
@@ -77,6 +78,9 @@ namespace API.Extensions
 			services.AddSingleton<FirebaseService>();
 			services.AddSingleton<AWSService>();
 			services.AddSingleton<GCService>();
+
+			services.AddSignalR();
+			services.AddSingleton<PostConnections>();
 
 			services.AddScoped<IUserAccessor, UserAccessor>();
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -187,22 +191,7 @@ namespace API.Extensions
 			services.AddMediatR(typeof(List.Handler).Assembly);
 
 			services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-			services.AddScoped<IUserAccessor, UserAccessor>();
-			services
-			  .AddCors(opt =>
-			  {
-				  opt
-		  .AddPolicy("CorsPolicy",
-		  policy =>
-		  {
-			  policy
-				.AllowAnyMethod()
-				.AllowAnyHeader()
-				.AllowAnyOrigin();
-		  });
-			  });
 
-			services.AddSignalR();
 			return services;
 		}
 	}

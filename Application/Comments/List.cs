@@ -41,7 +41,8 @@ namespace Application.Comments
 			public async Task<Result<List<CommentDTO>>> Handle(Query request, CancellationToken cancellationToken)
 			{
 				var res = await _commentService.Get(request.postId, request.queryParams);
-				_httpContextAccessor.HttpContext.Response.AddPaginationHeader<Comment>(res);
+				if (_httpContextAccessor.HttpContext.Connection == null)
+					_httpContextAccessor.HttpContext.Response.AddPaginationHeader<Comment>(res);
 				return Result<List<CommentDTO>>.Success(_mapper.Map<List<CommentDTO>>(res));
 			}
 		}

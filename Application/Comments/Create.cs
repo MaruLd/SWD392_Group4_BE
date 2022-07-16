@@ -44,7 +44,7 @@ namespace Application.Comments
 			public async Task<Result<CommentDTO>>
 			Handle(Command request, CancellationToken cancellationToken)
 			{
-				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
+				var user = await _userService.GetByID(_userAccessor.GetID());
 
 				var post = await _postService.GetByID(request.postid);
 				if (post == null) return Result<CommentDTO>.NotFound("Post not found!");
@@ -53,6 +53,9 @@ namespace Application.Comments
 				if (eventUser == null) return Result<CommentDTO>.Failure("You aren't in the event!");
 
 				var comment = _mapper.Map<Comment>(request.dto);
+				comment.PostId = request.postid;
+				comment.UserId = user.Id;
+
 				var result = await _commentService.Insert(comment);
 
 				if (!result) return Result<CommentDTO>.Failure("Failed to create comment");

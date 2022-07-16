@@ -72,22 +72,25 @@ namespace API
 		{
 			// if (env.IsDevelopment())
 			// {
-				app.UseDeveloperExceptionPage();
-				app.UseSwagger();
-				app
-				  .UseSwaggerUI(c =>
-				  {
-					  c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1");
-					  c.RoutePrefix = string.Empty;
-				  });
+			app.UseDeveloperExceptionPage();
+			app.UseSwagger();
+			app
+			  .UseSwaggerUI(c =>
+			  {
+				  c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1");
+				  c.RoutePrefix = string.Empty;
+			  });
 
-				app.UseMiddleware<ExceptionMiddleware>();
+			app.UseMiddleware<ExceptionMiddleware>();
 			// }
 
 			// app.UseHttpsRedirection();
-			app.UseCors("CorsPolicy");
 
 			app.UseRouting();
+			app.UseCors(builder => builder.WithOrigins(
+				"https://localhost:3000", "http://localhost:3000",
+				"https://evsmart.netlify.app/", "http://evsmart.netlify.app/"
+			).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 
 			app.UseAuthentication();
 			app.UseAuthorization();
@@ -96,7 +99,7 @@ namespace API
 			  .UseEndpoints(endpoints =>
 			  {
 				  endpoints.MapControllers();
-				  endpoints.MapHub<ChatHub>("/chat");
+				  endpoints.MapHub<ChatHub>("chat");
 			  });
 		}
 	}

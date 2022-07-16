@@ -44,7 +44,7 @@ namespace Application.Posts
 			public async Task<Result<PostDTO>>
 			Handle(Command request, CancellationToken cancellationToken)
 			{
-				var user = await _userService.GetByEmail(_userAccessor.GetEmail());
+				var user = await _userService.GetByID(_userAccessor.GetID());
 				var eventUser = await _eventUserService.GetByID(request.dto.EventID, user.Id);
 
 				if (eventUser == null) return Result<PostDTO>.Failure("You aren't in the event!");
@@ -54,6 +54,8 @@ namespace Application.Posts
 				}
 
 				var post = _mapper.Map<Post>(request.dto);
+				post.UserId = user.Id;
+
 				var result = await _postService.Insert(post);
 
 				if (!result) return Result<PostDTO>.Failure("Failed to create Post");
