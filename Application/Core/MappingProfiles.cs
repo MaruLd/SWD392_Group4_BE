@@ -29,7 +29,7 @@ namespace Application.Core
 			CreateMap<EditEventDTO, Event>()
 				.ForMember(e => e.Description, src => src.MapFrom(ed => HTMLHelper.CleanupHTML(ed.Description)));
 			CreateMap<EventDTO, Event>();
-			
+
 			CreateMap<Event, EventDTO>()
 				.ForMember(dst => dst.EventCategory, src => src.MapFrom(o => o.EventCategory));
 			CreateMap<Event, DetailEventDTO>()
@@ -48,7 +48,9 @@ namespace Application.Core
 			CreateMap<PostDTO, Post>();
 
 			CreateMap<CreateCommentDTO, Comment>();
-			CreateMap<Comment, CommentDTO>();
+			CreateMap<Comment, CommentDTO>()
+				.ForMember(dto => dto.Username, src => src.MapFrom(c => c.User.DisplayName))
+				.ForMember(dto => dto.Image, src => src.MapFrom(c => c.User.ImageURL));
 			CreateMap<CommentDTO, Comment>();
 
 			CreateMap<CreateOrganizerDTO, Organizer>();
@@ -72,7 +74,7 @@ namespace Application.Core
 				.ForMember(st => st.Name, src => src.MapFrom(t => t.Ticket.Name))
 				.ForMember(st => st.Description, src => src.MapFrom(t => t.Ticket.Description))
 				.ForMember(st => st.Type, src => src.MapFrom(t => t.Ticket.Type))
-				
+
 				.ForMember(st => st.TicketId, src => src.MapFrom(t => t.Ticket.Id));
 
 			CreateMap<Event, SelfEventDTO>()

@@ -40,6 +40,7 @@ namespace Application.Services
 					break;
 			}
 
+			query = query.Include(comment => comment.User);
 			return await PagedList<Comment>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);
 		}
 

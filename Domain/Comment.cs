@@ -14,7 +14,7 @@ namespace Domain
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public Guid Id { get; set; }
-		public Guid PostId { get; set; }
+
 
 		public string? Body { get; set; }
 
@@ -22,6 +22,7 @@ namespace Domain
 		public Guid UserId { get; set; }
 
 		public virtual Post? Post { get; set; }
+		public Guid PostId { get; set; }
 
 		[JsonIgnore]
 		public virtual ICollection<CommentLike> CommentLikes { get; set; }
