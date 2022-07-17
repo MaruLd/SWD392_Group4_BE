@@ -85,12 +85,13 @@ namespace API
 			// }
 
 			// app.UseHttpsRedirection();
-
-			app.UseRouting();
+			
 			app.UseCors(builder => builder.WithOrigins(
 				"https://localhost:3000", "http://localhost:3000",
 				"https://evsmart.netlify.app", "http://evsmart.netlify.app"
 			).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+
+			app.UseRouting();
 
 			app.UseAuthentication();
 			app.UseAuthorization();
