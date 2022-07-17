@@ -49,6 +49,8 @@ namespace Application.Services
 			if (eventParams.Title != null) query = query.Where(e => e.Title.ToLower().Contains(eventParams.Title.ToLower()));
 			if (eventParams.StartTime != null) query = query.Where(e => e.StartTime > eventParams.StartTime);
 			if (eventParams.EndTime != null) query = query.Where(e => e.EndTime < eventParams.EndTime);
+			if (eventParams.Location != null) query = query.Where(e => e.Location.ToLower().Contains(eventParams.Location.ToLower()));
+
 
 			switch (eventParams.OrderBy)
 			{

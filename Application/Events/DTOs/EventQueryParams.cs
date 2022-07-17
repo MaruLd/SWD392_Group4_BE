@@ -16,6 +16,8 @@ namespace Application.Events.DTOs
 		public String? OrganizerName { get; set; }
 		[FromQuery(Name = "category-id")]
 		public int CategoryId { get; set; }
+		[FromQuery(Name = "location")]
+		public String? Location { get; set; }
 
 		[FromQuery(Name = "state")]
 		public EventStateEnum eventStateEnum { get; set; } = EventStateEnum.None;
