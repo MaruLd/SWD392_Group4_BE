@@ -49,8 +49,7 @@ namespace Application.Core
 
 			CreateMap<CreateCommentDTO, Comment>();
 			CreateMap<Comment, CommentDTO>()
-				.ForMember(dto => dto.Username, src => src.MapFrom(c => c.User.DisplayName))
-				.ForMember(dto => dto.ImageURL, src => src.MapFrom(c => c.User.ImageURL));
+				.ForMember(dto => dto.User, src => src.MapFrom(c => c.User));
 			CreateMap<CommentDTO, Comment>();
 
 			CreateMap<CreateOrganizerDTO, Organizer>();

@@ -13,9 +13,8 @@ namespace Application.Comments.DTOs
 		public Guid Id { get; set; }
 
 		public string Body { get; set; }
-
-		public String Username { get; set; }
-		public String ImageURL { get; set; }
+		
+		public UserDTO User { get; set; }
 
 		public DateTime CreatedDate { get; set; }
 	}
