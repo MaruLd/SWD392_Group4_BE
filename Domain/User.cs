@@ -11,7 +11,7 @@ public class User : IdentityUser<Guid>
 
 	public string? ImageURL { get; set; }
 
-	public int Bean { get; set; }
+	public float Bean { get; set; }
 
 	// public int InventoryId { get; set; }
 	[JsonIgnore]

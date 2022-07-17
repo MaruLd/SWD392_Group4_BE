@@ -83,10 +83,8 @@ namespace Application.TicketUsers
 				}
 
 				var newTicketUser = new TicketUser() { TicketId = ticket.Id, UserId = userDst.Id };
-				var newEventUser = new EventUser() { EventId = ticket.EventId, UserId = userDst.Id, Type = EventUserTypeEnum.Student };
 
 				var result = await _ticketUserService.Insert(newTicketUser);
-
 				if (!result) return Result<TicketUserDTO>.Failure("Failed to create ticket user");
 
 				user.Bean -= ticket.Cost;
@@ -94,10 +92,15 @@ namespace Application.TicketUsers
 
 				try
 				{
-					await _eventUserService.Insert(newEventUser);
+					var eventUser = await _eventUserService.GetByID(ticket.EventId.Value, user.Id);
+					if (eventUser == null)
+					{
+						eventUser = new EventUser() { EventId = ticket.EventId, UserId = userDst.Id, Type = EventUserTypeEnum.Student };
+					}
+					await _eventUserService.Insert(eventUser);
 				}
 				catch { }
-				
+
 				return Result<TicketUserDTO>.CreatedSuccess(_mapper.Map<TicketUserDTO>(newTicketUser));
 			}
 		}

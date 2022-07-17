@@ -15,11 +15,14 @@ namespace Application.TicketUsers
 	{
 		StateMachine<int, int> _machine;
 		TicketUser _ticketUser;
+		private readonly EventService _eventService;
+		private readonly UserService _userService;
 
-		public TicketUsersStateMachine(TicketUser ticketUser)
+		public TicketUsersStateMachine(TicketUser ticketUser, EventService eventService, UserService userService)
 		{
 			this._ticketUser = ticketUser;
-
+			this._eventService = eventService;
+			this._userService = userService;
 			_machine = new StateMachine<int, int>((int)this._ticketUser.State);
 
 			_machine.Configure((int)TicketUserStateEnum.Idle)
@@ -52,6 +55,29 @@ namespace Application.TicketUsers
 			if (!_ticketUser.Ticket.Event.IsAbleToCheckout()) throw new Exception();
 			_ticketUser.CheckedOutDate = DateTime.Now;
 			_ticketUser.State = TicketUserStateEnum.CheckedOut;
+
+			new Thread(async () =>
+			{
+				var e = await _eventService.GetByID(_ticketUser.Ticket.EventId.Value);
+
+				var user = _ticketUser.User;
+				var baseBonus = _ticketUser.Ticket.Cost;
+
+				if (e.StartTime < _ticketUser.CheckedInDate)
+				{
+					var lossPercentage = (e.EndTime - _ticketUser.CheckedInDate)
+											/
+										(e.StartTime - e.EndTime);
+
+					baseBonus = (float)(baseBonus + (baseBonus * e.MultiplierFactor * lossPercentage ));
+				} else {
+					baseBonus = (float)(baseBonus + (baseBonus * e.MultiplierFactor));
+				}
+
+				user.Bean += baseBonus;
+
+				await _userService.Update(user);
+			}).Start();
 		}
 
 		void OnEnd()

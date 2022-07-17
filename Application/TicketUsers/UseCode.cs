@@ -77,7 +77,7 @@ namespace Application.TicketUsers
 				if (eventCode == null) return Result<Unit>.Failure("This code is not valid!");
 
 				if (eventCode.EventId != e.Id) return Result<Unit>.Failure("This code can't be apply to this event!");
-				TicketUsersStateMachine sm = new TicketUsersStateMachine(ticketUser);
+				TicketUsersStateMachine sm = new TicketUsersStateMachine(ticketUser, _eventService, _userService);
 
 				if (e.IsAbleToCheckin() && ticketUser.State == TicketUserStateEnum.Idle)
 				{

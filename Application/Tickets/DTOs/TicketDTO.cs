@@ -13,7 +13,7 @@ namespace Application.Tickets.DTOs
 		public String Name { get; set; }
 		public String Description { get; set; }
 		public String Type { get; set; }
-		public int Cost { get; set; }
+		public float Cost { get; set; }
 		public int Quantity { get; set; }
 		public int QuantityLeft { get; set; }
 

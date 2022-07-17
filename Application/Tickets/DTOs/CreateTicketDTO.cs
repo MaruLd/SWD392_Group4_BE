@@ -19,7 +19,7 @@ namespace Application.Tickets.DTOs
 
 		[Required]
 		[Range(0, 100)]
-		public int Cost { get; set; }
+		public float Cost { get; set; }
 		[Required]
 		[Range(0, 10000)]
 		public int Quantity { get; set; }

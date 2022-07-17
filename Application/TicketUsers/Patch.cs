@@ -80,7 +80,7 @@ namespace Application.TicketUsers
 					return Result<Unit>.Forbidden("You have no permission!");
 				}
 
-				TicketUsersStateMachine sm = new TicketUsersStateMachine(ticketUser);
+				TicketUsersStateMachine sm = new TicketUsersStateMachine(ticketUser, _eventService, _userService);
 				try
 				{
 					ticketUser = sm.TriggerState(request.ticketUserStateEnum);
