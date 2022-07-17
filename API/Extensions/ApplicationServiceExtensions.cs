@@ -11,9 +11,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Domain;
 using Persistence;
 using System.Reflection;
-using Application.Events.StateMachine;
 using EFCoreSecondLevelCacheInterceptor;
-using EasyCaching.Core.Configurations;
 using MessagePack.Formatters;
 using MessagePack.Resolvers;
 using MessagePack;
@@ -86,7 +84,6 @@ namespace API.Extensions
 
 			services.AddScoped<IUserAccessor, UserAccessor>();
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
 
 			// Swagger
 			services
