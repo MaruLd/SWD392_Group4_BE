@@ -15,7 +15,7 @@ namespace Application.Comments.DTOs
 		public string Body { get; set; }
 
 		public String Username { get; set; }
-		public String Image { get; set; }
+		public String ImageURL { get; set; }
 
 		public DateTime CreatedDate { get; set; }
 	}
