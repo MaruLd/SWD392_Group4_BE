@@ -147,12 +147,16 @@ namespace API.Extensions
 					//   .CacheAllQueries(CacheExpirationMode.Sliding, TimeSpan.FromDays(1));
 					// .SkipCachingCommands(commandText =>
 					// 	commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
-					.CacheQueriesContainingTypes(CacheExpirationMode.Sliding, TimeSpan.FromDays(1),
+					.CacheQueriesContainingTypes(CacheExpirationMode.Absolute, TimeSpan.FromDays(7),
 						TableTypeComparison.Contains,
 						typeof(Event),
 						typeof(EventCategory),
+						typeof(EventOrganizer),
+						typeof(EventUser),
 
 						typeof(Ticket),
+						typeof(TicketUser),
+
 						typeof(User),
 
 						typeof(Organizer),
@@ -172,17 +176,18 @@ namespace API.Extensions
 					{
 						so.EnableCustomResolver = true;
 						so.CustomResolvers = CompositeResolver.Create(
-						new IMessagePackFormatter[]
-						{
-							DBNullFormatter.Instance // This is necessary for the null values
-                        },
-						new IFormatterResolver[]
-						{
-							NativeDateTimeResolver.Instance,
-							ContractlessStandardResolver.Instance,
-							StandardResolverAllowPrivate.Instance,
-							TypelessContractlessStandardResolver.Instance,
-						});
+							new IMessagePackFormatter[]
+							{
+								DBNullFormatter.Instance // This is necessary for the null values
+							},
+							new IFormatterResolver[]
+							{
+								NativeDateTimeResolver.Instance,
+								ContractlessStandardResolver.Instance,
+								StandardResolverAllowPrivate.Instance,
+								TypelessContractlessStandardResolver.Instance,
+							}
+						);
 					},
 					"_msgpack");
 			 });
