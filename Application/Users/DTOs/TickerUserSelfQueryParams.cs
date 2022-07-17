@@ -11,6 +11,6 @@ namespace Application.Users.DTOs
 	public class TickerUserSelfQueryParams : PaginationParams
 	{
 		[FromQuery(Name = "state")]
-		public TicketUserStateEnum ticketUserStateEnum { get; set; }
+		public TicketUserStateEnum ticketUserStateEnum { get; set; } = TicketUserStateEnum.None;
 	}
 }
