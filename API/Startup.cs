@@ -89,7 +89,7 @@ namespace API
 			app.UseRouting();
 			app.UseCors(builder => builder.WithOrigins(
 				"https://localhost:3000", "http://localhost:3000",
-				"https://evsmart.netlify.app/", "http://evsmart.netlify.app/"
+				"https://evsmart.netlify.app", "http://evsmart.netlify.app"
 			).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 
 			app.UseAuthentication();

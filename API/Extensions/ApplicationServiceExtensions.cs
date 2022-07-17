@@ -82,6 +82,8 @@ namespace API.Extensions
 			services.AddSignalR();
 			services.AddSingleton<PostConnections>();
 
+			services.AddHostedService<BackgroundEventCheckService>();
+
 			services.AddScoped<IUserAccessor, UserAccessor>();
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
