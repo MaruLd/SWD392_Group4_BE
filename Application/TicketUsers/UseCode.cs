@@ -77,7 +77,7 @@ namespace Application.TicketUsers
 				if (eventCode == null) return Result<Unit>.Failure("This code is not valid!");
 
 				if (eventCode.EventId != e.Id) return Result<Unit>.Failure("This code can't be apply to this event!");
-				TicketUsersStateMachine sm = new TicketUsersStateMachine(ticketUser, _eventService, _userService);
+				TicketUsersStateMachine sm = new TicketUsersStateMachine(ticketUser);
 
 				if (e.IsAbleToCheckin() && ticketUser.State == TicketUserStateEnum.Idle)
 				{
@@ -86,6 +86,26 @@ namespace Application.TicketUsers
 				else if (e.IsAbleToCheckout() && ticketUser.State == TicketUserStateEnum.CheckedIn)
 				{
 					sm.TriggerState(TicketUserStateEnum.CheckedOut);
+
+					var user = ticketUser.User;
+					var baseBonus = ticketUser.Ticket.Cost;
+
+					if (e.StartTime < ticketUser.CheckedInDate)
+					{
+						var lossPercentage = (e.EndTime - ticketUser.CheckedInDate)
+												/
+											(e.EndTime - e.StartTime);
+
+						baseBonus = (float)(baseBonus * e.MultiplierFactor * lossPercentage);
+					}
+					else
+					{
+						baseBonus = (float)(baseBonus * e.MultiplierFactor);
+					}
+
+					user.Bean += baseBonus;
+
+					await _userService.Update(user);
 				}
 				else
 				{

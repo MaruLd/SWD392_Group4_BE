@@ -147,25 +147,7 @@ namespace API.Extensions
 					//   .CacheAllQueries(CacheExpirationMode.Sliding, TimeSpan.FromDays(1));
 					// .SkipCachingCommands(commandText =>
 					// 	commandText.Contains("NEWID()", StringComparison.InvariantCultureIgnoreCase)); ;
-					.CacheQueriesContainingTypes(CacheExpirationMode.Absolute, TimeSpan.FromDays(7),
-						TableTypeComparison.Contains,
-						typeof(Event),
-						typeof(EventCategory),
-						typeof(EventOrganizer),
-						typeof(EventUser),
-
-						typeof(Ticket),
-						typeof(TicketUser),
-
-						typeof(User),
-
-						typeof(Organizer),
-						typeof(Location),
-
-						typeof(Post),
-						typeof(Comment)
-						);
-
+					.CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromDays(7));
 			   });
 
 			services.AddEasyCaching(option =>
