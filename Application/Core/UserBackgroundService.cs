@@ -24,7 +24,7 @@ namespace Application.Core
 		private readonly UserRepository _userRepository;
 		private readonly EventUserRepository _eventUserRepository;
 		private readonly RedisConnection _redisConnection;
-
+		private readonly FirebaseService _firebaseService;
 		private bool IsRunning = false;
 
 		public RedisQueueBackgroundService(IServiceProvider services, IConfiguration configuration, ILogger<RedisQueueBackgroundService> logger)
@@ -35,6 +35,7 @@ namespace Application.Core
 			_userRepository = scope.ServiceProvider.GetRequiredService<UserRepository>();
 			_eventUserRepository = scope.ServiceProvider.GetRequiredService<EventUserRepository>();
 			_redisConnection = scope.ServiceProvider.GetRequiredService<RedisConnection>();
+			_firebaseService = scope.ServiceProvider.GetRequiredService<FirebaseService>();
 		}
 
 		protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -80,6 +81,27 @@ namespace Application.Core
 								_eventUserRepository.Insert(eventUser);
 								await _eventUserRepository.Save();
 							}
+							break;
+						}
+					case "SendNotification_All":
+						{
+							var message = JsonSerializer.Deserialize<String>(work.Data.ToString());
+							await _firebaseService.SendMessageToAll(message);
+
+							break;
+						}
+					case "SendNotification_Specific":
+						{
+							var dict = JsonSerializer.Deserialize<Dictionary<String, Object>>(work.Data.ToString());
+
+							String message = (string)dict["message"];
+							List<UserFCMToken> tokensToNotify = (List<UserFCMToken>)dict["list"];
+
+							foreach (var t in tokensToNotify)
+							{
+								await _firebaseService.SendMessageToDevice(t.Token, message);
+							};
+
 							break;
 						}
 				}
