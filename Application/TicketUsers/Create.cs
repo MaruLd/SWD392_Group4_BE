@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.Events.DTOs;
@@ -92,13 +91,25 @@ namespace Application.TicketUsers
 				if (!result) return Result<TicketUserDTO>.Failure("Failed to create ticket user");
 
 				user.Bean -= ticket.Cost;
+				await _userService.Update(user);
 
-				_redisConnection._connection.GetSubscriber().Publish("UserUpdate", JsonSerializer.Serialize(user as User));
+				try
+				{
+					var eventUser = await _eventUserService.GetByID(ticket.EventId.Value, user.Id);
+					if (eventUser == null)
+					{
+						eventUser = new EventUser() { EventId = ticket.EventId, UserId = userDst.Id, Type = EventUserTypeEnum.Student };
+					}
+					await _eventUserService.Insert(eventUser);
+				}
+				catch { }
 
-				var euData = new Dictionary<String, Guid>();
-				euData.Add("eventId", ticket.EventId.Value);
-				euData.Add("userId", user.Id);
-				_redisConnection._connection.GetSubscriber().Publish("EventAddUser", JsonSerializer.Serialize(euData));
+				// _redisConnection._connection.GetSubscriber().Publish("UserUpdate", JsonSerializer.Serialize(user as User));
+
+				// var euData = new Dictionary<String, Guid>();
+				// euData.Add("eventId", ticket.EventId.Value);
+				// euData.Add("userId", user.Id);
+				// _redisConnection._connection.GetSubscriber().Publish("EventAddUser", JsonSerializer.Serialize(euData));
 
 				return Result<TicketUserDTO>.CreatedSuccess(_mapper.Map<TicketUserDTO>(newTicketUser));
 			}

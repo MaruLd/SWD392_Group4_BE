@@ -44,7 +44,7 @@ namespace Application.Core
 				await _userRepository.Save();
 			});
 
-			_connection.GetSubscriber().Subscribe("AddUserToEvent", async (channel, message) =>
+			_connection.GetSubscriber().Subscribe("EventAddUser", async (channel, message) =>
 			{
 				var data = JsonSerializer.Deserialize<Dictionary<String, Guid>>(message);
 
@@ -52,12 +52,18 @@ namespace Application.Core
 				Guid userId = data["userId"];
 
 				var eventUser = await _eventUserRepository.GetQuery().FirstOrDefaultAsync(t => t.EventId == eventId && t.UserId == userId);
+				if (eventUser != null)
+					_logger.LogDebug("==========================================" + eventUser.Id.ToString());
+					else {
+					_logger.LogDebug("========================================== NAH");	
+					}
 				if (eventUser == null)
 				{
+					_logger.LogDebug("========================================== NAH");	
 					eventUser = new EventUser() { EventId = eventId, UserId = userId, Type = EventUserTypeEnum.Student };
 					_eventUserRepository.Insert(eventUser);
 					await _eventUserRepository.Save();
-				}				
+				}
 			});
 
 			return Task.CompletedTask;
