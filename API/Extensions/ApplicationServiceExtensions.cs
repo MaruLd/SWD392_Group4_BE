@@ -74,13 +74,17 @@ namespace API.Extensions
 			services.AddScoped<TokenService>();
 
 			services.AddSingleton<FirebaseService>();
-			services.AddSingleton<AWSService>();
+			// services.AddSingleton<AWSService>();
 			services.AddSingleton<GCService>();
+			services.AddSingleton<RedisConnection>();
+
 
 			services.AddSignalR();
 			services.AddSingleton<PostConnections>();
 
 			services.AddHostedService<BackgroundEventCheckService>();
+			services.AddHostedService<UserBackgroundService>();
+
 
 			services.AddScoped<IUserAccessor, UserAccessor>();
 			services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.Events.DTOs;
@@ -35,6 +36,7 @@ namespace Application.TicketUsers
 			private readonly TicketUserService _ticketUserService;
 			private readonly EventUserService _eventUserService;
 			private readonly IUserAccessor _userAccessor;
+			private readonly RedisConnection _redisConnection;
 			private readonly IMapper _mapper;
 
 			public Handler(
@@ -44,7 +46,8 @@ namespace Application.TicketUsers
 				TicketUserService ticketUserService,
 				EventUserService eventUserService,
 				IMapper mapper,
-				IUserAccessor userAccessor)
+				IUserAccessor userAccessor,
+				RedisConnection redisConnection)
 			{
 				_mapper = mapper;
 				_eventService = eventService;
@@ -53,6 +56,7 @@ namespace Application.TicketUsers
 				this._ticketUserService = ticketUserService;
 				this._eventUserService = eventUserService;
 				_userAccessor = userAccessor;
+				this._redisConnection = redisConnection;
 			}
 
 			public async Task<Result<TicketUserDTO>> Handle(Command request, CancellationToken cancellationToken)
@@ -88,18 +92,13 @@ namespace Application.TicketUsers
 				if (!result) return Result<TicketUserDTO>.Failure("Failed to create ticket user");
 
 				user.Bean -= ticket.Cost;
-				await _userService.Update(user);
 
-				try
-				{
-					var eventUser = await _eventUserService.GetByID(ticket.EventId.Value, user.Id);
-					if (eventUser == null)
-					{
-						eventUser = new EventUser() { EventId = ticket.EventId, UserId = userDst.Id, Type = EventUserTypeEnum.Student };
-					}
-					await _eventUserService.Insert(eventUser);
-				}
-				catch { }
+				_redisConnection._connection.GetSubscriber().Publish("UserUpdate", JsonSerializer.Serialize(user as User));
+
+				var euData = new Dictionary<String, Guid>();
+				euData.Add("eventId", ticket.EventId.Value);
+				euData.Add("userId", user.Id);
+				_redisConnection._connection.GetSubscriber().Publish("EventAddUser", JsonSerializer.Serialize(euData));
 
 				return Result<TicketUserDTO>.CreatedSuccess(_mapper.Map<TicketUserDTO>(newTicketUser));
 			}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.Events.DTOs;
@@ -36,6 +37,7 @@ namespace Application.TicketUsers
 			private readonly EventUserService _eventUserService;
 			private readonly IUserAccessor _userAccessor;
 			private readonly EventCodeService _eventCodeService;
+			private readonly RedisConnection _redisConnection;
 			private readonly IMapper _mapper;
 
 			public Handler(
@@ -46,7 +48,8 @@ namespace Application.TicketUsers
 				EventUserService eventUserService,
 				IMapper mapper,
 				IUserAccessor userAccessor,
-				EventCodeService eventCodeService)
+				EventCodeService eventCodeService,
+				RedisConnection redisConnection)
 			{
 				_mapper = mapper;
 				_eventService = eventService;
@@ -56,6 +59,7 @@ namespace Application.TicketUsers
 				this._eventUserService = eventUserService;
 				_userAccessor = userAccessor;
 				this._eventCodeService = eventCodeService;
+				this._redisConnection = redisConnection;
 			}
 
 			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
@@ -77,8 +81,8 @@ namespace Application.TicketUsers
 				if (eventCode == null) return Result<Unit>.Failure("This code is not valid!");
 
 				if (eventCode.EventId != e.Id) return Result<Unit>.Failure("This code can't be apply to this event!");
-				TicketUsersStateMachine sm = new TicketUsersStateMachine(ticketUser);
 
+				TicketUsersStateMachine sm = new TicketUsersStateMachine(ticketUser);
 				if (e.IsAbleToCheckin() && ticketUser.State == TicketUserStateEnum.Idle)
 				{
 					sm.TriggerState(TicketUserStateEnum.CheckedIn);
@@ -92,9 +96,11 @@ namespace Application.TicketUsers
 
 					if (e.StartTime < ticketUser.CheckedInDate)
 					{
-						var lossPercentage = (e.EndTime - ticketUser.CheckedInDate)
-												/
-											(e.EndTime - e.StartTime);
+						var lossPercentage = 	
+												(e.EndTime - ticketUser.CheckedInDate)
+												/*===================================*/ /
+													   (e.EndTime - e.StartTime);
+
 
 						baseBonus = (float)(baseBonus * e.MultiplierFactor * lossPercentage);
 					}
@@ -105,11 +111,12 @@ namespace Application.TicketUsers
 
 					user.Bean += baseBonus;
 
-					await _userService.Update(user);
+					_redisConnection._connection.GetSubscriber().Publish("UserUpdate", JsonSerializer.Serialize(user));
+					// await _userService.Update(user);
 				}
 				else
 				{
-					return Result<Unit>.Failure("Event is not ready for checkin/checkout!");
+					return Result<Unit>.Failure("Event or Ticket is not ready for checkin or checkout!");
 				}
 
 				var result = await _ticketUserService.Update(ticketUser);
