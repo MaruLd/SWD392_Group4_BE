@@ -18,13 +18,11 @@ namespace API.Controllers
 {
 	public class ImageController : BaseApiController
 	{
-		private readonly AWSService _awsService;
 		private readonly GCService _gCService;
 		private readonly UserImageService _imageService;
 
-		public ImageController(AWSService awsService, GCService gCService, UserImageService imageService)
+		public ImageController(GCService gCService, UserImageService imageService)
 		{
-			this._awsService = awsService;
 			this._gCService = gCService;
 			this._imageService = imageService;
 		}
