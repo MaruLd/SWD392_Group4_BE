@@ -58,7 +58,14 @@ namespace Application.Services
 			return await query.Where(entity => entity.Status != StatusEnum.Unavailable).Where(t => t.EventId == eventId).OrderBy(e => e.CreatedDate).ToListAsync();
 		}
 
-		public async Task<Post> GetByID(Guid id) => await _PostRepository.GetByID(id);
+		public async Task<Post> GetByID(Guid id)
+		{
+			var query = _PostRepository.GetQuery();
+			query = query.Where(e => e.Status != StatusEnum.Unavailable);
+			query = query.Where(p => p.Id == id).Include(p => p.User);
+			return await query.FirstOrDefaultAsync();
+
+		}
 		public async Task<bool> Insert(Post e) { _PostRepository.Insert(e); return await _PostRepository.Save(); }
 		public async Task<bool> Update(Post e) { _PostRepository.Update(e); return await _PostRepository.Save(); }
 		public async Task<bool> Save() { return await _PostRepository.Save(); }

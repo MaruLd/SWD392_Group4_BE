@@ -33,7 +33,7 @@ namespace Application.Posts
 
 			public async Task<Result<PostDTO>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				var Post = _postService.GetByID(request.Id);
+				var Post = await _postService.GetByID(request.Id);
 				var PostDto = _mapper.Map<PostDTO>(Post);
 				return Result<PostDTO>.Success(PostDto);
 			}
