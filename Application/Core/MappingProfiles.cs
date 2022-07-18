@@ -44,7 +44,8 @@ namespace Application.Core
 
 			CreateMap<CreatePostDTO, Post>();
 			CreateMap<EditPostDTO, Post>();
-			CreateMap<Post, PostDTO>();
+			CreateMap<Post, PostDTO>()
+				.ForMember(dto => dto.User, src => src.MapFrom(c => c.User));
 			CreateMap<PostDTO, Post>();
 
 			CreateMap<CreateCommentDTO, Comment>();

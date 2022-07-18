@@ -48,6 +48,7 @@ namespace Application.Services
 					break;
 			}
 
+			query = query.Include(p => p.User);
 			return await PagedList<Post>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);
 		}
 
