@@ -38,6 +38,7 @@ namespace Application.Events
 			private readonly FirebaseService _firebaseService;
 			private readonly IUserAccessor _userAccessor;
 			private readonly IMapper _mapper;
+			private readonly RedisConnection _redisConnection;
 
 			public Handler(
 				EventService eventService,
@@ -47,9 +48,11 @@ namespace Application.Events
 				EventUserService eventUserService,
 				FirebaseService firebaseService,
 				IMapper mapper,
+				RedisConnection redisConnection,
 				IUserAccessor userAccessor)
 			{
 				_mapper = mapper;
+				this._redisConnection = redisConnection;
 				_eventService = eventService;
 				this._ticketService = ticketService;
 				_userService = userService;
@@ -76,7 +79,7 @@ namespace Application.Events
 
 				try
 				{
-					EventStateMachine esm = new EventStateMachine(e, _firebaseService);
+					EventStateMachine esm = new EventStateMachine(e, _redisConnection);
 					e = esm.TriggerState((EventStateEnum)request.dto.eventStateEnum);
 
 					// Remove All TicketUser If Event Is Draft Or Cancelled (Refund Implement Later)

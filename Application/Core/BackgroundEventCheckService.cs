@@ -54,8 +54,8 @@ namespace Application.Core
 			{
 				foreach (var e in eventToCheckin)
 				{
-					// e.State = EventStateEnum.CheckingIn;
-					// _eventRepository.Update(e);
+					e.State = EventStateEnum.CheckingIn;
+					_eventRepository.Update(e);
 					_logger.LogInformation($"[Change] : <{e.Id}> - {e.Title}");
 				}
 
@@ -85,7 +85,26 @@ namespace Application.Core
 			}
 
 
+			_logger.LogInformation("[>> Checkout]");
+			var eventToCheckout = await _eventRepository.GetQuery().Where(e =>
+				(
+					e.State == EventStateEnum.Publish
+				) &&
+				e.Status == StatusEnum.Available
+				&&
+				e.EndTime > DateTime.Now).ToListAsync();
 
+			if (eventToCheckout.Count > 0)
+			{
+				foreach (var e in eventToCheckin)
+				{
+					e.State = EventStateEnum.CheckingOut;
+					_eventRepository.Update(e);
+					_logger.LogInformation($"[Change] : <{e.Id}> - {e.Title}");
+				}
+
+				await _eventRepository.Save();
+			}
 
 			if ((DateTime.Now.Hour == 24 || DateTime.Now.Hour == 0) && DateTime.Now.Minute == 0)
 			{

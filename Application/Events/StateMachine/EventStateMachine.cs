@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.Services;
 using Domain;
 using Domain.Enums;
 using Stateless;
+using static Application.Core.RedisConnection;
 
 namespace Application.Events.StateMachine
 {
@@ -13,12 +15,12 @@ namespace Application.Events.StateMachine
 	{
 		private StateMachine<int, int> _machine;
 		Event _e;
-		private readonly FirebaseService _firebaseService;
+		private readonly RedisConnection redisConnection;
 
-		public EventStateMachine(Event e, FirebaseService firebaseService)
+		public EventStateMachine(Event e, RedisConnection redisConnection)
 		{
 			_e = e;
-			this._firebaseService = firebaseService;
+			this.redisConnection = redisConnection;
 			_machine = new StateMachine<int, int>((int)_e.State);
 
 			_machine.Configure((int)EventStateEnum.Draft)
@@ -64,7 +66,7 @@ namespace Application.Events.StateMachine
 			void OnPublish()
 			{
 				_e.State = EventStateEnum.Publish;
-				// NotifyAll();
+				NotifyAll();
 			}
 
 			void OnDelay()
@@ -111,28 +113,22 @@ namespace Application.Events.StateMachine
 
 		private void NotifyAll()
 		{
-			new Thread(async () =>
-			{
-				await _firebaseService.SendMessageToAll($"{_e.Title} is now ${_e.State}");
-			}).Start();
+			redisConnection.AddToQueue(new QueueItem() { ActionName = "SendNotification_All", Data = $"{_e.Title} is now ${_e.State}" });
 		}
 
 		private void NotifySpecific()
 		{
-			new Thread(async () =>
+
+			List<UserFCMToken> tokensToNotify = new List<UserFCMToken>();
+			foreach (var t in _e.EventUsers.Select(eu => eu.User.Tokens))
 			{
-				List<UserFCMToken> tokensToNotify = new List<UserFCMToken>();
-				foreach (var t in _e.EventUsers.Select(eu => eu.User.Tokens)) {
-					tokensToNotify.AddRange(t);
-				}
+				tokensToNotify.AddRange(t);
+			}
 
-				foreach (var t in tokensToNotify)
-				{
-					await _firebaseService.SendMessageToDevice(t.Token, $"{_e.Title} is now ${_e.State}");
-				};
-			}).Start();
+			var dict = new Dictionary<String, Object>();
+			dict.Add("message", $"{_e.Title} is now ${_e.State}");
+			dict.Add("list", tokensToNotify);
+			redisConnection.AddToQueue(new QueueItem() { ActionName = "SendNotification_Specific", Data = dict });
 		}
-
-
 	}
 }
