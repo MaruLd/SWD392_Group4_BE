@@ -16,6 +16,7 @@ using MessagePack.Formatters;
 using MessagePack.Resolvers;
 using MessagePack;
 using API.SignalR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace API.Extensions
 {
@@ -83,7 +84,7 @@ namespace API.Extensions
 			services.AddSingleton<PostConnections>();
 
 			services.AddHostedService<BackgroundEventCheckService>();
-			services.AddHostedService<UserBackgroundService>();
+			services.AddHostedService<RedisQueueBackgroundService>();
 
 
 			services.AddScoped<IUserAccessor, UserAccessor>();
@@ -139,7 +140,8 @@ namespace API.Extensions
 						sqlOpts.CommandTimeout((int)TimeSpan.FromMinutes(3).TotalSeconds)
 									.EnableRetryOnFailure();
 					})
-					.AddInterceptors(prov.GetRequiredService<SecondLevelCacheInterceptor>());
+					.AddInterceptors(prov.GetRequiredService<SecondLevelCacheInterceptor>())
+					.EnableThreadSafetyChecks(false);
 			  });
 
 			// Add Redis Cache

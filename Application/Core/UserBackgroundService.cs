@@ -14,64 +14,85 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Persistence.Repositories;
 using StackExchange.Redis;
+using static Application.Core.RedisConnection;
 
 namespace Application.Core
 {
-	public class UserBackgroundService : BackgroundService
+	public class RedisQueueBackgroundService : BackgroundService
 	{
-
-		private readonly ILogger<UserBackgroundService> _logger;
+		private readonly ILogger<RedisQueueBackgroundService> _logger;
 		private readonly UserRepository _userRepository;
 		private readonly EventUserRepository _eventUserRepository;
-		private readonly ConnectionMultiplexer _connection;
+		private readonly RedisConnection _redisConnection;
 
-		public UserBackgroundService(IServiceProvider services, IConfiguration configuration, ILogger<UserBackgroundService> logger)
+		private bool IsRunning = false;
+
+		public RedisQueueBackgroundService(IServiceProvider services, IConfiguration configuration, ILogger<RedisQueueBackgroundService> logger)
 		{
 			this._logger = logger;
 			var scope = services.CreateScope();
 
 			_userRepository = scope.ServiceProvider.GetRequiredService<UserRepository>();
 			_eventUserRepository = scope.ServiceProvider.GetRequiredService<EventUserRepository>();
-			_connection = scope.ServiceProvider.GetRequiredService<RedisConnection>().GetConnection();
+			_redisConnection = scope.ServiceProvider.GetRequiredService<RedisConnection>();
 		}
 
 		protected override Task ExecuteAsync(CancellationToken stoppingToken)
 		{
-			_connection.GetSubscriber().Subscribe("UserUpdate", async (channel, message) =>
+			_redisConnection.GetConnection().GetSubscriber().Subscribe("Queue", async (channel, message) =>
 			{
-				var user = JsonSerializer.Deserialize<User>(message);
-				_userRepository.Update(user);
-				await _userRepository.Save();
-			});
-
-			_connection.GetSubscriber().Subscribe("EventAddUser", async (channel, message) =>
-			{
-				var data = JsonSerializer.Deserialize<Dictionary<String, Guid>>(message);
-
-				Guid eventId = data["eventId"];
-				Guid userId = data["userId"];
-
-				var eventUser = await _eventUserRepository.GetQuery().FirstOrDefaultAsync(t => t.EventId == eventId && t.UserId == userId);
-				if (eventUser != null)
-					_logger.LogDebug("==========================================" + eventUser.Id.ToString());
-					else {
-					_logger.LogDebug("========================================== NAH");	
-					}
-				if (eventUser == null)
+				if (!IsRunning)
 				{
-					_logger.LogDebug("========================================== NAH");	
-					eventUser = new EventUser() { EventId = eventId, UserId = userId, Type = EventUserTypeEnum.Student };
-					_eventUserRepository.Insert(eventUser);
-					await _eventUserRepository.Save();
-				}
+					IsRunning = true;
+					await DoNextWork();
+				};
 			});
 
 			return Task.CompletedTask;
 		}
 
+		public async Task DoNextWork()
+		{
+			var work = await _redisConnection.GetFromQueue();
+			if (work != null)
+			{
+				switch (work.ActionName)
+				{
+					case "UserUpdate":
+						{
+							var user = JsonSerializer.Deserialize<User>(work.Data.ToString());
+							_userRepository.Update(user);
+							await _userRepository.Save();
+							break;
+						}
+
+					case "EventAddUser":
+						{
+							var data = JsonSerializer.Deserialize<Dictionary<String, Guid>>(work.Data.ToString());
+
+							Guid eventId = data["eventId"];
+							Guid userId = data["userId"];
+
+							var eventUser = await _eventUserRepository.GetQuery().Where(t => t.EventId == eventId && t.UserId == userId).FirstOrDefaultAsync();
+							if (eventUser == null)
+							{
+								eventUser = new EventUser() { EventId = eventId, UserId = userId, Type = EventUserTypeEnum.Student };
+								_eventUserRepository.Insert(eventUser);
+								await _eventUserRepository.Save();
+							}
+							break;
+						}
+				}
+				await DoNextWork();
+			}
+			else
+			{
+				IsRunning = false;
+			}
+		}
+
 		public Task StopAsync(CancellationToken stoppingToken)
 		{
-			_logger.LogInformation("Timed Hosted Service is stopping.");
 			return Task.CompletedTask;
 		}
 

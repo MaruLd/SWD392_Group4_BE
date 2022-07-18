@@ -38,8 +38,31 @@ namespace Application.Core
 
 		private async void DoWork(object? state)
 		{
-			_logger.LogInformation("=================================== Event Ongoing ===================================");
+			_logger.LogInformation("=================================== Event Autostate ===================================");
 
+
+			_logger.LogInformation("[>> Checkin]");
+			var eventToCheckin = await _eventRepository.GetQuery().Where(e =>
+				(
+					e.State == EventStateEnum.Publish
+				) &&
+				e.Status == StatusEnum.Available
+				&&
+				e.StartTime < DateTime.Now.AddMinutes(30)).ToListAsync();
+
+			if (eventToCheckin.Count > 0)
+			{
+				foreach (var e in eventToCheckin)
+				{
+					// e.State = EventStateEnum.CheckingIn;
+					// _eventRepository.Update(e);
+					_logger.LogInformation($"[Change] : <{e.Id}> - {e.Title}");
+				}
+
+				await _eventRepository.Save();
+			}
+
+			_logger.LogInformation("[>> Ongoing]");
 			var eventToOngoing = await _eventRepository.GetQuery().Where(e =>
 				(
 					e.State == EventStateEnum.Publish ||
@@ -55,17 +78,18 @@ namespace Application.Core
 				{
 					e.State = EventStateEnum.Ongoing;
 					_eventRepository.Update(e);
-					_logger.LogInformation("[ON-GOING] : " + e.Title);
+					_logger.LogInformation($"[Change] : <{e.Id}> - {e.Title}");
 				}
 
 				await _eventRepository.Save();
 			}
 
 
+
+
 			if ((DateTime.Now.Hour == 24 || DateTime.Now.Hour == 0) && DateTime.Now.Minute == 0)
 			{
-				_logger.LogInformation("=================================== Event Ended ===================================");
-
+				_logger.LogInformation("[>> Ended]");
 				var eventToEnd = await _eventRepository.GetQuery().Where(e =>
 					(
 						e.State != EventStateEnum.Draft ||
@@ -82,7 +106,9 @@ namespace Application.Core
 					{
 						e.State = EventStateEnum.Ended;
 						_eventRepository.Update(e);
-						_logger.LogInformation("[END] : " + e.Title);
+						_logger.LogInformation($"[Change] : <{e.Id}> - {e.Title}");
+
+
 					}
 				}
 			}

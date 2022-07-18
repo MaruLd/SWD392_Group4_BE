@@ -17,6 +17,7 @@ using Domain.Enums;
 using FluentValidation;
 using MediatR;
 using Persistence;
+using static Application.Core.RedisConnection;
 
 namespace Application.TicketUsers
 {
@@ -96,7 +97,7 @@ namespace Application.TicketUsers
 
 					if (e.StartTime < ticketUser.CheckedInDate)
 					{
-						var lossPercentage = 	
+						var lossPercentage =
 												(e.EndTime - ticketUser.CheckedInDate)
 												/*===================================*/ /
 													   (e.EndTime - e.StartTime);
@@ -111,7 +112,7 @@ namespace Application.TicketUsers
 
 					user.Bean += baseBonus;
 
-					_redisConnection._connection.GetSubscriber().Publish("UserUpdate", JsonSerializer.Serialize(user));
+					_redisConnection.AddToQueue("UserUpdate", user);
 					// await _userService.Update(user);
 				}
 				else

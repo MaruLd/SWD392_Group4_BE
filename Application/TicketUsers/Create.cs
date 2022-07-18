@@ -104,12 +104,12 @@ namespace Application.TicketUsers
 				}
 				catch { }
 
-				// _redisConnection._connection.GetSubscriber().Publish("UserUpdate", JsonSerializer.Serialize(user as User));
+				_redisConnection.AddToQueue("UserUpdate", user as User);
 
-				// var euData = new Dictionary<String, Guid>();
-				// euData.Add("eventId", ticket.EventId.Value);
-				// euData.Add("userId", user.Id);
-				// _redisConnection._connection.GetSubscriber().Publish("EventAddUser", JsonSerializer.Serialize(euData));
+				var euData = new Dictionary<String, Guid>();
+				euData.Add("eventId", ticket.EventId.Value);
+				euData.Add("userId", user.Id);
+				_redisConnection.AddToQueue("EventAddUser", euData);
 
 				return Result<TicketUserDTO>.CreatedSuccess(_mapper.Map<TicketUserDTO>(newTicketUser));
 			}
