@@ -50,11 +50,11 @@ namespace Application.Events.StateMachine
 
 			_machine.Configure((int)EventStateEnum.CheckingOut)
 				.OnEntry(data => OnCheckout())
-				.Permit((int)EventStateEnum.Ongoing, (int)EventStateEnum.Ended);
+				.Permit((int)EventStateEnum.Ended, (int)EventStateEnum.Ended);
 
 			_machine.Configure((int)EventStateEnum.Ended)
 				.OnEntry(data => OnEnd())
-				.Permit((int)EventStateEnum.Ended, (int)EventStateEnum.Draft);
+				.Permit((int)EventStateEnum.Draft, (int)EventStateEnum.Draft);
 
 			_machine.Configure((int)EventStateEnum.Cancelled)
 				.OnEntry(data => OnCancel());
