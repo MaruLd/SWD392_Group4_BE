@@ -16,7 +16,7 @@ namespace Application.Users.DTOs
 		public Guid Id { get; set; }
 
 		public EventDTO Event { get; set; }
-		public Guid TicketId { get; set; }
+		public TicketDTO Ticket { get; set; }
 
 		public String Name { get; set; }
 		public String Description { get; set; }

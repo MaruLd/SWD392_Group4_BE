@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Persistence.Repositories;
+using static Application.Core.RedisConnection;
 
 namespace Application.Core
 {
@@ -18,6 +19,7 @@ namespace Application.Core
 		private readonly EventRepository _eventRepository;
 
 		private readonly ILogger<BackgroundEventCheckService> _logger;
+		private readonly RedisConnection _redisConnection;
 		private Timer? _timer = null;
 
 		public BackgroundEventCheckService(IServiceProvider services, ILogger<BackgroundEventCheckService> logger)
@@ -26,6 +28,7 @@ namespace Application.Core
 			var scope = services.CreateScope();
 
 			_eventRepository = scope.ServiceProvider.GetRequiredService<EventRepository>();
+			_redisConnection = scope.ServiceProvider.GetRequiredService<RedisConnection>();
 		}
 
 		protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -57,8 +60,10 @@ namespace Application.Core
 					e.State = EventStateEnum.CheckingIn;
 					_eventRepository.Update(e);
 					_logger.LogInformation($"[Change] : <{e.Id}> - {e.Title}");
+					_redisConnection.AddToQueue(new QueueItem() { ActionName = "SendNotification_All", Data = $"{e.Title} is now ${e.State}" });
 				}
 
+				
 				await _eventRepository.Save();
 			}
 
@@ -79,6 +84,7 @@ namespace Application.Core
 					e.State = EventStateEnum.Ongoing;
 					_eventRepository.Update(e);
 					_logger.LogInformation($"[Change] : <{e.Id}> - {e.Title}");
+					_redisConnection.AddToQueue(new QueueItem() { ActionName = "SendNotification_All", Data = $"{e.Title} is now ${e.State}" });
 				}
 
 				await _eventRepository.Save();
@@ -101,6 +107,7 @@ namespace Application.Core
 					e.State = EventStateEnum.CheckingOut;
 					_eventRepository.Update(e);
 					_logger.LogInformation($"[Change] : <{e.Id}> - {e.Title}");
+					_redisConnection.AddToQueue(new QueueItem() { ActionName = "SendNotification_All", Data = $"{e.Title} is now ${e.State}" });
 				}
 
 				await _eventRepository.Save();
@@ -126,6 +133,7 @@ namespace Application.Core
 						e.State = EventStateEnum.Ended;
 						_eventRepository.Update(e);
 						_logger.LogInformation($"[Change] : <{e.Id}> - {e.Title}");
+						_redisConnection.AddToQueue(new QueueItem() { ActionName = "SendNotification_All", Data = $"{e.Title} is now ${e.State}" });
 
 
 					}
