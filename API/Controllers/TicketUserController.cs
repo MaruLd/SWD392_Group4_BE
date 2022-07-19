@@ -53,7 +53,7 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize]
 		[HttpPost]
-		public async Task<ActionResult> CreateEventUser(Guid ticketid, CreateTicketUserDTO dto)
+		public async Task<ActionResult<TicketUserDTO>> CreateEventUser(Guid ticketid, CreateTicketUserDTO dto)
 		{
 			return HandleResult(await Mediator.Send(new Create.Command { ticketId = ticketid, dto = dto }));
 		}
@@ -64,7 +64,7 @@ namespace API.Controllers
 		/// </summary>
 		[Authorize]
 		[HttpPost("use-code")]
-		public async Task<ActionResult> UseEventCode(Guid ticketid, string code)
+		public async Task<ActionResult<String>> UseEventCode(Guid ticketid, string code)
 		{
 			return HandleResult(await Mediator.Send(new UseCode.Command { ticketId = ticketid, code = code }));
 		}

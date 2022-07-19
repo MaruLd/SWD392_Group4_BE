@@ -89,7 +89,7 @@ namespace Application.TicketUsers
 				if (e.IsAbleToCheckin() && ticketUser.State == TicketUserStateEnum.Idle)
 				{
 					sm.TriggerState(TicketUserStateEnum.CheckedIn);
-					message = "Checkin Successfully!";
+					message = "Checkin";
 				}
 				else if (e.IsAbleToCheckout() && ticketUser.State == TicketUserStateEnum.CheckedIn)
 				{
@@ -116,7 +116,7 @@ namespace Application.TicketUsers
 					user.Bean += baseBonus;
 
 					_redisConnection.AddToQueue("UserUpdate", user);
-					message = "Checkout Successfully!";
+					message = "Checkout";
 					// await _userService.Update(user);
 				}
 				else
