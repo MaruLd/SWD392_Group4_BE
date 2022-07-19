@@ -23,13 +23,13 @@ namespace Application.TicketUsers
 {
 	public class UseCode
 	{
-		public class Command : IRequest<Result<Unit>> //Command do not return anything, but can return success or failure, return Unit also meant for nothing
+		public class Command : IRequest<Result<String>> //Command do not return anything, but can return success or failure, return Unit also meant for nothing
 		{
 			public Guid ticketId { get; set; }
 			public string code { get; set; }
 		}
 
-		public class Handler : IRequestHandler<Command, Result<Unit>>
+		public class Handler : IRequestHandler<Command, Result<String>>
 		{
 			private readonly EventService _eventService;
 			private readonly TicketService _ticketService;
@@ -63,11 +63,11 @@ namespace Application.TicketUsers
 				this._redisConnection = redisConnection;
 			}
 
-			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+			public async Task<Result<String>> Handle(Command request, CancellationToken cancellationToken)
 			{
 
 				var ticket = await _ticketService.GetByID(request.ticketId);
-				if (ticket == null) return Result<Unit>.NotFound("Ticket Not Found!");
+				if (ticket == null) return Result<String>.NotFound("Ticket Not Found!");
 
 				var e = ticket.Event;
 
@@ -76,17 +76,20 @@ namespace Application.TicketUsers
 				var userId = _userAccessor.GetID();
 
 				var ticketUser = await _ticketUserService.GetByID(ticket.Id, userId);
-				if (ticketUser == null) return Result<Unit>.NotFound("You haven't buy this ticket");
+				if (ticketUser == null) return Result<String>.NotFound("You haven't buy this ticket");
 
 				var eventCode = await _eventCodeService.GetByCode(request.code);
-				if (eventCode == null) return Result<Unit>.Failure("This code is not valid!");
+				if (eventCode == null) return Result<String>.Failure("This code is not valid!");
 
-				if (eventCode.EventId != e.Id) return Result<Unit>.Failure("This code can't be apply to this event!");
+				if (eventCode.EventId != e.Id) return Result<String>.Failure("This code can't be apply to this event!");
 
 				TicketUsersStateMachine sm = new TicketUsersStateMachine(ticketUser);
+
+				var message = "";
 				if (e.IsAbleToCheckin() && ticketUser.State == TicketUserStateEnum.Idle)
 				{
 					sm.TriggerState(TicketUserStateEnum.CheckedIn);
+					message = "Checkin Successfully!";
 				}
 				else if (e.IsAbleToCheckout() && ticketUser.State == TicketUserStateEnum.CheckedIn)
 				{
@@ -113,17 +116,18 @@ namespace Application.TicketUsers
 					user.Bean += baseBonus;
 
 					_redisConnection.AddToQueue("UserUpdate", user);
+					message = "Checkout Successfully!";
 					// await _userService.Update(user);
 				}
 				else
 				{
-					return Result<Unit>.Failure("Event or Ticket is not ready for checkin or checkout!");
+					return Result<String>.Failure("Event or Ticket is not ready for checkin or checkout!");
 				}
 
 				var result = await _ticketUserService.Update(ticketUser);
 
-				if (!result) return Result<Unit>.Failure("Failed to change ticket user!");
-				return Result<Unit>.Success(Unit.Value);
+				if (!result) return Result<String>.Failure("Failed to change ticket user!");
+				return Result<String>.Success(message);
 			}
 		}
 	}
