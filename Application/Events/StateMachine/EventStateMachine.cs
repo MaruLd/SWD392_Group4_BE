@@ -84,6 +84,7 @@ namespace Application.Events.StateMachine
 			void OnOngoing()
 			{
 				_e.State = EventStateEnum.Ongoing;
+				NotifySpecific();
 			}
 
 			void OnCheckout()
@@ -113,7 +114,10 @@ namespace Application.Events.StateMachine
 
 		private void NotifyAll()
 		{
-			redisConnection.AddToQueue(new QueueItem() { ActionName = "SendNotification_All", Data = $"{_e.Title} is now ${_e.State}" });
+			var dict = new Dictionary<String, Object>();
+			dict.Add("message", $"{_e.Title} is now ${_e.State}");
+
+			redisConnection.AddToQueue(new QueueItem() { ActionName = "SendNotification_All", Data = dict });
 		}
 
 		private void NotifySpecific()
@@ -128,7 +132,7 @@ namespace Application.Events.StateMachine
 			var dict = new Dictionary<String, Object>();
 			dict.Add("message", $"{_e.Title} is now ${_e.State}");
 			dict.Add("list", tokensToNotify);
-			
+
 			redisConnection.AddToQueue(new QueueItem() { ActionName = "SendNotification_Specific", Data = dict });
 		}
 	}
