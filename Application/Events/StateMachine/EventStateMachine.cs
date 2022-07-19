@@ -79,25 +79,29 @@ namespace Application.Events.StateMachine
 			void OnCheckin()
 			{
 				_e.State = EventStateEnum.CheckingIn;
-				NotifySpecific();
+				NotifyAll();
+				// NotifySpecific();
 			}
 
 			void OnOngoing()
 			{
 				_e.State = EventStateEnum.Ongoing;
-				NotifySpecific();
+				NotifyAll();
+				// NotifySpecific();
 			}
 
 			void OnCheckout()
 			{
 				_e.State = EventStateEnum.CheckingOut;
-				NotifySpecific();
+				NotifyAll();
+				// NotifySpecific();
 			}
 
 			void OnEnd()
 			{
 				_e.State = EventStateEnum.Ended;
-				NotifySpecific();
+				NotifyAll();
+				// NotifySpecific();
 			}
 
 			void OnCancel()

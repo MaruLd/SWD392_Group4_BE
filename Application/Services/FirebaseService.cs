@@ -86,8 +86,9 @@ namespace Application.Services
 				Topic = "all",
 				Notification = new Notification()
 				{
-					Title = "Hailo",
-					Body = message
+					Title = "New Notification",
+					Body = message,
+					ImageUrl = "https://evsmart.netlify.app/static/media/SEventLogo.17f782bba5efd6aa7a76.png"
 				}
 				// Token = registrationToken,
 			};
