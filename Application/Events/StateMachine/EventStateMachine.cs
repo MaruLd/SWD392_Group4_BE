@@ -53,7 +53,8 @@ namespace Application.Events.StateMachine
 				.Permit((int)EventStateEnum.Ongoing, (int)EventStateEnum.Ended);
 
 			_machine.Configure((int)EventStateEnum.Ended)
-				.OnEntry(data => OnEnd());
+				.OnEntry(data => OnEnd())
+				.Permit((int)EventStateEnum.Ended, (int)EventStateEnum.Draft);
 
 			_machine.Configure((int)EventStateEnum.Cancelled)
 				.OnEntry(data => OnCancel());
