@@ -128,6 +128,7 @@ namespace Application.Events.StateMachine
 			var dict = new Dictionary<String, Object>();
 			dict.Add("message", $"{_e.Title} is now ${_e.State}");
 			dict.Add("list", tokensToNotify);
+			
 			redisConnection.AddToQueue(new QueueItem() { ActionName = "SendNotification_Specific", Data = dict });
 		}
 	}

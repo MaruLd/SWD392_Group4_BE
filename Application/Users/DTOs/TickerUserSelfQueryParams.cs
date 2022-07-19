@@ -10,6 +10,9 @@ namespace Application.Users.DTOs
 {
 	public class TickerUserSelfQueryParams : PaginationParams
 	{
+		[FromQuery(Name = "event-id")]
+		public Guid EventId { get; set; }
+		
 		[FromQuery(Name = "state")]
 		public TicketUserStateEnum ticketUserStateEnum { get; set; } = TicketUserStateEnum.None;
 	}

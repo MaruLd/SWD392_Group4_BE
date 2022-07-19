@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Application.Core;
 using Domain;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
@@ -41,7 +43,6 @@ namespace API
 					await rm.CreateAsync(new IdentityRole<Guid>("User"));
 					await rm.CreateAsync(new IdentityRole<Guid>("Admin"));
 				}
-
 
 				// await context.Database.MigrateAsync();
 				// await Seed.SeedData(context, userManager);

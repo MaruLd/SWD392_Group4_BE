@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using API.DTOs;
 using Application.Core;
 using Application.Services;
@@ -25,6 +26,7 @@ namespace API.Controllers
 		private readonly UserManager<User> _userManager;
 		private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 		private readonly UserFCMTokenService _userFCMTokenService;
+		private readonly RedisConnection _redisConnection;
 
 		public AuthController(TokenService tokenService,
 						UserService userService,
@@ -33,7 +35,8 @@ namespace API.Controllers
 						UserManager<User> userManager,
 						RoleManager<IdentityRole<Guid>> roleManager,
 						UserFCMTokenService userFCMTokenService,
-						IMapper mapper
+						IMapper mapper,
+						RedisConnection redisConnection
 						)
 		{
 			_firebaseService = firebaseService;
@@ -43,6 +46,7 @@ namespace API.Controllers
 			_userManager = userManager;
 			this._roleManager = roleManager;
 			this._userFCMTokenService = userFCMTokenService;
+			this._redisConnection = redisConnection;
 		}
 
 		/// <summary>
@@ -153,6 +157,15 @@ namespace API.Controllers
 
 			if (!result) return StatusCode(StatusCodes.Status500InternalServerError, "Something wrong please try again!");
 			return Ok("Token Added");
+		}
+		[HttpGet("weeee")]
+		public async Task<ActionResult> TestWEEE()
+		{
+			Dictionary<String, Object> data = new Dictionary<string, Object>();
+			data.Add("message", "Hello From Mars!");
+			
+			_redisConnection.AddToQueue("SendNotification_All", data);
+			return Ok();
 		}
 	}
 

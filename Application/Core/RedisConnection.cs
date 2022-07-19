@@ -12,7 +12,7 @@ namespace Application.Core
 	{
 		public class QueueItem
 		{
-			public String ActionName { get; set; }
+			public string ActionName { get; set; }
 			public Object Data { get; set; }
 		}
 
@@ -41,7 +41,7 @@ namespace Application.Core
 		public void AddToQueue(QueueItem qi)
 		{
 			var db = _connection.GetDatabase().ListRightPushAsync("Action_Queue", JsonSerializer.Serialize(qi));
-			_connection.GetSubscriber().Publish("Queue", JsonSerializer.Serialize(qi));
+			_connection.GetSubscriber().Publish("QueueLocal", JsonSerializer.Serialize(qi));
 		}
 
 		public async Task<QueueItem> GetFromQueue()

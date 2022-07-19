@@ -71,6 +71,9 @@ namespace Application.Services
 			{
 				query = query.Where(t => t.State == queryParams.ticketUserStateEnum);
 			}
+			if (queryParams.EventId != Guid.Empty) {
+				query = query.Where(t => t.Ticket.EventId == queryParams.EventId);
+			}
 			query = query.OrderByDescending(entity => entity.CreatedDate);
 
 			return await PagedList<TicketUser>.CreateAsync(query, queryParams.PageNumber, queryParams.PageSize);

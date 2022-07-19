@@ -24,6 +24,7 @@ namespace Application.Core
 		private readonly UserRepository _userRepository;
 		private readonly EventUserRepository _eventUserRepository;
 		private readonly RedisConnection _redisConnection;
+		private readonly FirebaseService _firebaseService;
 
 		private bool IsRunning = false;
 
@@ -35,12 +36,15 @@ namespace Application.Core
 			_userRepository = scope.ServiceProvider.GetRequiredService<UserRepository>();
 			_eventUserRepository = scope.ServiceProvider.GetRequiredService<EventUserRepository>();
 			_redisConnection = scope.ServiceProvider.GetRequiredService<RedisConnection>();
+			_firebaseService = scope.ServiceProvider.GetRequiredService<FirebaseService>();
 		}
 
 		protected override Task ExecuteAsync(CancellationToken stoppingToken)
 		{
-			_redisConnection.GetConnection().GetSubscriber().Subscribe("Queue", async (channel, message) =>
+			_redisConnection.GetConnection().GetSubscriber().Subscribe("QueueLocal", async (channel, message) =>
 			{
+				_logger.LogInformation("============================ NEW WORK =========================");
+
 				if (!IsRunning)
 				{
 					IsRunning = true;
@@ -82,6 +86,31 @@ namespace Application.Core
 							}
 							break;
 						}
+					case "SendNotification_All":
+						{
+							_logger.LogInformation("============================ SEND WORK =========================");
+							var dict = JsonSerializer.Deserialize<Dictionary<String, String>>(work.Data.ToString());
+
+							String message = dict["message"];
+							
+							await _firebaseService.SendMessageToAll(message);
+
+							break;
+						}
+					case "SendNotification_Specific":
+						{
+							var dict = JsonSerializer.Deserialize<Dictionary<String, Object>>(work.Data.ToString());
+
+							String message = (string)dict["message"];
+							List<UserFCMToken> tokensToNotify = (List<UserFCMToken>)dict["list"];
+
+							foreach (var t in tokensToNotify)
+							{
+								await _firebaseService.SendMessageToDevice(t.Token, message);
+							};
+
+							break;
+						}
 				}
 				await DoNextWork();
 			}
@@ -98,6 +127,7 @@ namespace Application.Core
 
 		public void Dispose()
 		{
+			_redisConnection.GetConnection().GetSubscriber().UnsubscribeAll();
 		}
 
 
