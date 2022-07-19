@@ -33,6 +33,11 @@ namespace Application.Services
 			return await _imageRepository.GetAll(); ;
 		}
 
+		public async Task<List<UserImage>> GetAllFromUser(Guid userId)
+		{
+			return await _imageRepository.GetQuery().Where(i => i.UserId == userId).ToListAsync();
+		}
+
 		public async Task<UserImage> GetByID(Guid id) => await _imageRepository.GetByID(id);
 
 		public async Task<bool> Insert(UserImage e) { _imageRepository.Insert(e); return await _imageRepository.Save(); }

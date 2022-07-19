@@ -24,9 +24,6 @@ namespace Domain
 		public virtual Post? Post { get; set; }
 		public Guid PostId { get; set; }
 
-		[JsonIgnore]
-		public virtual ICollection<CommentLike> CommentLikes { get; set; }
-
 		public StatusEnum Status { get; set; }
 		public DateTime CreatedDate { get; set; } = DateTime.Now;
 	}

@@ -17,8 +17,6 @@ public class User : IdentityUser<Guid>
 	[JsonIgnore]
 	public virtual ICollection<TicketUser> TicketUsers { get; set; }
 	[JsonIgnore]
-	public virtual ICollection<CommentLike> CommentLikes { get; set; }
-	[JsonIgnore]
 	public virtual ICollection<UserImage> Images { get; set; }
 	[JsonIgnore]
 	public virtual ICollection<UserFCMToken> Tokens { get; set; }

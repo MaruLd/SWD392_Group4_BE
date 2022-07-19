@@ -10,6 +10,7 @@ using Amazon.S3.Transfer;
 using Application.Core;
 using Application.Services;
 using Application.UserImages.DTOs;
+using AutoMapper;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -101,15 +102,27 @@ namespace API.Controllers
 		}
 
 		/// <summary>
-		/// Test Upload Parameter
+		/// Get Image
 		/// </summary>
-		[HttpPost("validate-upload")]
-		public async Task<ActionResult> TestUploadImage([Required] IFormFile file)
+		[HttpGet("user-image")]
+		[Authorize]
+		public async Task<ActionResult<List<UserImageDTO>>> GetImages()
 		{
-			if (file.Length > 10 * 1024 * 1024) return BadRequest("File size limit is 10 MB!");
-			if (!file.ContentType.Contains("image")) return BadRequest("File is not a valid image!");
+			var list = new List<UserImageDTO>();
+			var images = await _imageService.GetAllFromUser(Guid.Parse(User.GetUserId()));
 
-			return Ok("Image Is Valid!");
+			images.ForEach(image =>
+			{
+				var dto = new UserImageDTO()
+				{
+					Id = image.Id.ToString(),
+					Url = "https://evsmart.herokuapp.com/api/v1/image?key=" + image.Id.ToString(),
+					CreatedDate = image.CreatedDate
+				};
+				list.Add(dto);
+			});
+
+			return list;
 		}
 	}
 }

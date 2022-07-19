@@ -14,22 +14,6 @@ namespace Persistence
 
 		}
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
-			base.OnModelCreating(modelBuilder);
-			modelBuilder.Entity<Comment>()
-			  .HasMany(e => e.CommentLikes)
-			  .WithOne(e => e.Comment)
-			  .OnDelete(DeleteBehavior.Restrict);
-
-			/*
-			var Comment = db.Set<Comment>().Include(e => e.CommentLikes).Single(e => e.Id == id);
-			db.RemoveRange(Comment.CommentLikes);
-			db.Remove(productType);
-			db.SaveChanges();
-			*/
-		}
-
 		//protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		//{
 		//    if (!optionsBuilder.IsConfigured)
@@ -57,8 +41,6 @@ namespace Persistence
 		public DbSet<EventCategory> EventCategories { get; set; }
 
 		public DbSet<Comment> Comments { get; set; }
-
-		public DbSet<CommentLike> CommentLikes { get; set; }
 
 		public DbSet<EventOrganizer> EventOrganizers { get; set; }
 
