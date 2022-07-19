@@ -45,7 +45,7 @@ namespace Application.Organizers
 			Handle(Command request, CancellationToken cancellationToken)
 			{
 				var organizerinDb = await _organizerService.GetByID(request.dto.Id);
-				if (organizerinDb == null) return Result<Unit>.Failure("Oraganizer not found!");
+				if (organizerinDb == null) return Result<Unit>.Failure("Organizer not found!");
 
 				_mapper.Map(request.dto, organizerinDb);
 				var result = await _organizerService.Update(organizerinDb);

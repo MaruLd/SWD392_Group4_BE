@@ -47,7 +47,7 @@ namespace Application.Organizers
 			public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
 			{
 				var organizerinDb = await _organizerService.GetByID(request.Id);
-				if (organizerinDb == null) return Result<Unit>.NotFound("Oraganizer not found!");
+				if (organizerinDb == null) return Result<Unit>.NotFound("Organizer not found!");
 
 				var events = await _eventService.Get(new EventQueryParams() { OrganizerName = organizerinDb.Name });
 

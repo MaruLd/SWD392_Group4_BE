@@ -49,8 +49,8 @@ namespace Application.Comments
 				var post = await _postService.GetByID(request.postid);
 				if (post == null) return Result<CommentDTO>.NotFound("Post not found!");
 
-				var eventUser = await _eventUserService.GetByID((Guid)post.EventId, user.Id);
-				if (eventUser == null) return Result<CommentDTO>.Failure("You aren't in the event!");
+				// var eventUser = await _eventUserService.GetByID((Guid)post.EventId, user.Id);
+				// if (eventUser == null) return Result<CommentDTO>.Failure("You aren't in the event!");
 
 				var comment = _mapper.Map<Comment>(request.dto);
 				comment.PostId = request.postid;

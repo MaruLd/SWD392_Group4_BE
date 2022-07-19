@@ -72,7 +72,7 @@ namespace Application.Events.StateMachine
 			void OnDelay()
 			{
 				_e.State = EventStateEnum.Delay;
-				NotifySpecific();
+				NotifyAll();
 			}
 
 			void OnCheckin()
@@ -102,7 +102,7 @@ namespace Application.Events.StateMachine
 			void OnCancel()
 			{
 				_e.State = EventStateEnum.Cancelled;
-				NotifySpecific();
+				NotifyAll();
 			}
 		}
 
@@ -115,7 +115,7 @@ namespace Application.Events.StateMachine
 		private void NotifyAll()
 		{
 			var dict = new Dictionary<String, Object>();
-			dict.Add("message", $"{_e.Title} is now ${_e.State}");
+			dict.Add("message", $"{_e.Title} is now {_e.State}");
 
 			redisConnection.AddToQueue(new QueueItem() { ActionName = "SendNotification_All", Data = dict });
 		}
@@ -130,7 +130,7 @@ namespace Application.Events.StateMachine
 			}
 
 			var dict = new Dictionary<String, Object>();
-			dict.Add("message", $"{_e.Title} is now ${_e.State}");
+			dict.Add("message", $"{_e.Title} is now {_e.State}");
 			dict.Add("list", tokensToNotify);
 
 			redisConnection.AddToQueue(new QueueItem() { ActionName = "SendNotification_Specific", Data = dict });

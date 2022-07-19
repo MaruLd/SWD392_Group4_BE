@@ -60,58 +60,65 @@ namespace Application.Core
 			var work = await _redisConnection.GetFromQueue();
 			if (work != null)
 			{
-				switch (work.ActionName)
+				try
 				{
-					case "UserUpdate":
-						{
-							var user = JsonSerializer.Deserialize<User>(work.Data.ToString());
-							_userRepository.Update(user);
-							await _userRepository.Save();
-							break;
-						}
-
-					case "EventAddUser":
-						{
-							var data = JsonSerializer.Deserialize<Dictionary<String, Guid>>(work.Data.ToString());
-
-							Guid eventId = data["eventId"];
-							Guid userId = data["userId"];
-
-							var eventUser = await _eventUserRepository.GetQuery().Where(t => t.EventId == eventId && t.UserId == userId).FirstOrDefaultAsync();
-							if (eventUser == null)
+					switch (work.ActionName)
+					{
+						case "UserUpdate":
 							{
-								eventUser = new EventUser() { EventId = eventId, UserId = userId, Type = EventUserTypeEnum.Student };
-								_eventUserRepository.Insert(eventUser);
-								await _eventUserRepository.Save();
+								var user = JsonSerializer.Deserialize<User>(work.Data.ToString());
+								_userRepository.Update(user);
+								await _userRepository.Save();
+								break;
 							}
-							break;
-						}
-					case "SendNotification_All":
-						{
-							_logger.LogInformation("============================ SEND WORK =========================");
-							var dict = JsonSerializer.Deserialize<Dictionary<String, String>>(work.Data.ToString());
 
-							String message = dict["message"];
-							
-							await _firebaseService.SendMessageToAll(message);
-
-							break;
-						}
-					case "SendNotification_Specific":
-						{
-							var dict = JsonSerializer.Deserialize<Dictionary<String, Object>>(work.Data.ToString());
-
-							String message = (string)dict["message"];
-							List<UserFCMToken> tokensToNotify = (List<UserFCMToken>)dict["list"];
-
-							foreach (var t in tokensToNotify)
+						case "EventAddUser":
 							{
-								await _firebaseService.SendMessageToDevice(t.Token, message);
-							};
+								var data = JsonSerializer.Deserialize<Dictionary<String, Guid>>(work.Data.ToString());
 
-							break;
-						}
+								Guid eventId = data["eventId"];
+								Guid userId = data["userId"];
+
+								var eventUser = await _eventUserRepository.GetQuery().Where(t => t.EventId == eventId && t.UserId == userId).FirstOrDefaultAsync();
+								if (eventUser == null)
+								{
+									eventUser = new EventUser() { EventId = eventId, UserId = userId, Type = EventUserTypeEnum.Student };
+									_eventUserRepository.Insert(eventUser);
+									await _eventUserRepository.Save();
+								}
+								break;
+							}
+						case "SendNotification_All":
+							{
+								_logger.LogInformation("============================ SEND WORK =========================");
+								var dict = JsonSerializer.Deserialize<Dictionary<String, String>>(work.Data.ToString());
+
+								String message = dict["message"];
+
+								await _firebaseService.SendMessageToAll(message);
+
+								break;
+							}
+						case "SendNotification_Specific":
+							{
+								var dict = JsonSerializer.Deserialize<Dictionary<String, Object>>(work.Data.ToString());
+
+								String message = (string)dict["message"];
+								List<UserFCMToken> tokensToNotify = (List<UserFCMToken>)dict["list"];
+								if (tokensToNotify != null && tokensToNotify.Count > 0)
+								{
+									foreach (var t in tokensToNotify)
+									{
+										await _firebaseService.SendMessageToDevice(t.Token, message);
+									};
+								}
+
+								break;
+							}
+					}
 				}
+				catch { }
+
 				await DoNextWork();
 			}
 			else

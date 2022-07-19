@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon;
@@ -79,6 +80,7 @@ namespace API.Controllers
 			return Ok(dto);
 		}
 
+
 		/// <summary>
 		/// Get Image
 		/// </summary>
@@ -100,7 +102,7 @@ namespace API.Controllers
 				return Redirect(notfoundImg);
 			}
 		}
-		
+
 		/// <summary>
 		/// Test Upload Parameter
 		/// </summary>
@@ -112,7 +114,7 @@ namespace API.Controllers
 
 			return Ok("Image Is Valid!");
 		}
-		
+
 		/// <summary>
 		/// Get Image
 		/// </summary>
