@@ -58,6 +58,17 @@ namespace API.Controllers
 			return HandleResult(await Mediator.Send(new Create.Command { ticketId = ticketid, dto = dto }));
 		}
 
+		/// <summary>
+		/// [Authorize] [> Student] Create Ticket User (Buy a ticket, 1 ticket/event)
+		/// </summary>
+		[Authorize]
+		[HttpPost("user2")]
+		public async Task<ActionResult<TicketUserDTO>> CreateEventUser2(Guid ticketid)
+		{
+			return HandleResult(await Mediator.Send(new Create.Command { ticketId = ticketid, dto = new CreateTicketUserDTO() {
+				UserId = Guid.Parse(User.GetUserId())
+			} }));
+		}
 		
 		/// <summary>
 		/// [Authorize] [> Student] Use Code To Checkin/Checkout on Ticket
